@@ -7,6 +7,119 @@ This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next
 * [Cypress](https://docs.cypress.io/guides/tooling/typescript-support)
 * [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
 
+```plantuml
+@startmindmap
+*:= System Dynamics Tool
+====
+Docusaurus
+Cypress
+Cucumber
+;
+
+**:= Frontend
+====
+TypeScript
+React.js
+Next.js
+** SSG
+** Router
+** Framework
+TailwindCSS
+Redux
+Tauri
+Typedoc
+;
+
+
+
+***:= Components
+====
+useReducer
+Storybook
+;
+
+
+****:= Testing
+====
+React testing library
+Jest
+;
+
+/'
+**:= To Do
+====
+DDD
+DevOps
+
+;
+
+***:= Frontend
+====
+;
+
+****:= i18n
+====
+i18next
+;
+
+****:= Form
+====
+Formik
+React Hook Form
+;
+
+****:= UI Component Libraries
+====
+Material UI
+Chakra UI
+;
+
+****:= Animation
+====
+React Spring
+Framer Motion
+;
+
+****:= Data Visualization
+====
+Victory
+React Chartjs 2
+Recharts
+;
+
+****:= Table
+====
+Tanstack table
+;
+
+****:= Others
+====
+Drag & Drop
+React Dropzone for File Upload
+Firebase for Authentication
+;
+
+***:= Devtools
+====
+React Developer Tools
+Redux devtools
+Testing Playground
+React Hook Form DevTools
+Tanstack query devtools
+;
+
+***:= Backend
+====
+;
+
+****:= Server State Management
+====
+TanStac Query
+;
+'/
+@endmindmap
+```
+
 ## Prerequisites
 
 [Install Rust](https://tauri.app/v1/guides/getting-started/prerequisites)
