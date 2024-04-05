@@ -6,6 +6,7 @@ This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next
 * [Storybook With TailwindCSS](https://dev.to/lico/nextjs-using-tailwind-with-storybook-5aie)
 * [Cypress](https://docs.cypress.io/guides/tooling/typescript-support)
 * [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
+* [i18n](https://github.com/martinkr/next-export-i18n)
 
 ```plantuml
 @startmindmap
@@ -28,6 +29,7 @@ TailwindCSS
 Redux
 Tauri
 Typedoc
+next-export-i18n
 ;
 
 
@@ -55,11 +57,6 @@ DevOps
 
 ***:= Frontend
 ====
-;
-
-****:= i18n
-====
-i18next
 ;
 
 ****:= Form
