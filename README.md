@@ -8,8 +8,6 @@ This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next
 * [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
 * [i18n](https://github.com/martinkr/next-export-i18n)
 
-![ecosystem](./ecosystem.png)
-
 ## Prerequisites
 
 [Install Rust](https://tauri.app/v1/guides/getting-started/prerequisites)
