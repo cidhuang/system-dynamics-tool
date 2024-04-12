@@ -2,46 +2,150 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Notes
 
-Let's discover **Docusaurus in less than 5 minutes**.
+For drawing [System Map](https://www.systems-thinking.org/)
 
-## Getting Started
+![ecosystem](./ecosystem.png)
 
-Get started by **creating a new site**.
+## Commands
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+* File
+  * New
+  * Save
+  * Load
+  * Save As ...
+* Edit
+  * Undo
+  * Redo
+* Tool
+  * Find Loops
+  * Find Archetypes
+  * Apply Force-directed Graph
 
-### What you'll need
+## Elements
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+* Causal Loop Diagrm
+  * Variable
+  * Link
+* Stock and Flow Diagrm
+  * Stock
+  * Flow ( Valve )
+  * Source
+  * Sink
 
-## Generate a new site
+Element Categories:
 
-Generate a new Docusaurus site using the **classic template**.
+* Node
+  * Variable
+  * Stock
+  * Valve
+* Edge
+  * Link
+  * Flow
 
-The classic template will automatically be added to your project after you run the command:
+Derived Concepts:
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+* Loop
+  * Reinforcing
+  * Balancing
+* Archetype
+  * Drifting Goals
+  * Escalation
+  * Fixes That Fail
+  * Growth and Underinvestment
+  * Limits to Success
+  * Shifting the Burden
+  * Success to the Successful
+  * Tragedy of the Commons
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+## Causal Loop Diagrm
 
-## Start your site
+### Variable
 
-Run the development server:
+* shape: can be changed
+* from: [ Link ]
+* to: [ Link ]
+* font
+* color
 
-```bash
-cd my-website
-npm run start
-```
+### Link
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+* shape: arc
+* from: [ Variable, Stock ]
+* to: [ Variable, Valve ]
+* direction ( + / - )
+* time delay
+* width
+* color
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+## Stock and Flow Diagrm
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+### Stock
+
+* shape: rectangle
+* from: [ Flow ]
+* to: [ Flow, Link ]
+* font
+* color
+
+### Flow
+
+* shape: polyline
+* from: [ Source, Stock ]
+* to: [ Stock, Sink ]
+* width
+* color
+
+### Valve
+
+* shape: funnel on Flow
+* from: [ Link ]
+* color
+
+### Source
+
+* shape: cloud
+* to: [ Flow ]
+
+### Sink
+
+* shape: cloud
+* from: [ Flow ]
+
+## Interaction
+
+![ui-fsm](./ui-fsm.png)
+
+## Loop
+
+A route starting from one Node through Edges and other Nodes and end at the Node itself.
+
+* Reinforcing Loop: The total number of minus Links is even number.
+
+* Balancing Loop: The total number of minus Links is odd number.
+
+## Archetype
+
+https://www.systems-thinking.org/arch/arch.htm
+
+### Accidental Adversaries
+
+### Drifting Goals
+
+### Escalation
+
+### Fixes That Fail
+
+### Growth and Underinvestment
+
+### Limits to Success
+
+### Shifting the Burden
+
+### Success to the Successful
+
+### Tragedy of the Commons
+
+
