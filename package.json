@@ -8,13 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "tauri": "tauri",
-    "jest": "jest --watch",
+    "test": "jest --watch",
     "storybook:dev": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "cypress:open": "cypress open",
     "cypress": "cypress",
     "storybook": "storybook",
-    "docusaurus": "cd docusaurus && npm run docusaurus"
+    "doc": "cd docusaurus && npm run docusaurus"
   },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.0.3",
