@@ -1,12 +1,11 @@
 
-import { Suspense } from 'react';
-import Content from './content';
+import SystemMapCanvas from '@/components/SystemMapCanvas';
 
 export default function Home() {
 
   return (
-    <Suspense>
-      <Content />
-    </Suspense>
+    <>
+      <SystemMapCanvas />
+    </>
   );
 }
