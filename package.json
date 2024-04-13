@@ -14,7 +14,8 @@
     "cypress:open": "cypress open",
     "cypress": "cypress",
     "storybook": "storybook",
-    "doc": "cd docusaurus && npm run docusaurus"
+    "doc": "cd docusaurus && npm run docusaurus",
+    "jest": "jest"
   },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.0.3",
