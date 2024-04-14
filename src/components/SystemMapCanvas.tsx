@@ -1,10 +1,10 @@
 "use client"
 
-import { Text, Point, Application, type ICanvas } from 'pixi.js';
+import { Application, Renderer } from 'pixi.js';
 import { useEffect, useState, type SyntheticEvent } from 'react';
 import { Stage } from '@pixi/react'
 
-import { Variable } from '@/lib/modals';
+import { Point, Variable } from '@/lib/types';
 //import { ViewEdge } from './ViewEdge';
 //import { useDrawingReducer, Edge, Node, isEdge, isNode, initDrawingState } from './drawingReducer';
 //import { indexOf } from './Functions';
@@ -18,20 +18,27 @@ interface SystemMapCanvasProps {
 const SystemMapCanvas = ({
   variables,
 }: SystemMapCanvasProps) => {
-  const [app, setApp] = useState<Application<ICanvas>>();
-  const [offset, setOffset] = useState<Point>();
+  const [app, setApp] = useState<Application<Renderer<HTMLCanvasElement>>>();
+  const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (app === undefined) {
+    if (app === undefined || app === null) {
       return;
     }
 
-    setOffset(new Point(
-      (app?.view as unknown as HTMLElement).offsetLeft ?? 0,
-      (app?.view as unknown as HTMLElement).offsetTop ?? 0,
-    ));
+    if (app.renderer === undefined || app.renderer === null) {
+      return;
+    }
 
-  }, [app?.view]);
+    if (app.renderer.view === undefined || app.renderer.view === null) {
+      return;
+    }
+
+    const view = app.renderer.view as unknown as HTMLElement;
+
+    setOffset({ x: view.offsetLeft ?? 0, y: view.offsetTop ?? 0 });
+
+  }, [app, app?.renderer?.view]);
 
   function handleMouseDown(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;

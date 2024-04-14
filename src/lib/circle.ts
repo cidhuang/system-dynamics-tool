@@ -1,9 +1,4 @@
-//import type { Point } from 'pixi.js';
-
-export interface Point {
-  x: number;
-  y: number;
-}
+import type { Point } from './types';
 
 export function getCircle(
   p1: Point,
