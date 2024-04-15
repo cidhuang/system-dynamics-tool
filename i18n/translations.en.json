@@ -1,4 +1,15 @@
 {
-  "get started": "Get started by editing",
-  "link to": "Link to"
+  "__language__": "English",
+  "File": "File",
+  "New": "New",
+  "Save": "Save",
+  "Load": "Load",
+  "Save As": "Save As",
+  "Edit": "Edit",
+  "Undo": "Undo",
+  "Redo": "Redo",
+  "Tool": "Tool",
+  "Find Loops": "Find Loops",
+  "Find Archetypes": "Find Archetypes",
+  "Auto Position": "Auto Position"
 }

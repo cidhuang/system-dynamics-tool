@@ -1,8 +1,15 @@
+'use client'
 
-import Menu from './Menu'
 import { useState } from "react"
 
+import Menu from './Menu'
+import Language from "./Language";
+
 export default function MenuBar() {
+
+  function handlerMenuItem(arg: any) {
+    console.log("handlerMenuItem", arg);
+  }
 
   const menus = [
     {
@@ -10,16 +17,24 @@ export default function MenuBar() {
       label: "File",
       items: [
         {
-          label: "New"
+          label: "New",
+          handler: handlerMenuItem,
+          arg: "New",
         },
         {
-          label: "Save"
+          label: "Save",
+          handler: handlerMenuItem,
+          arg: "Save",
         },
         {
-          label: "Load"
+          label: "Load",
+          handler: handlerMenuItem,
+          arg: "Load",
         },
         {
-          label: "Save As ..."
+          label: "Save As",
+          handler: handlerMenuItem,
+          arg: "Save As",
         },
       ]
     },
@@ -28,10 +43,14 @@ export default function MenuBar() {
       label: "Edit",
       items: [
         {
-          label: "Undo"
+          label: "Undo",
+          handler: handlerMenuItem,
+          arg: "Undo",
         },
         {
-          label: "Redo"
+          label: "Redo",
+          handler: handlerMenuItem,
+          arg: "Redo",
         }
       ]
     },
@@ -40,19 +59,25 @@ export default function MenuBar() {
       label: "Tool",
       items: [
         {
-          label: "Find Loops"
+          label: "Find Loops",
+          handler: handlerMenuItem,
+          arg: "Find Loops",
         },
         {
-          label: "Find Archetypes"
+          label: "Find Archetypes",
+          handler: handlerMenuItem,
+          arg: "Find Archetypes",
         },
         {
-          label: "Auto Position"
+          label: "Auto Position",
+          handler: handlerMenuItem,
+          arg: "Auto Position",
         }
       ]
     },
   ]
 
-  const [shows, setShows] = useState<boolean[]>(menus.map(() => {return false;}));
+  const [shows, setShows] = useState<boolean[]>(menus.map(() => { return false; }));
 
   function handleClick(index: number) {
     setShows(shows.map((show, i) => {
@@ -78,6 +103,9 @@ export default function MenuBar() {
               />
             )
           })}
+        </div>
+        <div>
+          <Language />
         </div>
       </div>
     </nav>
