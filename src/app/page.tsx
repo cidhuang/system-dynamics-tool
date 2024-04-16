@@ -33,31 +33,31 @@ function HomeImp() {
           onClick={() => { handleModeClick(SystemMapCanvasMode.Change); }}
           className={mode === SystemMapCanvasMode.Change ? 'btn-mode-active' : 'btn-mode'}
         >
-          Change
+          {t('Change')}
         </button>
         <button
           onClick={() => { handleModeClick(SystemMapCanvasMode.AddVariable); }}
           className={mode === SystemMapCanvasMode.AddVariable ? 'btn-mode-active' : 'btn-mode'}
         >
-          Add Variable
+          {t('Add Variable')}
         </button>
         <button
           onClick={() => { handleModeClick(SystemMapCanvasMode.AddLink); }}
           className={mode === SystemMapCanvasMode.AddLink ? 'btn-mode-active' : 'btn-mode'}
         >
-          Add Link
+          {t('Add Link')}
         </button>
         <button
           onClick={() => { handleModeClick(SystemMapCanvasMode.AddStock); }}
           className={mode === SystemMapCanvasMode.AddStock ? 'btn-mode-active' : 'btn-mode'}
         >
-          Add Stock
+          {t('Add Stock')}
         </button>
         <button
           onClick={() => { handleModeClick(SystemMapCanvasMode.AddFlow); }}
           className={mode === SystemMapCanvasMode.AddFlow ? 'btn-mode-active' : 'btn-mode'}
         >
-          Add Flow
+          {t('Add Flow')}
         </button>
       </div>
       <SystemMapCanvas

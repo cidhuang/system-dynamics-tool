@@ -11,5 +11,10 @@
   "Tool": "Tool",
   "Find Loops": "Find Loops",
   "Find Archetypes": "Find Archetypes",
-  "Auto Position": "Auto Position"
+  "Auto Position": "Auto Position",
+  "Change": "Change",
+  "Add Variable": "Add Variable",
+  "Add Link": "Add Link",
+  "Add Stock": "Add Stock",
+  "Add Flow": "Add Flow"
 }
