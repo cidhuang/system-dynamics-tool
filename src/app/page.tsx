@@ -1,25 +1,24 @@
-'use client'
+"use client";
 
-import { Variable } from '@/lib/types';
-
-import { SystemMapCanvas, SystemMapCanvasMode } from '@/components/SystemMapCanvas/SystemMapCanvas';
-import MenuBar from '@/components/MenuBar/MenuBar';
+import { Variable } from "@/lib/types";
 
 import {
-  useTranslation,
-  LanguageSwitcher,
-  LinkWithLocale
-} from "next-export-i18n";
-import { useState, Suspense } from 'react';
+  SystemMapCanvas,
+  SystemMapCanvasMode,
+} from "@/components/SystemMapCanvas/SystemMapCanvas";
+import MenuBar from "@/components/MenuBar/MenuBar";
+
+import { useTranslation } from "next-export-i18n";
+import { useState, Suspense } from "react";
 
 function HomeImp() {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<SystemMapCanvasMode>(SystemMapCanvasMode.Change);
-  const variables = new Array<Variable>;
+  const [mode, setMode] = useState<SystemMapCanvasMode>(
+    SystemMapCanvasMode.Change
+  );
+  const variables = new Array<Variable>();
 
-  function handleVariablesChange(variables: Variable[]): void {
-
-  }
+  function handleVariablesChange(variables: Variable[]): void {}
 
   function handleModeClick(mode1: SystemMapCanvasMode) {
     setMode(mode1);
@@ -28,36 +27,64 @@ function HomeImp() {
   return (
     <>
       <MenuBar />
-      <div className='flex'>
+      <div className="flex">
         <button
-          onClick={() => { handleModeClick(SystemMapCanvasMode.Change); }}
-          className={mode === SystemMapCanvasMode.Change ? 'btn-mode-active' : 'btn-mode'}
+          onClick={() => {
+            handleModeClick(SystemMapCanvasMode.Change);
+          }}
+          className={
+            mode === SystemMapCanvasMode.Change ? "btn-mode-active" : "btn-mode"
+          }
         >
-          {t('Change')}
+          {t("Change")}
         </button>
         <button
-          onClick={() => { handleModeClick(SystemMapCanvasMode.AddVariable); }}
-          className={mode === SystemMapCanvasMode.AddVariable ? 'btn-mode-active' : 'btn-mode'}
+          onClick={() => {
+            handleModeClick(SystemMapCanvasMode.AddVariable);
+          }}
+          className={
+            mode === SystemMapCanvasMode.AddVariable
+              ? "btn-mode-active"
+              : "btn-mode"
+          }
         >
-          {t('Add Variable')}
+          {t("Add Variable")}
         </button>
         <button
-          onClick={() => { handleModeClick(SystemMapCanvasMode.AddLink); }}
-          className={mode === SystemMapCanvasMode.AddLink ? 'btn-mode-active' : 'btn-mode'}
+          onClick={() => {
+            handleModeClick(SystemMapCanvasMode.AddLink);
+          }}
+          className={
+            mode === SystemMapCanvasMode.AddLink
+              ? "btn-mode-active"
+              : "btn-mode"
+          }
         >
-          {t('Add Link')}
+          {t("Add Link")}
         </button>
         <button
-          onClick={() => { handleModeClick(SystemMapCanvasMode.AddStock); }}
-          className={mode === SystemMapCanvasMode.AddStock ? 'btn-mode-active' : 'btn-mode'}
+          onClick={() => {
+            handleModeClick(SystemMapCanvasMode.AddStock);
+          }}
+          className={
+            mode === SystemMapCanvasMode.AddStock
+              ? "btn-mode-active"
+              : "btn-mode"
+          }
         >
-          {t('Add Stock')}
+          {t("Add Stock")}
         </button>
         <button
-          onClick={() => { handleModeClick(SystemMapCanvasMode.AddFlow); }}
-          className={mode === SystemMapCanvasMode.AddFlow ? 'btn-mode-active' : 'btn-mode'}
+          onClick={() => {
+            handleModeClick(SystemMapCanvasMode.AddFlow);
+          }}
+          className={
+            mode === SystemMapCanvasMode.AddFlow
+              ? "btn-mode-active"
+              : "btn-mode"
+          }
         >
-          {t('Add Flow')}
+          {t("Add Flow")}
         </button>
       </div>
       <SystemMapCanvas

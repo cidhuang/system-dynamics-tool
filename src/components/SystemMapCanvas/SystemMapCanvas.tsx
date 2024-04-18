@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Application, Renderer } from 'pixi.js';
-import { useEffect, useState, type SyntheticEvent } from 'react';
-import { Stage } from '@pixi/react'
+import { Application, Renderer } from "pixi.js";
+import { useEffect, useState, type SyntheticEvent } from "react";
+import { Stage } from "@pixi/react";
 
-import { Point, Variable } from '@/lib/types';
+import { Point, Variable } from "@/lib/types";
 //import { ViewEdge } from './ViewEdge';
 //import { useDrawingReducer, Edge, Node, isEdge, isNode, initDrawingState } from './drawingReducer';
 //import { indexOf } from './Functions';
@@ -24,10 +24,7 @@ interface SystemMapCanvasProps {
   onVariablesChange: (variables: Variable[]) => void;
 }
 
-export const SystemMapCanvas = ({
-  mode,
-  variables,
-}: SystemMapCanvasProps) => {
+export const SystemMapCanvas = ({ mode, variables }: SystemMapCanvasProps) => {
   const [app, setApp] = useState<Application<Renderer<HTMLCanvasElement>>>();
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
 
@@ -47,7 +44,6 @@ export const SystemMapCanvas = ({
     const view = app.renderer.view as unknown as HTMLElement;
 
     setOffset({ x: view.offsetLeft ?? 0, y: view.offsetTop ?? 0 });
-
   }, [app, app?.renderer?.view]);
 
   function handleMouseDown(event: SyntheticEvent) {
@@ -85,15 +81,18 @@ export const SystemMapCanvas = ({
       width={800}
       height={600}
       onMount={setApp as any}
-      options={{ backgroundColor: 0xeef1f5, antialias: true, backgroundAlpha: 1 }}
+      options={{
+        backgroundColor: 0xeef1f5,
+        antialias: true,
+        backgroundAlpha: 1,
+      }}
       onContextMenu={handleContextMenu}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onDoubleClick={handleDoubleClick}
       onClick={handleClick}
-    >
-    </Stage>
+    ></Stage>
   );
 };
 

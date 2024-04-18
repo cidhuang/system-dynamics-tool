@@ -34,10 +34,10 @@ body {
 
 @layer components {
   .btn-mode {
-    @apply bg-white block px-4 py-2 text-sm text-gray-700 rounded-md
+    @apply bg-white block px-4 py-2 text-sm text-gray-700 rounded-md;
   }
 
   .btn-mode-active {
-    @apply bg-red-100 block px-4 py-2 text-sm text-gray-700 rounded-md
+    @apply bg-red-100 block px-4 py-2 text-sm text-gray-700 rounded-md;
   }
 }

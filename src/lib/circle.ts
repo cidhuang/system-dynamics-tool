@@ -1,4 +1,4 @@
-import type { Point } from './types';
+import type { Point } from "./types";
 
 export function getCircle(
   p1: Point,
