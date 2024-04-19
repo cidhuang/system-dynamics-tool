@@ -10,16 +10,10 @@ import { Point, Variable } from "@/lib/types";
 //import { indexOf } from './Functions';
 //import useUndoable from 'use-undoable';
 
-export enum SystemMapCanvasMode {
-  Change,
-  AddVariable,
-  AddLink,
-  AddStock,
-  AddFlow,
-}
+import { ESystemMapCanvasMode } from "./SystemMapCanvasMode";
 
 interface SystemMapCanvasProps {
-  mode: SystemMapCanvasMode;
+  mode: ESystemMapCanvasMode;
   variables: Variable[];
   onVariablesChange: (variables: Variable[]) => void;
 }
@@ -95,5 +89,3 @@ export const SystemMapCanvas = ({ mode, variables }: SystemMapCanvasProps) => {
     ></Stage>
   );
 };
-
-//export default SystemMapCanvas;

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-mode {
+    @apply bg-white block px-4 py-2 text-sm text-gray-700 rounded-md;
+  }
+
+  .btn-mode-selected {
+    @apply bg-red-100 block px-4 py-2 text-sm text-gray-700 rounded-md;
+  }
+}
