@@ -27,13 +27,13 @@ export function getCircle(
   return { cx, cy, radius };
 }
 
-export enum Orientation {
+export enum EOrientation {
   Collinear,
   Clockwise,
   Counterclockwise,
 }
 
-export function getOrientation(p1: Point, p2: Point, p3: Point): Orientation {
+export function getOrientation(p1: Point, p2: Point, p3: Point): EOrientation {
   // https://www.geeksforgeeks.org/orientation-3-ordered-points/
 
   // See 10th slides from following link
@@ -41,11 +41,11 @@ export function getOrientation(p1: Point, p2: Point, p3: Point): Orientation {
   const val = (p2.y - p1.y) * (p3.x - p2.x) - (p2.x - p1.x) * (p3.y - p2.y);
 
   if (val === 0) {
-    return Orientation.Collinear; // collinear
+    return EOrientation.Collinear; // collinear
   }
 
   // clock or counterclock wise
-  return val < 0 ? Orientation.Clockwise : Orientation.Counterclockwise;
+  return val < 0 ? EOrientation.Clockwise : EOrientation.Counterclockwise;
 }
 
 export function toDegree(angle: number): number {
