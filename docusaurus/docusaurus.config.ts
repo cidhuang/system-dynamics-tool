@@ -101,6 +101,7 @@ const config: Config = {
           '../src/lib/**/*.ts'
         ],
         tsconfig: '../tsconfig.json',
+        watch: true,
         out: 'code',
         sidebar: {
           categoryLabel: 'Code',
