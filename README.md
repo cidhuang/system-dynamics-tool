@@ -8,6 +8,9 @@ This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next
 - [Cypress](https://docs.cypress.io/guides/tooling/typescript-support)
 - [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
 - [i18n](https://github.com/martinkr/next-export-i18n)
+- [pre-commit](https://pre-commit.com/)
+  - [prettier](https://prettier.io/docs/en/precommit.html)
+  - [commitizen](https://commitizen-tools.github.io/commitizen/getting_started/#integration-with-pre-commit) using [conventional commits](https://www.conventionalcommits.org/)
 
 ## Prerequisites
 
@@ -18,7 +21,7 @@ This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next
 Initialize pre-commit
 
 ```bash
-pre-commit install
+pre-commit install --hook-type commit-msg --hook-type pre-push
 ```
 
 Initialize npm

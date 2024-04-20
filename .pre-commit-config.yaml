@@ -13,3 +13,10 @@ repos:
     rev: "v4.0.0-alpha.8" # Use the sha or tag you want to point at
     hooks:
       - id: prettier
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.24.0
+    hooks:
+      - id: commitizen
+      - id: commitizen-branch
+        stages: [push]
