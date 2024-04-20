@@ -1,4 +1,3 @@
-
 import "./SystemMapCanvasMode.css";
 
 export enum ESystemMapCanvasMode {
@@ -20,7 +19,6 @@ export const SystemMapCanvasMode = ({
   selected: boolean;
   onClick: (mode: ESystemMapCanvasMode) => void;
 }) => {
-
   return (
     <button
       onClick={() => {

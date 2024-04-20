@@ -16,7 +16,7 @@ function HomeImp() {
   const { t } = useTranslation();
 
   const [mode, setMode] = useState<ESystemMapCanvasMode>(
-    ESystemMapCanvasMode.Change
+    ESystemMapCanvasMode.Change,
   );
   const variables = new Array<Variable>();
 
@@ -135,5 +135,5 @@ export default function Home() {
     <Suspense>
       <HomeImp />
     </Suspense>
-  )
+  );
 }

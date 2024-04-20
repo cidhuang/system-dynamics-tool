@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import "./Menu.css";
 
@@ -29,7 +29,7 @@ export const Menu = ({
   function handleMenuItemClick(
     index: number,
     itemIndex: number,
-    item: IMenuItem
+    item: IMenuItem,
   ) {
     item.handler(item.arg);
     onItemClick(index, itemIndex, item);

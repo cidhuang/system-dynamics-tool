@@ -1,4 +1,3 @@
-
 /**
  * The poisition of a point
  * @property x x of point

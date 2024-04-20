@@ -8,7 +8,7 @@ import {
 describe("Check getCircle", () => {
   test("Check the result of getCircle", () => {
     expect(
-      getCircle({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 })
+      getCircle({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }),
     ).toStrictEqual({ x: 100, y: 0, radius: 100 });
   });
 });
@@ -16,19 +16,19 @@ describe("Check getCircle", () => {
 describe("Check getOrientation", () => {
   test("Check the result of getOrientation", () => {
     expect(
-      getOrientation({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 })
+      getOrientation({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }),
     ).toStrictEqual(EOrientation.Counterclockwise);
   });
 
   test("Check the result of getOrientation", () => {
     expect(
-      getOrientation({ x: 200, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 0 })
+      getOrientation({ x: 200, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 0 }),
     ).toStrictEqual(EOrientation.Clockwise);
   });
 
   test("Check the result of getOrientation", () => {
     expect(
-      getOrientation({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 200 })
+      getOrientation({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 200 }),
     ).toStrictEqual(EOrientation.Collinear);
   });
 });
