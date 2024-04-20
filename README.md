@@ -21,6 +21,7 @@ This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next
 Initialize pre-commit
 
 ```bash
+pre-commit install
 pre-commit install --hook-type commit-msg --hook-type pre-push
 ```
 
