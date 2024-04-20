@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, Suspense } from "react";
+import { useTranslation } from "next-export-i18n";
+
 import { Variable } from "@/lib/types";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
@@ -9,9 +12,9 @@ import {
 } from "@/components/SystemMapCanvas/SystemMapCanvasMode";
 import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
 
-import { useState, Suspense } from "react";
+function HomeImp() {
+  const { t } = useTranslation();
 
-export default function Home() {
   const [mode, setMode] = useState<ESystemMapCanvasMode>(
     ESystemMapCanvasMode.Change
   );
@@ -29,60 +32,60 @@ export default function Home() {
 
   const menus = [
     {
-      label: "File",
+      label: t("File"),
       items: [
         {
-          label: "New",
+          label: t("New"),
           handler: handlerMenuItem,
           arg: "New",
         },
         {
-          label: "Save",
+          label: t("Save"),
           handler: handlerMenuItem,
           arg: "Save",
         },
         {
-          label: "Load",
+          label: t("Load"),
           handler: handlerMenuItem,
           arg: "Load",
         },
         {
-          label: "Save As",
+          label: t("Save As"),
           handler: handlerMenuItem,
           arg: "Save As",
         },
       ],
     },
     {
-      label: "Edit",
+      label: t("Edit"),
       items: [
         {
-          label: "Undo",
+          label: t("Undo"),
           handler: handlerMenuItem,
           arg: "Undo",
         },
         {
-          label: "Redo",
+          label: t("Redo"),
           handler: handlerMenuItem,
           arg: "Redo",
         },
       ],
     },
     {
-      label: "Tool",
+      label: t("Tool"),
       items: [
         {
-          label: "Find Loops",
+          label: t("Find Loops"),
           handler: handlerMenuItem,
           arg: "Find Loops",
         },
         {
-          label: "Find Archetypes",
+          label: t("Find Archetypes"),
           handler: handlerMenuItem,
           arg: "Find Archetypes",
         },
         {
-          label: "Auto Position",
+          label: t("Auto Position"),
           handler: handlerMenuItem,
           arg: "Auto Position",
         },
@@ -90,18 +93,20 @@ export default function Home() {
     },
   ];
 
+  const language = t("__language__");
+
   const modes = [
-    { label: "Change", mode: ESystemMapCanvasMode.Change },
-    { label: "Add Variable", mode: ESystemMapCanvasMode.AddVariable },
-    { label: "Add Link", mode: ESystemMapCanvasMode.AddLink },
-    { label: "Add Stock", mode: ESystemMapCanvasMode.AddStock },
-    { label: "Add Flow", mode: ESystemMapCanvasMode.AddFlow },
+    { label: t("Change"), mode: ESystemMapCanvasMode.Change },
+    { label: t("Add Variable"), mode: ESystemMapCanvasMode.AddVariable },
+    { label: t("Add Link"), mode: ESystemMapCanvasMode.AddLink },
+    { label: t("Add Stock"), mode: ESystemMapCanvasMode.AddStock },
+    { label: t("Add Flow"), mode: ESystemMapCanvasMode.AddFlow },
   ];
 
   return (
     <>
       <Suspense>
-        <MenuBar menus={menus} />
+        <MenuBar language={language} menus={menus} />
         <div className="flex">
           {modes.map((item, i) => {
             return (
@@ -123,4 +128,12 @@ export default function Home() {
       />
     </>
   );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeImp />
+    </Suspense>
+  )
 }

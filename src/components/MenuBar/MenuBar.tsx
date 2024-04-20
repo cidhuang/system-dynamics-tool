@@ -7,7 +7,13 @@ import i18n from "../../../i18n/index";
 
 import { Menu, IMenu, IMenuItem } from "./Menu";
 
-export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
+export const MenuBar = ({
+  language,
+  menus,
+}: {
+  language: string;
+  menus: IMenu[];
+}) => {
   function handlerLangItem(arg: any) {
     const tmp = new URLSearchParams(searchParams);
     tmp.set("lang", arg);
@@ -15,7 +21,7 @@ export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
   }
 
   const menuLang = {
-    label: "__language__",
+    label: language,
     items: Object.keys(i18n.translations).map((key, i) => {
       return {
         label:

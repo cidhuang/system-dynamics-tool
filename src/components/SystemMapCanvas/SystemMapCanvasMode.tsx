@@ -1,4 +1,3 @@
-import { useTranslation } from "next-export-i18n";
 
 import "./SystemMapCanvasMode.css";
 
@@ -21,7 +20,6 @@ export const SystemMapCanvasMode = ({
   selected: boolean;
   onClick: (mode: ESystemMapCanvasMode) => void;
 }) => {
-  const { t } = useTranslation();
 
   return (
     <button
@@ -30,7 +28,7 @@ export const SystemMapCanvasMode = ({
       }}
       className={selected ? "btn-mode-selected" : "btn-mode"}
     >
-      {t(label)}
+      {label}
     </button>
   );
 };

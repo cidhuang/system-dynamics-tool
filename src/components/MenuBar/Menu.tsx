@@ -1,4 +1,4 @@
-import { useTranslation } from "next-export-i18n";
+'use client'
 
 import "./Menu.css";
 
@@ -26,8 +26,6 @@ export const Menu = ({
   onItemClick: (index: number, itemIndex: number, item: IMenuItem) => void;
   menu: IMenu;
 }) => {
-  const { t } = useTranslation();
-
   function handleMenuItemClick(
     index: number,
     itemIndex: number,
@@ -45,7 +43,7 @@ export const Menu = ({
         }}
         className="menu-btn"
       >
-        {t(menu.label)}
+        {menu.label}
       </button>
       <div hidden={itemsHidden} className="menu-options">
         {menu.items.map((item, i) => {
@@ -57,7 +55,7 @@ export const Menu = ({
               }}
               className="menu-item"
             >
-              {t(item.label)}
+              {item.label}
             </button>
           );
         })}
