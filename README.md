@@ -75,7 +75,7 @@ npm run tauri build
 Initialize docusaurus
 
 ```bash
-cd docusaurus；npm i
+cd docusaurus; npm i
 ```
 
 Read document
