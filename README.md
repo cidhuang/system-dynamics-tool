@@ -6,20 +6,20 @@ This is a cross-platform application to draw [System Dynamics Map](https://www.s
   - Causal Loop Diagram
   - Stock and Flow Diagram
 - save as file and load it
-- export as image file and pdf
+- export as image file
 - import csv file
 - undo and redo
-- find loops
-- find architypes
+- find and mark loops
+- find and mark archetypes
 - auto poistion
 
 With [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next-js), it uses React.js framework Next.js to build static web site and applications for Windows, Linux, and MacOS. It will be able to build mobile application after [Tauri 2.0](https://beta.tauri.app/blog/tauri-2-0-0-beta/) released.
 
 Its development environment comprises:
 
-- TDD - [React Testing Library with Jest](https://www.freecodecamp.org/news/how-to-setup-react-testing-library-with-nextjs/)
-- documentation - [Docusaurus with Typedoc](https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/docusaurus-plugin-typedoc)
-- CDD - [Storybook With TailwindCSS](https://dev.to/lico/nextjs-using-tailwind-with-storybook-5aie)
+- unit test for TDD - [React Testing Library with Jest](https://www.freecodecamp.org/news/how-to-setup-react-testing-library-with-nextjs/)
+- documentation for development and source code - [Docusaurus with Typedoc](https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/docusaurus-plugin-typedoc)
+- UI component viewer for CDD - [Storybook With TailwindCSS](https://dev.to/lico/nextjs-using-tailwind-with-storybook-5aie)
 - E2E test and BDD - [Cypress](https://docs.cypress.io/guides/tooling/typescript-support) with [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
 - i18n - [i18n with static export](https://github.com/martinkr/next-export-i18n)
 - check before git commit and push - [pre-commit](https://pre-commit.com/)
