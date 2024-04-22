@@ -1,16 +1,30 @@
 # system-dynamics-tool
 
-This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next-js) project with:
+This is a cross-platform application to draw [System Dynamics Map](https://www.systems-thinking.org/). It is under construction. Its features will comprise:
 
-- [React Testing Library with Jest](https://www.freecodecamp.org/news/how-to-setup-react-testing-library-with-nextjs/)
-- [Docusaurus with Typedoc](https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/docusaurus-plugin-typedoc)
-- [Storybook With TailwindCSS](https://dev.to/lico/nextjs-using-tailwind-with-storybook-5aie)
-- [Cypress](https://docs.cypress.io/guides/tooling/typescript-support)
-- [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
-- [i18n](https://github.com/martinkr/next-export-i18n)
-- [pre-commit](https://pre-commit.com/)
-  - [prettier](https://prettier.io/docs/en/precommit.html)
-  - [commitizen](https://commitizen-tools.github.io/commitizen/getting_started/#integration-with-pre-commit) using [conventional commits](https://www.conventionalcommits.org/)
+- drawing and styling
+  - Causal Loop Diagram
+  - Stock and Flow Diagram
+- save as file and load it
+- export as image file and pdf
+- import csv file
+- undo and redo
+- find loops
+- find architypes
+- auto poistion
+
+With [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next-js), it uses React.js framework Next.js to build static web site and applications for Windows, Linux, and MacOS. It will be able to build mobile application after [Tauri 2.0](https://beta.tauri.app/blog/tauri-2-0-0-beta/) released.
+
+Its development environment comprises:
+
+- TDD - [React Testing Library with Jest](https://www.freecodecamp.org/news/how-to-setup-react-testing-library-with-nextjs/)
+- documentation - [Docusaurus with Typedoc](https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/docusaurus-plugin-typedoc)
+- CDD - [Storybook With TailwindCSS](https://dev.to/lico/nextjs-using-tailwind-with-storybook-5aie)
+- E2E test and BDD - [Cypress](https://docs.cypress.io/guides/tooling/typescript-support) with [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
+- i18n - [i18n with static export](https://github.com/martinkr/next-export-i18n)
+- check before git commit and push - [pre-commit](https://pre-commit.com/)
+  - format - [prettier](https://prettier.io/docs/en/precommit.html)
+  - commit message whether following [conventional commits](https://www.conventionalcommits.org/) - [commitizen](https://commitizen-tools.github.io/commitizen/getting_started/#integration-with-pre-commit)
 
 ## Prerequisites
 
@@ -21,8 +35,7 @@ This is a [Tauri Next.js](https://tauri.app/v1/guides/getting-started/setup/next
 Initialize pre-commit
 
 ```bash
-pre-commit install
-pre-commit install --hook-type commit-msg --hook-type pre-push
+pre-commit install; pre-commit install --hook-type commit-msg --hook-type pre-push
 ```
 
 Initialize npm
@@ -45,27 +58,24 @@ or
 npm run tauri dev
 ```
 
-Build static web
+Build static web. The built static web site is located at out.
 
 ```bash
 npm run build
 ```
 
-Build app
+Build app. The built execution file is located at sif-tauri/target/release.
 
 ```bash
 npm run tauri build
 ```
-
-The built execution file is located at ./sif-tauri/target/release
 
 ## Document
 
 Initialize docusaurus
 
 ```bash
-cd docusaurus
-npm i
+cd docusaurus；npm i
 ```
 
 Read document
@@ -88,7 +98,7 @@ UI Component
 npm run storybook dev -- -p 6006
 ```
 
-BDD
+E2E and BDD
 
 ```bash
 npm run cypress open
