@@ -14,7 +14,9 @@ For drawing [System Map](https://www.systems-thinking.org/)
   - New
   - Save
   - Load
-  - Save As ...
+  - Save As
+  - Import
+  - Export
 - Edit
   - Undo
   - Redo

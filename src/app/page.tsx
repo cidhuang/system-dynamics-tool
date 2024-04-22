@@ -54,6 +54,16 @@ function HomeImp() {
           handler: handlerMenuItem,
           arg: "Save As",
         },
+        {
+          label: t("Import"),
+          handler: handlerMenuItem,
+          arg: "Import",
+        },
+        {
+          label: t("Export"),
+          handler: handlerMenuItem,
+          arg: "Export",
+        },
       ],
     },
     {
