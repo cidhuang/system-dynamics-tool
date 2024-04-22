@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Notes
+# Plan
 
 For drawing [System Map](https://www.systems-thinking.org/)
 
