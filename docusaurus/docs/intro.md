@@ -12,38 +12,31 @@ For drawing [System Map](https://www.systems-thinking.org/)
 ====
 Docusaurus
 Cypress
-Cucumber
-;
+Cucumber;
 
 **:= Frontend
 ====
 TypeScript
 React.js
 Next.js
-** SSG
-** Router
-** Framework
 TailwindCSS
 Redux
 Tauri
-Typedoc
-next-export-i18n
-;
+next-export-i18n;
 
 
 
-***:= Components
+***:= UI Component
 ====
 useReducer
-Storybook
-;
+Storybook;
 
 
-****:= Testing
+***:= Library
 ====
 React testing library
 Jest
-;
+Typedoc;
 
 /'
 **:= To Do
@@ -127,6 +120,9 @@ TanStac Query
 - Edit
   - Undo
   - Redo
+- View
+  - Zoom In
+  - Zoom Out
 - Tool
   - Find Loops
   - Find Archetypes

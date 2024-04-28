@@ -9,6 +9,7 @@ This is a cross-platform application to draw [System Dynamics Map](https://www.s
 - export as image file
 - import csv file
 - undo and redo
+- Zoom In and Zoom Out
 - find and mark loops
 - find and mark archetypes
 - auto poistion
@@ -25,6 +26,41 @@ Its development environment comprises:
 - check before git commit and push - [pre-commit](https://pre-commit.com/)
   - format - [prettier](https://prettier.io/docs/en/precommit.html)
   - commit message whether following [conventional commits](https://www.conventionalcommits.org/) - [commitizen](https://commitizen-tools.github.io/commitizen/getting_started/#integration-with-pre-commit)
+
+```plantuml
+@startmindmap Ecosystem
+*:= System Dynamics Tool
+====
+Docusaurus
+Cypress
+Cucumber;
+
+**:= Frontend
+====
+TypeScript
+React.js
+Next.js
+TailwindCSS
+Redux
+Tauri
+next-export-i18n;
+
+
+
+***:= UI Component
+====
+useReducer
+Storybook;
+
+
+***:= Library
+====
+React testing library
+Jest
+Typedoc;
+
+@endmindmap
+```
 
 ## Prerequisites
 
