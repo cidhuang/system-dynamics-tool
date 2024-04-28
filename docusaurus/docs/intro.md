@@ -6,7 +6,114 @@ sidebar_position: 1
 
 For drawing [System Map](https://www.systems-thinking.org/)
 
-![ecosystem](./ecosystem.png)
+```plantuml
+@startmindmap Ecosystem
+*:= System Dynamics Tool
+====
+Docusaurus
+Cypress
+Cucumber
+;
+
+**:= Frontend
+====
+TypeScript
+React.js
+Next.js
+** SSG
+** Router
+** Framework
+TailwindCSS
+Redux
+Tauri
+Typedoc
+next-export-i18n
+;
+
+
+
+***:= Components
+====
+useReducer
+Storybook
+;
+
+
+****:= Testing
+====
+React testing library
+Jest
+;
+
+/'
+**:= To Do
+====
+DDD
+DevOps
+
+;
+
+***:= Frontend
+====
+;
+
+****:= Form
+====
+Formik
+React Hook Form
+;
+
+****:= UI Component Libraries
+====
+Material UI
+Chakra UI
+;
+
+****:= Animation
+====
+React Spring
+Framer Motion
+;
+
+****:= Data Visualization
+====
+Victory
+React Chartjs 2
+Recharts
+;
+
+****:= Table
+====
+Tanstack table
+;
+
+****:= Others
+====
+Drag & Drop
+React Dropzone for File Upload
+Firebase for Authentication
+;
+
+***:= Devtools
+====
+React Developer Tools
+Redux devtools
+Testing Playground
+React Hook Form DevTools
+Tanstack query devtools
+;
+
+***:= Backend
+====
+;
+
+****:= Server State Management
+====
+TanStac Query
+;
+'/
+@endmindmap
+```
 
 ## Commands
 
@@ -114,10 +221,6 @@ Derived Concepts:
 
 - shape: cloud
 - from: [ Flow ]
-
-## Interaction
-
-![ui-fsm](./ui-fsm.png)
 
 ## Loop
 

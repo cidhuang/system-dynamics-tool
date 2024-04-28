@@ -28,6 +28,7 @@
     "@docusaurus/tsconfig": "3.2.0",
     "@docusaurus/types": "3.2.0",
     "docusaurus-plugin-typedoc": "^0.22.0",
+    "remark-kroki": "^0.3.6",
     "typedoc": "^0.25.12",
     "typedoc-plugin-markdown": "^3.17.1",
     "typescript": "~5.2.2"

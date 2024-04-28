@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import { remarkKroki } from "remark-kroki";
 
 const config: Config = {
   title: "System Dynamics Tool",
@@ -34,6 +35,16 @@ const config: Config = {
       "classic",
       {
         docs: {
+          remarkPlugins: [
+            [
+              remarkKroki,
+              {
+                server: "https://kroki.io",
+                alias: ["plantuml"],
+                target: "mdx3",
+              },
+            ],
+          ],
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -105,7 +116,7 @@ const config: Config = {
         out: "code",
         sidebar: {
           categoryLabel: "Code",
-          position: 100,
+          position: 200,
         },
       },
     ],
