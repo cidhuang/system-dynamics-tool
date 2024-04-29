@@ -82,6 +82,21 @@ function HomeImp() {
       ],
     },
     {
+      label: t("View"),
+      items: [
+        {
+          label: t("Zoom In"),
+          handler: handlerMenuItem,
+          arg: "Zoom In",
+        },
+        {
+          label: t("Zoom Out"),
+          handler: handlerMenuItem,
+          arg: "Zoom Out",
+        },
+      ],
+    },
+    {
       label: t("Tool"),
       items: [
         {
