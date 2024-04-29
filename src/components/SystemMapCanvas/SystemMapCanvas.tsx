@@ -1,6 +1,6 @@
 "use client";
 
-import { Application, Renderer } from "pixi.js";
+import { Text, Application, type ICanvas } from "pixi.js";
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Stage } from "@pixi/react";
 
@@ -19,50 +19,48 @@ interface SystemMapCanvasProps {
 }
 
 export const SystemMapCanvas = ({ mode, variables }: SystemMapCanvasProps) => {
-  const [app, setApp] = useState<Application<Renderer<HTMLCanvasElement>>>();
+  const [app, setApp] = useState<Application<ICanvas>>();
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
+  const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
 
   useEffect(() => {
     if (app === undefined || app === null) {
       return;
     }
 
-    if (app.renderer === undefined || app.renderer === null) {
-      return;
-    }
-
-    if (app.renderer.view === undefined || app.renderer.view === null) {
-      return;
-    }
-
-    const view = app.renderer.view as unknown as HTMLElement;
+    const view = app.view as unknown as HTMLElement;
 
     setOffset({ x: view.offsetLeft ?? 0, y: view.offsetTop ?? 0 });
-  }, [app, app?.renderer?.view]);
+  }, [app?.view]);
 
   function handleMouseDown(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
-    console.log(e);
+    //console.log(e);
+
+    if (app) {
+      //app?.stage.scale.set(2,3);
+      app?.stage.position.set(50, 50);
+    }
   }
 
   function handleMouseMove(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
-    console.log(e);
+    //console.log(e);
   }
 
   function handleMouseUp(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
-    console.log(e);
+    //console.log(e);
   }
 
   function handleDoubleClick(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
-    console.log(e);
+    //console.log(e);
   }
 
   function handleClick(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
-    console.log(e);
+    //console.log(e);
   }
 
   function handleContextMenu(event: SyntheticEvent) {
