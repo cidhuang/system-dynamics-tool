@@ -27,41 +27,6 @@ Its development environment comprises:
   - format - [prettier](https://prettier.io/docs/en/precommit.html)
   - commit message whether following [conventional commits](https://www.conventionalcommits.org/) - [commitizen](https://commitizen-tools.github.io/commitizen/getting_started/#integration-with-pre-commit)
 
-```plantuml
-@startmindmap Ecosystem
-*:= System Dynamics Tool
-====
-Docusaurus
-Cypress
-Cucumber;
-
-**:= Frontend
-====
-TypeScript
-React.js
-Next.js
-TailwindCSS
-Redux
-Tauri
-next-export-i18n;
-
-
-
-***:= UI Component
-====
-useReducer
-Storybook;
-
-
-***:= Library
-====
-React testing library
-Jest
-Typedoc;
-
-@endmindmap
-```
-
 ## Prerequisites
 
 [Install Rust](https://tauri.app/v1/guides/getting-started/prerequisites)
