@@ -1,12 +1,5 @@
 import "./SystemMapCanvasMode.css";
-
-export enum ESystemMapCanvasMode {
-  Change,
-  AddVariable,
-  AddLink,
-  AddStock,
-  AddFlow,
-}
+import { ESystemMapCanvasMode } from "./types";
 
 export const SystemMapCanvasMode = ({
   label,

@@ -6,17 +6,15 @@ import { useTranslation } from "next-export-i18n";
 import { Variable } from "@/lib/types";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
-import {
-  SystemMapCanvasMode,
-  ESystemMapCanvasMode,
-} from "@/components/SystemMapCanvas/SystemMapCanvasMode";
+import { SystemMapCanvasMode } from "@/components/SystemMapCanvas/SystemMapCanvasMode";
 import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
+import { ESystemMapCanvasMode } from "@/components/SystemMapCanvas/types";
 
 function HomeImp() {
   const { t } = useTranslation();
 
   const [mode, setMode] = useState<ESystemMapCanvasMode>(
-    ESystemMapCanvasMode.Change,
+    ESystemMapCanvasMode.MoveShapeItem,
   );
   const variables = new Array<Variable>();
 
@@ -121,7 +119,7 @@ function HomeImp() {
   const language = t("__language__");
 
   const modes = [
-    { label: t("Change"), mode: ESystemMapCanvasMode.Change },
+    { label: t("Move / Shape"), mode: ESystemMapCanvasMode.MoveShapeItem },
     { label: t("Add Variable"), mode: ESystemMapCanvasMode.AddVariable },
     { label: t("Add Link"), mode: ESystemMapCanvasMode.AddLink },
     { label: t("Add Stock"), mode: ESystemMapCanvasMode.AddStock },
