@@ -27,7 +27,6 @@ export interface IStateCanvas {
   mode: ESystemMapCanvasMode;
   state: EStateCanvas;
   leftTop: Point;
-  scale: Point;
   xy0: Point;
 }
 

@@ -15,21 +15,45 @@ import { EStateCanvas, ESystemMapCanvasMode } from "./types";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
+  zoomIn: number;
+  zoomOut: number;
   variables: Variable[];
   onVariablesChange: (variables: Variable[]) => void;
 }
 
-export const SystemMapCanvas = ({ mode, variables }: SystemMapCanvasProps) => {
+export const SystemMapCanvas = ({
+  mode,
+  zoomIn,
+  zoomOut,
+  variables,
+}: SystemMapCanvasProps) => {
   const [app, setApp] = useState<Application<ICanvas>>();
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
+
+  const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
     state: EStateCanvas.Idle,
     leftTop: { x: 0, y: 0 },
-    scale: { x: 1, y: 1 },
     xy0: { x: 0, y: 0 },
   });
+
+  useEffect(() => {
+    if (app === undefined || app === null) {
+      return;
+    }
+
+    const view = app.view as unknown as HTMLElement;
+    if (view === undefined || view === null) {
+      return;
+    }
+    view.addEventListener("wheel", handleWheel);
+
+    return () => {
+      view.removeEventListener("wheel", handleWheel);
+    };
+  }, [handleWheel]);
 
   useEffect(() => {
     if (app === undefined || app === null) {
@@ -56,9 +80,29 @@ export const SystemMapCanvas = ({ mode, variables }: SystemMapCanvasProps) => {
     dispatch({ type: "Mode", mode: mode });
   }, [mode]);
 
+  function handleZoomIn() {
+    setScale({ x: scale.x * 1.25, y: scale.y * 1.25 });
+  }
+
+  function handleZoomOut() {
+    setScale({ x: scale.x * 0.8, y: scale.y * 0.8 });
+  }
+
+  useEffect(() => {
+    handleZoomIn();
+  }, [zoomIn]);
+
+  useEffect(() => {
+    handleZoomOut();
+  }, [zoomOut]);
+
   useEffect(() => {
     app?.stage.position.set(state.leftTop.x, state.leftTop.y);
   }, [state.leftTop]);
+
+  useEffect(() => {
+    app?.stage.scale.set(scale.x, scale.y);
+  }, [scale]);
 
   function x(x: number) {
     const left = offset?.x ?? 0;
@@ -87,12 +131,6 @@ export const SystemMapCanvas = ({ mode, variables }: SystemMapCanvasProps) => {
       default:
         break;
     }
-    /*
-    if (app) {
-      //app?.stage.scale.set(2,3);
-      app?.stage.position.set(50, 50);
-    }
-    */
   }
 
   function handleMouseMove(event: SyntheticEvent) {
@@ -143,6 +181,19 @@ export const SystemMapCanvas = ({ mode, variables }: SystemMapCanvasProps) => {
   function handleContextMenu(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
     e.preventDefault();
+  }
+
+  function handleWheel(event: WheelEvent) {
+    const e = event as unknown as WheelEvent;
+    e.preventDefault();
+
+    if (e.deltaY < 0) {
+      handleZoomIn();
+    }
+
+    if (e.deltaY > 0) {
+      handleZoomOut();
+    }
   }
 
   return (

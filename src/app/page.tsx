@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useTranslation } from "next-export-i18n";
 
-import { Variable } from "@/lib/types";
+import { Point, Variable } from "@/lib/types";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
 import { SystemMapCanvasMode } from "@/components/SystemMapCanvas/SystemMapCanvasMode";
@@ -16,6 +16,8 @@ function HomeImp() {
   const [mode, setMode] = useState<ESystemMapCanvasMode>(
     ESystemMapCanvasMode.MoveShapeItem,
   );
+  const [zoomIn, setZoomIn] = useState<number>(1);
+  const [zoomOut, setZoomOut] = useState<number>(1);
   const variables = new Array<Variable>();
 
   function handleVariablesChange(variables: Variable[]): void {}
@@ -26,6 +28,14 @@ function HomeImp() {
 
   function handlerMenuItem(arg: any) {
     console.log("handlerMenuItem", arg);
+  }
+
+  function handleZoomInOut(arg: any) {
+    if (arg == "Zoom In") {
+      setZoomIn(zoomIn + 1);
+    } else {
+      setZoomOut(zoomOut + 1);
+    }
   }
 
   const menus = [
@@ -84,12 +94,12 @@ function HomeImp() {
       items: [
         {
           label: t("Zoom In"),
-          handler: handlerMenuItem,
+          handler: handleZoomInOut,
           arg: "Zoom In",
         },
         {
           label: t("Zoom Out"),
-          handler: handlerMenuItem,
+          handler: handleZoomInOut,
           arg: "Zoom Out",
         },
       ],
@@ -146,6 +156,8 @@ function HomeImp() {
       </Suspense>
       <SystemMapCanvas
         mode={mode}
+        zoomIn={zoomIn}
+        zoomOut={zoomOut}
         variables={variables}
         onVariablesChange={handleVariablesChange}
       />
