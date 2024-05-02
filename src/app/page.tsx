@@ -14,7 +14,7 @@ function HomeImp() {
   const { t } = useTranslation();
 
   const [mode, setMode] = useState<ESystemMapCanvasMode>(
-    ESystemMapCanvasMode.MoveShapeItem,
+    ESystemMapCanvasMode.ReadOnly,
   );
   const [zoomIn, setZoomIn] = useState<number>(1);
   const [zoomOut, setZoomOut] = useState<number>(1);
@@ -129,6 +129,7 @@ function HomeImp() {
   const language = t("__language__");
 
   const modes = [
+    { label: t("Read Only"), mode: ESystemMapCanvasMode.ReadOnly },
     { label: t("Move / Shape"), mode: ESystemMapCanvasMode.MoveShapeItem },
     { label: t("Add Variable"), mode: ESystemMapCanvasMode.AddVariable },
     { label: t("Add Link"), mode: ESystemMapCanvasMode.AddLink },

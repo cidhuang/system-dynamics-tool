@@ -1,11 +1,9 @@
 import { Point } from "@/lib/types";
 
-import { IStateCanvas, ESystemMapCanvasMode } from "./types";
+import { IStateCanvas, ESystemMapCanvasMode, StateReducers } from "./types";
 
-import {
-  StateReducers,
-  reducers as reducerModeMoveShapeItem,
-} from "./reducerMouseModeMoveShapeItem";
+import { reducers as reducerReadOnly } from "./reducerMouseReadOnly";
+import { reducers as reducerMoveShapeItem } from "./reducerMouseMoveShapeItem";
 
 const mouse = [
   "MouseLeftDown",
@@ -18,7 +16,8 @@ export const isMouse = (x: any): x is Mouse => mouse.includes(x);
 export type ActionMouse = { type: Mouse; xy: Point; item: string };
 
 const reducersMode: Record<number, StateReducers> = {
-  [ESystemMapCanvasMode.MoveShapeItem]: reducerModeMoveShapeItem,
+  [ESystemMapCanvasMode.ReadOnly]: reducerReadOnly,
+  [ESystemMapCanvasMode.MoveShapeItem]: reducerMoveShapeItem,
   /*
   [ESystemMapCanvasMode.AddVariable]: reducerModeAddVariable,
   [ESystemMapCanvasMode.AddStock]: reducerModeAddStock,

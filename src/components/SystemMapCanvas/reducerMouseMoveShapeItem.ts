@@ -1,16 +1,14 @@
 import { Point } from "@/lib/types";
-import { IStateCanvas, EStateCanvas } from "./types";
+import {
+  IStateCanvas,
+  EStateCanvas,
+  MouseReducers,
+  StateReducers,
+} from "./types";
 import {
   reducerMovingCanvasMove,
   reducerMovingCanvasUp,
 } from "./reducerMouseCommon";
-
-export type MouseReducers = Record<
-  string,
-  (state: IStateCanvas, xy: Point, item: string) => IStateCanvas
->;
-
-export type StateReducers = Record<number, MouseReducers>;
 
 function reducerIdleDown(state: IStateCanvas, xy: Point, item: string) {
   if (item === "") {

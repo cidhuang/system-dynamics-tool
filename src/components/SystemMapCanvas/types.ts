@@ -30,6 +30,13 @@ export interface IStateCanvas {
   xy0: Point;
 }
 
+export type MouseReducers = Record<
+  string,
+  (state: IStateCanvas, xy: Point, item: string) => IStateCanvas
+>;
+
+export type StateReducers = Record<number, MouseReducers>;
+
 // Actions
 /*
 export type MouseLeftDown = { type: "MouseLeftDown"; xy: Point; item: string };
