@@ -1,12 +1,9 @@
 import { Point } from "@/lib/types";
 
 export enum ESystemMapCanvasMode {
-  ReadOnly,
-  MoveShapeItem,
-  AddVariable,
-  AddLink,
-  AddStock,
-  AddFlow,
+  View,
+  Edit,
+  AddLinkFlow,
 }
 
 export enum EStateCanvas {
@@ -15,12 +12,8 @@ export enum EStateCanvas {
   MovingVariable,
   MovingStock,
   ShapingLink,
-  MovingValve,
-  MovingSource,
-  MovingSink,
-  DragginLink,
-  DraggingFlowFromSource,
-  DraggingFlowFromStock,
+  ShapingFlow,
+  DragginNewLinkFlow,
 }
 
 export interface IStateCanvas {
