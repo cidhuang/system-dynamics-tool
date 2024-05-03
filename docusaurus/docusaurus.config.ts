@@ -111,13 +111,24 @@ const config: Config = {
           "../src/components/**/*.ts",
           "../src/lib/**/*.ts",
         ],
+        readme: "none",
+        indexFormat: "table",
+        disableSources: true,
         tsconfig: "../tsconfig.json",
         watch: true,
-        out: "code",
+        out: "./docs/code",
         sidebar: {
+          hideable: true,
+          pretty: true,
           categoryLabel: "Code",
           position: 200,
         },
+        /*
+        textContentMappings: {
+          "title.indexPage": "TypeDoc API",
+          "title.memberPage": "{name}",
+        },
+        */
       },
     ],
   ],
