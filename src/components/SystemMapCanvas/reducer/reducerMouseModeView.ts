@@ -1,4 +1,4 @@
-import { Point } from "@/lib/types";
+import { Point } from "@/components/SystemMapCanvas/lib/types";
 import {
   IStateCanvas,
   EStateCanvas,

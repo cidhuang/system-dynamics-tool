@@ -1,4 +1,4 @@
-import { Point } from "@/lib/types";
+import { Point } from "@/components/SystemMapCanvas/lib/types";
 
 import { IStateCanvas, ESystemMapCanvasMode, StateReducers } from "./types";
 
@@ -11,6 +11,7 @@ const mouse = [
   "MouseLeftUp",
   "MouseLeftClick",
   "MouseMove",
+  "MouseLeftDoubleClick",
 ] as const;
 type Mouse = (typeof mouse)[number];
 export const isMouse = (x: any): x is Mouse => mouse.includes(x);

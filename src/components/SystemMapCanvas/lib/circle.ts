@@ -77,13 +77,3 @@ export function getOrientation(p1: Point, p2: Point, p3: Point): EOrientation {
 export function toDegree(angle: number): number {
   return (angle * 180) / Math.PI;
 }
-/*
-export function indexOf(array: any[], name: string): number {
-  for (let i = 0; i < array.length; i++) {
-    if (array[i].name === name) {
-      return i;
-    }
-  }
-  return -1;
-}
-*/

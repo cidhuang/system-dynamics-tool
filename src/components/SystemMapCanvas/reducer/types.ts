@@ -1,4 +1,4 @@
-import { Point } from "@/lib/types";
+import { Point, Variable } from "@/components/SystemMapCanvas/lib/types";
 
 export enum ESystemMapCanvasMode {
   View,
@@ -21,6 +21,7 @@ export interface IStateCanvas {
   state: EStateCanvas;
   leftTop: Point;
   xy0: Point;
+  variables: Variable[];
 }
 
 export type MouseReducers = Record<
@@ -29,21 +30,3 @@ export type MouseReducers = Record<
 >;
 
 export type StateReducers = Record<number, MouseReducers>;
-
-// Actions
-/*
-export type MouseLeftDown = { type: "MouseLeftDown"; xy: Point; item: string };
-export type MouseLeftUp = { type: "MouseLeftUp"; xy: Point; item: string };
-export type MouseLeftClick = {
-  type: "MouseLeftClick";
-  xy: Point;
-  item: string;
-};
-export type MouseMove = { type: "MouseMove"; xy: Point; item: string };
-
-export type MouseActions =
-  | MouseLeftDown
-  | MouseLeftUp
-  | MouseLeftClick
-  | MouseMove;
-*/

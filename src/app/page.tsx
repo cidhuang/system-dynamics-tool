@@ -3,12 +3,12 @@
 import { useState, Suspense } from "react";
 import { useTranslation } from "next-export-i18n";
 
-import { Point, Variable } from "@/lib/types";
+import { Point, Variable } from "@/components/SystemMapCanvas/lib/types";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
 import { SystemMapCanvasMode } from "@/components/SystemMapCanvas/SystemMapCanvasMode";
 import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
-import { ESystemMapCanvasMode } from "@/components/SystemMapCanvas/types";
+import { ESystemMapCanvasMode } from "@/components/SystemMapCanvas/reducer/types";
 
 function HomeImp() {
   const { t } = useTranslation();

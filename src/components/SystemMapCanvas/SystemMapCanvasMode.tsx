@@ -1,5 +1,5 @@
 import "./SystemMapCanvasMode.css";
-import { ESystemMapCanvasMode } from "./types";
+import { ESystemMapCanvasMode } from "./reducer/types";
 
 export const SystemMapCanvasMode = ({
   label,
