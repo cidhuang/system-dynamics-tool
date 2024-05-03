@@ -18,8 +18,7 @@ sidebar_position: 2
 
 down on background and move:
 
-- Add Flow: creating Flow, up on Stock, edit Flow
-- else: move canvas
+- all: move canvas
 
 down on Variable and move:
 
@@ -55,7 +54,7 @@ click on items:
 ## State Diagram
 
 ```plantuml
-@startuml SystemMap
+@startuml Mode
 hide empty description
 
 state "Edit (Item) Window" as editWindow {
@@ -70,9 +69,8 @@ state "Mode" as editMode {
   state "Read Only" as modeReadOnly #yellow
   state "Move / Shape (Item)" as modeMoveItem
   state "Add Variable" as modeAddVariable
-  state "Add Link" as modeAddLink
   state "Add Stock" as modeAddStock
-  state "Add Flow" as modeAddFlow
+  state "Add Link / Flow" as modeAddFlow
   state modeChoice <<choice>>
 
   [*] --> modeReadOnly
@@ -83,8 +81,6 @@ state "Mode" as editMode {
 
   modeChoice --> modeAddVariable
   modeAddVariable -up-> modeChoice
-  modeChoice --> modeAddLink
-  modeAddLink -up-> modeChoice
   modeChoice --> modeAddStock
   modeAddStock -up-> modeChoice
   modeChoice --> modeAddFlow
@@ -99,7 +95,7 @@ state "Mode" as editMode {
 ```
 
 ```plantuml
-@startuml SystemMap
+@startuml Read Only
 hide empty description
 
 state "Read Only" as modeReadOnly {
@@ -107,8 +103,8 @@ state "Read Only" as modeReadOnly {
   state "Moving Canvas" as moveCanvas
 
   [*] -> idle
-  idle -[#green]-> moveCanvas : down \n on background
-  moveCanvas -up-> idle : up
+  idle -[#green]> moveCanvas : down \n on background
+  moveCanvas -> idle : up
 
 }
 
@@ -116,7 +112,7 @@ state "Read Only" as modeReadOnly {
 ```
 
 ```plantuml
-@startuml SystemMap
+@startuml Move / Shape (Item)
 hide empty description
 
 state "Move / Shape (Item)" as modeMoveItem {
@@ -125,105 +121,87 @@ state "Move / Shape (Item)" as modeMoveItem {
   state "Moving / Shpaing (Item)" as moveItem : States: \n - Moving Variable (Variable) \n - Moving Stock (Stock) \n - Shaping Link (Link) \n - Shaping Flow (Valve, Source, Sink)
 
   [*] -> idle
-  idle -[#green]-> moveCanvas : down \n on background
-  moveCanvas -up-> idle : up
+  idle -[#green]> moveCanvas : down \n on background
+  moveCanvas -> idle : up
 
   idle -up[#blue]-> moveItem : down \n on (Item)
   moveItem --> idle : up
-
 }
 
 @enduml
 ```
 
 ```plantuml
-@startuml SystemMap
+@startuml Add Variable
 hide empty description
 
 state "Add Variable" as modeAddVariable {
   state "Idle" as idle #yellow
   state "Moving Canvas" as moveCanvas
   state "Moving / Shpaing (Item)" as moveItem : States: \n - Moving Variable (Variable) \n - Moving Stock (Stock) \n - Shaping Link (Link) \n - Shaping Flow (Valve, Source, Sink)
+  state ": create Variable" as addVariable #white ##white
 
   [*] -> idle
-  idle -[#green]-> moveCanvas : down \n on background
-  moveCanvas -up-> idle : up
+  idle -[#green]> moveCanvas : down \n on background
+  moveCanvas -> idle : up
 
   idle -up[#blue]-> moveItem : down \n on (Item)
   moveItem --> idle : up
 
-  idle -[#red]> idle : click \n on background \n : new Variable \n : Edit Variable Window On
+  idle -down[#red]-> addVariable : click \n on background
+  addVariable -up-> idle
 }
 
 @enduml
 ```
 
 ```plantuml
-@startuml SystemMap
+@startuml Add Stock
 hide empty description
 
 state "Add Stock" as modeAddStock {
   state "Idle" as idle #yellow
   state "Moving Canvas" as moveCanvas
   state "Moving / Shpaing (Item)" as moveItem : States: \n - Moving Variable (Variable) \n - Moving Stock (Stock) \n - Shaping Link (Link) \n - Shaping Flow (Valve, Source, Sink)
+  state ": create Stock" as addStock #white ##white
 
   [*] -> idle
-  idle -[#green]-> moveCanvas : down \n on background
-  moveCanvas -up-> idle : up
+  idle -[#green]> moveCanvas : down \n on background
+  moveCanvas -> idle : up
 
   idle -up[#blue]-> moveItem : down \n on (Item)
   moveItem --> idle : up
 
-  idle -[#red]-> idle : click \n on background \n : new Stock \n : Edit Stock Window On
+  idle -[#red]-> addStock : click \n on background
+  addStock -up-> idle
 }
 
 @enduml
 ```
 
 ```plantuml
-@startuml SystemMap
+@startuml Add Link / Flow
 hide empty description
 
-state "Add Link" as modeAddLink {
+state "Add Link / Flow" as modeAddLinkFlow {
   state "Idle" as idle #yellow
   state "Moving Canvas" as moveCanvas
   state "Moving / Shpaing (Item)" as moveItem : States: \n - Shaping Link (Link) \n - Shaping Flow (Valve, Source, Sink)
   state "Dragging Link" as dragLink
+  state "Dragging Flow" as dragFlowStock
 
   [*] -> idle
-  idle -[#green]-> moveCanvas : down \n on background
-  moveCanvas -up-> idle : up
+  idle -right[#green]> moveCanvas : down \n on background
+  moveCanvas -> idle : up
 
   idle -up[#blue]-> moveItem : down \n on (Item)
   moveItem --> idle : up
 
-  idle -[#red]> dragLink : down \n on Variable / Stock
-  dragLink -> idle : up \n on Variable / Valve \n :new Link \n : Edit Link Window on
-}
+  idle -[#red]-> dragLink : down \n on Variable / Stock
+  dragLink -up-> idle : up \n on Variable / Valve \n :create Link
 
-@enduml
-```
-
-```plantuml
-@startuml SystemMap
-hide empty description
-
-state "Add Flow" as modeAddFlow {
-  state "Idle" as idle #yellow
-  state "Moving / Shpaing (Item)" as moveItem : States: \n - Moving Variable (Variable) \n - Shaping Link (Link) \n - Shaping Flow (Valve, Source, Sink)
-  state "Dragging Flow \n From Source" as dragFlowSource
-  state "Dragging Flow \n From Stock" as dragFlowStock
-
-  [*] -> idle
-  idle -[#red]-> dragFlowSource : down \n on background
-  dragFlowSource -up-> idle : up \n on Stock \n : new Flow \n : Edit Flow Window on
-
-  idle -up[#blue]-> moveItem : down \n on (Item)
-  moveItem --> idle : up
-
-  idle -[#red]> dragFlowStock : down \n on Stock
-  dragFlowStock -> idle : up \n on Stock / background \n : new Flow \n : Edit Flow Window on
-
+  idle -[#red]--> dragFlowStock : down \n on Stock
+  dragFlowStock -up--> idle : up \n on Stock / background \n : create Flow
 
 }
 
