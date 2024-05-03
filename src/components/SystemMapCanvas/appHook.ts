@@ -50,6 +50,8 @@ export function useApp(): [
     return () => {
       view.removeEventListener("wheel", handleWheel);
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleWheel]);
 
   useEffect(() => {
@@ -71,10 +73,14 @@ export function useApp(): [
     text.style.fontWeight = "normal";
 
     app.stage.addChild(text);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [app?.view]);
 
   useEffect(() => {
     app?.stage.scale.set(scale.x, scale.y);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scale]);
 
   const x = (x: number): number => {

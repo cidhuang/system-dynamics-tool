@@ -41,18 +41,26 @@ export const SystemMapCanvas = ({
 
   useEffect(() => {
     handleZoomIn();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomIn]);
 
   useEffect(() => {
     handleZoomOut();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoomOut]);
 
   useEffect(() => {
     app?.stage.position.set(state.leftTop.x, state.leftTop.y);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.leftTop]);
 
   useEffect(() => {
     onVariablesChange(state.variables);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.variables]);
 
   function handleMouseDown(event: SyntheticEvent) {
