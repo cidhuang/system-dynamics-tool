@@ -3,7 +3,7 @@ import {
   getOrientation,
   EOrientation,
   toDegree,
-} from "../src/lib/circle";
+} from "../src/components/SystemMapCanvas/lib/circle";
 
 describe("Check getCircle", () => {
   test("Check the result of getCircle", () => {
