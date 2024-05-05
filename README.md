@@ -23,21 +23,13 @@ Its development environment comprises:
 - UI component viewer for CDD - [Storybook With TailwindCSS](https://dev.to/lico/nextjs-using-tailwind-with-storybook-5aie)
 - E2E test and BDD - [Cypress](https://docs.cypress.io/guides/tooling/typescript-support) with [Cucumber](https://github.com/badeball/cypress-cucumber-preprocessor)
 - i18n - [i18n with static export](https://github.com/martinkr/next-export-i18n)
-- check before git commit and push - [pre-commit](https://pre-commit.com/)
+- check before git commit and push - [husky](https://typicode.github.io/husky/get-started.html) and [lint-staged](https://github.com/lint-staged/lint-staged#configuration)
   - format - [prettier](https://prettier.io/docs/en/precommit.html)
-  - commit message whether following [conventional commits](https://www.conventionalcommits.org/) - [commitizen](https://commitizen-tools.github.io/commitizen/getting_started/#integration-with-pre-commit)
+  - commit message whether following [conventional commits](https://www.conventionalcommits.org/) - [commitlint](https://commitlint.js.org/guides/getting-started.html)
 
 ## Prerequisites
 
 [Install Rust](https://tauri.app/v1/guides/getting-started/prerequisites)
-
-[Install pre-commit](https://pre-commit.com/)
-
-Initialize pre-commit
-
-```bash
-pre-commit install; pre-commit install --hook-type commit-msg --hook-type pre-push
-```
 
 Initialize npm
 
