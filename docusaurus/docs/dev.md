@@ -9,7 +9,6 @@ sidebar_position: 10
 | Tool       | Folder                          | Description                            |
 | ---------- | ------------------------------- | -------------------------------------- |
 | jest       | \_\_tests\_\_                   | TDD                                    |
-| cypress    | cypress/e2e                     | E2E test and BDD                       |
 | docusaurus | docusaurus                      | documentation                          |
 | docusaurus | docusaurus/build                | built documentation static site        |
 | docusaurus | docusaurus/docs                 | documentation pages in markdown format |

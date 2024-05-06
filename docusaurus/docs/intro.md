@@ -11,7 +11,6 @@ For drawing [System Map](https://www.systems-thinking.org/)
 *:= System Dynamics Tool
 ====
 Docusaurus
-Cypress
 Cucumber;
 
 **:= Frontend

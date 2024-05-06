@@ -3,7 +3,7 @@
     //"lib": ["dom", "dom.iterable", "esnext"],
     "target": "es5",
     "lib": ["es5", "dom", "dom.iterable", "esnext"],
-    "types": ["cypress", "node"],
+    "types": ["node"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -28,8 +28,6 @@
   "exclude": [
     "node_modules",
     "sif-tauri",
-    "cypress.config.ts",
-    "cypress",
     "docusaurus"
   ]
 }

@@ -13,8 +13,6 @@
     "jest:watch": "jest --watch",
     "storybook:dev": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "cypress:open": "cypress open",
-    "cypress": "cypress",
     "storybook": "storybook",
     "doc": "cd docusaurus && npm run docusaurus",
     "jest": "jest",
@@ -26,10 +24,7 @@
     "*.{ts,tsx,js,jsx,cjs,mjs,vue,css,scss,less,md,mdx}": "prettier --write"
   },
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^20.0.3",
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@pixi/react": "^7.1.2",
-    "cypress": "^13.7.1",
     "next": "14.1.4",
     "pixi.js": "^7.4.2",
     "react": "^18",
