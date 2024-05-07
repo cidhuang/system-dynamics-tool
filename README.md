@@ -21,6 +21,7 @@ Its development environment comprises:
 - unit test for TDD - [React Testing Library with Jest](https://www.freecodecamp.org/news/how-to-setup-react-testing-library-with-nextjs/)
 - documentation for development and source code - [Docusaurus with Typedoc](https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/docusaurus-plugin-typedoc)
 - UI component viewer for CDD - [Storybook With TailwindCSS](https://dev.to/lico/nextjs-using-tailwind-with-storybook-5aie)
+- E2E test and BDD - [Playwright and Cucumber](https://careers.moneyforward.vn/blog/how-our-team-set-up-automation-test-by-playwright-and-cucumber-for-multiple-projects)
 - i18n - [i18n with static export](https://github.com/martinkr/next-export-i18n)
 - check before git commit and push - [husky](https://typicode.github.io/husky/get-started.html) and [lint-staged](https://github.com/lint-staged/lint-staged#configuration)
   - format - [prettier](https://prettier.io/docs/en/precommit.html)
@@ -88,4 +89,16 @@ UI Component
 
 ```bash
 npm run storybook dev -- -p 6006
+```
+
+BDD
+
+```bash
+npm run cucumber
+```
+
+E2E
+
+```bash
+npx playwright test
 ```
