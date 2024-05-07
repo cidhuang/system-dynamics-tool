@@ -17,13 +17,16 @@
     "doc": "cd docusaurus && npm run docusaurus",
     "jest": "jest",
     "prepare": "husky",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "test-storybook": "test-storybook",
+    "cucumber": "cucumber-js test"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,cjs,mjs,vue}": "eslint --fix",
     "*.{ts,tsx,js,jsx,cjs,mjs,vue,css,scss,less,md,mdx}": "prettier --write"
   },
   "dependencies": {
+    "@cucumber/cucumber": "^10.6.0",
     "@pixi/react": "^7.1.2",
     "next": "14.1.4",
     "pixi.js": "^7.4.2",
@@ -34,6 +37,7 @@
     "@chromatic-com/storybook": "^1.2.25",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@playwright/test": "^1.44.0",
     "@storybook/addon-essentials": "^8.0.5",
     "@storybook/addon-interactions": "^8.0.5",
     "@storybook/addon-links": "^8.0.5",
@@ -42,6 +46,7 @@
     "@storybook/nextjs": "^8.0.5",
     "@storybook/react": "^8.0.5",
     "@storybook/test": "^8.0.5",
+    "@storybook/test-runner": "^0.17.0",
     "@tauri-apps/cli": "^1.5.11",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.2",
