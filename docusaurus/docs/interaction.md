@@ -86,7 +86,7 @@ state "Edit" as modeEdit {
   idle -up[#blue]-> moveStock : down \n on Stock
   moveStock --> idle : up
 
-  idle -[#red]-> addVariable : click \n on background
+  idle -[#red]-> addVariable : double click \n on background
   addVariable -up-> idle
 
   idle -[#purple]-> toggleVariableStock : double click \n on Varialble \n / Stock
