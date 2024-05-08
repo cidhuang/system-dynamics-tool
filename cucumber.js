@@ -5,7 +5,7 @@ module.exports = {
     },
     dryRun: false,
     requireModule: ["ts-node/register"],
-    paths: ["tests/features/"],
-    require: ["tests/steps/*.ts"],
+    paths: ["cucumber/features/"],
+    require: ["cucumber/steps/*.ts"],
   },
 };

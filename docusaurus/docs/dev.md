@@ -9,8 +9,8 @@ sidebar_position: 10
 | Tool       | Folder                          | Description                            |
 | ---------- | ------------------------------- | -------------------------------------- |
 | jest       | \_\_tests\_\_                   | TDD                                    |
-| playwright | tests                           | E2E test                               |
-| cucumber   | tests/features, tests/steps     | BDD                                    |
+| playwright | playwright                      | E2E test                               |
+| cucumber   | cucumber                        | BDD                                    |
 | docusaurus | docusaurus                      | documentation                          |
 | docusaurus | docusaurus/build                | built documentation static site        |
 | docusaurus | docusaurus/docs                 | documentation pages in markdown format |

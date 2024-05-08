@@ -77,6 +77,14 @@ Read document
 npm run doc start -- -- --port 8080
 ```
 
+## UI Component
+
+Demo
+
+```bash
+npm run storybook dev -- -p 6006
+```
+
 ## Test
 
 Typescript
@@ -88,7 +96,7 @@ npm run jest -- --watch
 UI Component
 
 ```bash
-npm run storybook dev -- -p 6006
+npm run test-storybook
 ```
 
 BDD
@@ -97,7 +105,7 @@ BDD
 npm run cucumber
 ```
 
-E2E
+E2E test
 
 ```bash
 npx playwright test
