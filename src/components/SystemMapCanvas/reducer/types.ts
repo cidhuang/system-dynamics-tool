@@ -1,14 +1,12 @@
 import { Point, Variable } from "@/components/SystemMapCanvas/lib/types";
 
 export enum ESystemMapCanvasMode {
-  View,
-  Edit,
+  MoveVariableStock,
   AddLinkFlow,
 }
 
 export enum EStateCanvas {
   Idle,
-  MovingCanvas,
   MovingVariable,
   MovingStock,
   ShapingLink,

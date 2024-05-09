@@ -184,7 +184,7 @@ export const SystemMapCanvas = ({
     const X = x(e.clientX);
     const Y = y(e.clientY);
 
-    dispatch({ type: "MouseLeftClick", xy: { x: X, y: Y }, item: "" });
+    //dispatch({ type: "MouseLeftClick", xy: { x: X, y: Y }, item: "" });
   }
 
   function handleContextMenu(event: SyntheticEvent) {
