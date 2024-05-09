@@ -17,7 +17,7 @@ sidebar_position: 2
 ## State Diagram
 
 ```plantuml
-@startuml Mode
+@startuml Interaction
 hide empty description
 
 state "Edit (Item) Window" as editWindow {
@@ -28,63 +28,24 @@ state "Edit (Item) Window" as editWindow {
   editOn -up-> editOff : click \n on background
 }
 
-state "Mode" as editMode {
-  state "View" as modeView #yellow
-  state "Edit" as modeEdit
-  state "Add Link / Flow" as modeAddLinkFlow
-
-  [*] --> modeView
-  modeView -> modeEdit
-  modeEdit -up-> modeView
-
-  modeAddLinkFlow -> modeEdit
-  modeEdit -> modeAddLinkFlow
-  modeView --> modeAddLinkFlow
-  modeAddLinkFlow -up-> modeView
-
-}
-
-@enduml
-```
-
-```plantuml
-@startuml View
-hide empty description
-
-state "View" as modeView {
+state "Common" as common {
   state "Idle" as idle #yellow
-  state "Moving Canvas" as moveCanvas : mouse move
-
-  [*] -> idle
-  idle -[#green]> moveCanvas : down \n on background
-  moveCanvas -> idle : up
-
-}
-
-@enduml
-```
-
-```plantuml
-@startuml Edit
-hide empty description
-
-state "Edit" as modeEdit {
-  state "Idle" as idle #yellow
-  state "Moving Canvas" as moveCanvas : mouse move
-  state "Moving Variable" as moveVariable : mouse move
-  state "Moving Stock" as moveStock : mouse move
+  state "Moving Viewport" as moveViewport : mouse move
+  state "Shaping Link" as shapeLink : mouse move
+  state "Shaping Flow" as shapeFlow : mouse move
   state ": create Variable" as addVariable #white ##white
   state ": toggle Variable \n / Stock" as toggleVariableStock #white ##white
+  state ": change direction" as changeDirection #white ##white
 
   [*] -> idle
-  idle -[#green]-> moveCanvas : down \n on background
-  moveCanvas --> idle : up
+  idle -up[#blue]-> shapeLink : down \n on Link
+  shapeLink --> idle : up
 
-  idle -up[#blue]-> moveVariable : down \n on Variable
-  moveVariable --> idle : up
+  idle -up[#blue]-> shapeFlow : down \n on Flow \n / Valve \n / Source \n / Sink
+  shapeFlow --> idle : up
 
-  idle -up[#blue]-> moveStock : down \n on Stock
-  moveStock --> idle : up
+  idle -up[#green]-> moveViewport : down \n on background
+  moveViewport --> idle : up
 
   idle -[#red]-> addVariable : double click \n on background
   addVariable -up-> idle
@@ -92,66 +53,49 @@ state "Edit" as modeEdit {
   idle -[#purple]-> toggleVariableStock : double click \n on Varialble \n / Stock
   toggleVariableStock -up-> idle
 
-  state "Shaping Link" as shapeLink : mouse move
-  state "Shaping Flow" as shapeFlow : mouse move
-
-  idle -up[#blue]-> shapeLink : down \n on Link
-  shapeLink --> idle : up
-
-  idle -up[#blue]-> shapeFlow : down \n on Flow \n / Valve \n / Source \n / Sink
-  shapeFlow --> idle : up
-
-  state ": change direction" as changeDirection #white ##white
-
   idle -[#purple]-> changeDirection : double click \n on Link \n / Flow
   changeDirection -up-> idle
 
 }
 
-@enduml
-```
+state "Move Variable / Stock Mode" as modeMoveVariableStock {
+  state "Idle" as idle1 #yellow
+  state "Moving Variable" as moveVariable : mouse move
+  state "Moving Stock" as moveStock : mouse move
 
-```plantuml
-@startuml Add Link / Flow
-hide empty description
+  [*] -> idle1
 
-state "Add Link / Flow" as modeAddLinkFlow {
-  state "Idle" as idle #yellow
-  state "Moving Canvas" as moveCanvas : mouse move
-  state "Shaping Link" as shapeLink : mouse move
-  state "Shaping Flow" as shapeFlow : mouse move
+  idle1 -[#blue]-> moveVariable : down \n on Variable
+  moveVariable -up-> idle1 : up
+
+  idle1 -[#blue]-> moveStock : down \n on Stock
+  moveStock -up-> idle1 : up
+
+}
+
+state "Add Link / Flow Mode" as modeAddLinkFlow {
+  state "Idle" as idle2 #yellow
   state "Dragging New \n Link / Flow" as dragNewLinkFlow : mouse move
   state ": create Link" as addLink #white ##white
   state ": create Flow" as addFlow #white ##white
-  state ": change direction" as changeDirection #white ##white
 
+  [*] -> idle2
 
-  [*] -> idle
-  idle -[#green]-> moveCanvas : down \n on background
-  moveCanvas --> idle : up
+  idle2 -[#red]-> dragNewLinkFlow : down \n on Variable \n / Stock
 
-  idle -up[#blue]-> shapeLink : down \n on Link
-  shapeLink --> idle : up
-
-  idle -up[#blue]-> shapeFlow : down \n on Flow \n / Valve \n / Source \n / Sink
-  shapeFlow --> idle : up
-
-  idle -[#red]--> dragNewLinkFlow : down \n on Variable \n / Stock
-  dragNewLinkFlow -up-> addLink : up \n on Variable \n / Valve \n from Variable
-  addLink -up-> idle
+  dragNewLinkFlow -left> addLink : up \n on Variable \n / Valve \n from Variable
+  addLink -up-> idle2
 
   dragNewLinkFlow -> addFlow : up \n on Stock \n / background \n from Stock
-  addFlow -up-> idle
-
-  idle -[#purple]up-> changeDirection : double click \n on Link \n / Flow
-  changeDirection --> idle
-
-  state ": toggle Variable \n / Stock" as toggleVariableStock #white ##white
-
-  idle -up[#purple]-> toggleVariableStock : double click \n on Varialble \n / Stock
-  toggleVariableStock --> idle
+  addFlow -up-> idle2
 
 }
+
+[*] -> modeMoveVariableStock
+modeMoveVariableStock -> modeAddLinkFlow
+modeAddLinkFlow -> modeMoveVariableStock
+
+modeMoveVariableStock -up[hidden]-> editWindow
 
 @enduml
 ```
