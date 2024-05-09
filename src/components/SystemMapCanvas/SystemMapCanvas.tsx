@@ -1,14 +1,19 @@
 "use client";
 
-import { useEffect, useReducer, type SyntheticEvent } from "react";
+import { useState, useEffect, useReducer, type SyntheticEvent } from "react";
 import { Stage } from "@pixi/react";
 //import useUndoable from 'use-undoable';
 
-import { Variable } from "@/components/SystemMapCanvas/lib/types";
+import {
+  Point,
+  Variable,
+  isVariable,
+  indexOf,
+} from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
 import { useApp } from "./appHook";
-//import { ViewEdge } from './ViewEdge';
+import { addViewVariable, updateViewVariable } from "./lib/variable";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
@@ -25,15 +30,32 @@ export const SystemMapCanvas = ({
   variables,
   onVariablesChange,
 }: SystemMapCanvasProps) => {
-  const [app, setApp, handleZoomIn, handleZoomOut, x, y] = useApp();
+  const [app, setApp, offset, scale, handleZoomIn, handleZoomOut] = useApp();
+
+  const [position, setPosition] = useState<Point>({ x: 0, y: 0 });
+  const [isMovingCanvas, setIsMovingCanvas] = useState<boolean>(false);
+  const [xy0, setXY0] = useState<Point>({ x: 0, y: 0 });
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
     state: EStateCanvas.Idle,
-    leftTop: { x: 0, y: 0 },
     xy0: { x: 0, y: 0 },
     variables: variables,
   });
+
+  const x = (x: number): number => {
+    const left = offset?.x ?? 0;
+    return (
+      (x - left + document.documentElement.scrollLeft - position.x) / scale.x
+    );
+  };
+
+  const y = (y: number): number => {
+    const top = offset?.y ?? 0;
+    return (
+      (y - top + document.documentElement.scrollTop - position.y) / scale.y
+    );
+  };
 
   useEffect(() => {
     dispatch({ type: "Mode", mode: mode });
@@ -52,13 +74,34 @@ export const SystemMapCanvas = ({
   }, [zoomOut]);
 
   useEffect(() => {
-    app?.stage.position.set(state.leftTop.x, state.leftTop.y);
+    onVariablesChange(state.variables);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.leftTop]);
+  }, [state.variables]);
 
   useEffect(() => {
-    onVariablesChange(state.variables);
+    if (app === undefined) {
+      return;
+    }
+
+    for (let i = 0; i < state.variables.length; i++) {
+      const variable = state.variables[i];
+      if (!updateViewVariable(app.stage, variable)) {
+        addViewVariable(app.stage, variable);
+      }
+    }
+
+    for (let i = app?.stage.children.length - 1; i >= 0; i--) {
+      const name = app?.stage.children[i].name ?? "";
+
+      //if (isEdge(name) && indexOf(mouseState.edges, name) < 0) {
+      //  app?.stage.removeChildAt(i);
+      //}
+
+      if (isVariable(name) && indexOf(state.variables, name) < 0) {
+        app?.stage.removeChildAt(i);
+      }
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.variables]);
@@ -70,8 +113,15 @@ export const SystemMapCanvas = ({
     const X = x(e.clientX);
     const Y = y(e.clientY);
 
+    const item = "";
+    if (item === "") {
+      setIsMovingCanvas(true);
+      setXY0({ x: X, y: Y });
+      return;
+    }
+
     if (e.button === 0) {
-      dispatch({ type: "MouseLeftDown", xy: { x: X, y: Y }, item: "" });
+      dispatch({ type: "MouseLeftDown", xy: { x: X, y: Y }, item: item });
     }
   }
 
@@ -83,6 +133,16 @@ export const SystemMapCanvas = ({
     const Y = y(e.clientY);
     //const name = hover(X, Y);
 
+    if (isMovingCanvas) {
+      const position1 = {
+        x: position.x + (X - xy0.x) * scale.x,
+        y: position.y + (Y - xy0.y) * scale.y,
+      };
+      app?.stage.position.set(position1.x, position1.y);
+
+      return;
+    }
+
     dispatch({ type: "MouseMove", xy: { x: X, y: Y }, item: "" });
   }
 
@@ -92,6 +152,15 @@ export const SystemMapCanvas = ({
 
     const X = x(e.clientX);
     const Y = y(e.clientY);
+
+    if (isMovingCanvas) {
+      setIsMovingCanvas(false);
+      setPosition({
+        x: app?.stage.position.x ?? 0,
+        y: app?.stage.position.y ?? 0,
+      });
+      return;
+    }
 
     if (e.button === 0) {
       dispatch({ type: "MouseLeftUp", xy: { x: X, y: Y }, item: "" });

@@ -19,7 +19,6 @@ export enum EStateCanvas {
 export interface IStateCanvas {
   mode: ESystemMapCanvasMode;
   state: EStateCanvas;
-  leftTop: Point;
   xy0: Point;
   variables: Variable[];
 }

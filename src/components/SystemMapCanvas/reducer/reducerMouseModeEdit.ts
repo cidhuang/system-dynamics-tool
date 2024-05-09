@@ -1,4 +1,4 @@
-import { Point } from "@/components/SystemMapCanvas/lib/types";
+import { Point, createVariable } from "@/components/SystemMapCanvas/lib/types";
 import {
   IStateCanvas,
   EStateCanvas,
@@ -27,23 +27,16 @@ function reducerIdleDown(state: IStateCanvas, xy: Point, item: string) {
 }
 
 function reducerIdleClick(state: IStateCanvas, xy: Point, item: string) {
-  if (item === "") {
-    return {
-      ...state,
-      state: EStateCanvas.MovingCanvas,
-      xy0: xy,
-    };
-  }
-
   return state;
 }
 
 function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   if (item === "") {
+    let variables = state.variables.slice();
+    const name = createVariable(variables, xy);
     return {
       ...state,
-      state: EStateCanvas.MovingCanvas,
-      xy0: xy,
+      variables: variables,
     };
   }
 

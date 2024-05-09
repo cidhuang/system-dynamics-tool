@@ -14,7 +14,7 @@ function HomeImp() {
   const { t } = useTranslation();
 
   const [mode, setMode] = useState<ESystemMapCanvasMode>(
-    ESystemMapCanvasMode.View,
+    ESystemMapCanvasMode.Edit,
   );
   const [zoomIn, setZoomIn] = useState<number>(1);
   const [zoomOut, setZoomOut] = useState<number>(1);
@@ -33,7 +33,8 @@ function HomeImp() {
   function handleZoomInOut(arg: any) {
     if (arg == "Zoom In") {
       setZoomIn(zoomIn + 1);
-    } else {
+    }
+    if (arg == "Zoom Out") {
       setZoomOut(zoomOut + 1);
     }
   }

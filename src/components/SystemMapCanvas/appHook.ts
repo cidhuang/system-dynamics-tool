@@ -1,26 +1,26 @@
 import { useEffect, useState } from "react";
-import { Text, Application, type ICanvas } from "pixi.js";
+import { Application, type ICanvas } from "pixi.js";
 
 import { Point } from "@/components/SystemMapCanvas/lib/types";
 
 export function useApp(): [
   Application<ICanvas> | undefined,
   any,
+  Point,
+  Point,
   () => void,
   () => void,
-  (x: number) => number,
-  (y: number) => number,
 ] {
   const [app, setApp] = useState<Application<ICanvas>>();
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
 
-  const handleZoomIn = (): void => {
-    setScale({ x: scale.x * 1.25, y: scale.y * 1.25 });
-  };
-
   const handleZoomOut = (): void => {
     setScale({ x: scale.x * 0.8, y: scale.y * 0.8 });
+  };
+
+  const handleZoomIn = (): void => {
+    setScale({ x: scale.x * 1.25, y: scale.y * 1.25 });
   };
 
   function handleWheel(event: WheelEvent) {
@@ -62,18 +62,29 @@ export function useApp(): [
     const view = app.view as unknown as HTMLElement;
 
     setOffset({ x: view.offsetLeft ?? 0, y: view.offsetTop ?? 0 });
-
-    let text = new Text("Test");
+    /*
+    let text = new Text("(100, 100)");
     text.name = "test";
     text.style.align = "center";
     text.style.fill = "black";
-    text.x = 100 - text.width / 2;
-    text.y = 100 - text.height / 2;
+    text.x = 100;
+    text.y = 100;
     text.style.fill = "red";
     text.style.fontWeight = "normal";
 
     app.stage.addChild(text);
 
+    let text2 = new Text("(0, 0)");
+    text2.name = "test";
+    text2.style.align = "center";
+    text2.style.fill = "black";
+    text2.x = 0;
+    text2.y = 0;
+    text2.style.fill = "black";
+    text2.style.fontWeight = "normal";
+
+    app.stage.addChild(text2);
+    */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [app?.view]);
 
@@ -83,15 +94,5 @@ export function useApp(): [
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scale]);
 
-  const x = (x: number): number => {
-    const left = offset?.x ?? 0;
-    return x - left + document.documentElement.scrollLeft;
-  };
-
-  const y = (y: number): number => {
-    const top = offset?.y ?? 0;
-    return y - top + document.documentElement.scrollTop;
-  };
-
-  return [app, setApp, handleZoomIn, handleZoomOut, x, y];
+  return [app, setApp, offset, scale, handleZoomIn, handleZoomOut];
 }

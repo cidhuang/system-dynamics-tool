@@ -9,7 +9,7 @@ export interface Point {
   y: number;
 }
 
-function indexOf(array: any[], name: string): number {
+export function indexOf(array: any[], name: string): number {
   for (let i = 0; i < array.length; i++) {
     if (array[i].name === name) {
       return i;
@@ -21,19 +21,14 @@ function indexOf(array: any[], name: string): number {
 export interface Variable {
   name: string;
   text: string;
-  x: number;
-  y: number;
+  xy: Point;
 }
 
 export function isVariable(name: string): boolean {
   return name.startsWith("variable-");
 }
 
-export function createVariable(
-  variables: Variable[],
-  x: number,
-  y: number,
-): string {
+export function createVariable(variables: Variable[], xy: Point): string {
   let i = 0;
   while (indexOf(variables, "variable-" + i.toString()) >= 0) {
     i++;
@@ -43,8 +38,7 @@ export function createVariable(
   variables.push({
     name: name,
     text: name,
-    x: x,
-    y: y,
+    xy: xy,
   });
 
   return name;

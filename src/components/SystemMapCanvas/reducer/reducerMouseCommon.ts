@@ -8,9 +8,9 @@ export function reducerMovingCanvasMove(
 ) {
   return {
     ...state,
-    leftTop: {
-      x: state.leftTop.x + xy.x - state.xy0.x,
-      y: state.leftTop.y + xy.y - state.xy0.y,
+    dxy: {
+      x: xy.x - state.xy0.x,
+      y: xy.y - state.xy0.y,
     },
     xy0: xy,
   };
