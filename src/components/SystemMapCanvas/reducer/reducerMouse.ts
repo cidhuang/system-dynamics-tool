@@ -1,7 +1,18 @@
-import { Point, createVariable } from "@/components/SystemMapCanvas/lib/types";
+import {
+  Point,
+  isVariable,
+  createVariable,
+  isStock,
+  createStock,
+  isLink,
+  createLink,
+  isFlow,
+  createFlow,
+} from "@/components/SystemMapCanvas/lib/types";
 
 import {
   EStateCanvas,
+  ESystemMapCanvasMode,
   IStateCanvas,
   MouseReducers,
   StateReducers,
@@ -18,14 +29,62 @@ export const isMouse = (x: any): x is Mouse => mouse.includes(x);
 export type ActionMouse = { type: Mouse; xy: Point; item: string };
 
 function reducerIdleDown(state: IStateCanvas, xy: Point, item: string) {
-  if (item === "") {
+  if (isLink(item)) {
     return {
       ...state,
-      //state: EStateCanvas.MovingCanvas,
-      xy0: xy,
+      state: EStateCanvas.ShapingLink,
+      dragStart: item,
     };
   }
+  if (isFlow(item)) {
+    return {
+      ...state,
+      state: EStateCanvas.ShapingFlow,
+      dragStart: item,
+    };
+  }
+  if (state.mode === ESystemMapCanvasMode.MoveVariableStock) {
+    if (isVariable(item)) {
+      return {
+        ...state,
+        state: EStateCanvas.MovingVariable,
+        dragStart: item,
+      };
+    }
+    if (isStock(item)) {
+      return {
+        ...state,
+        state: EStateCanvas.MovingStock,
+        dragStart: item,
+      };
+    }
+  }
+  if (state.mode === ESystemMapCanvasMode.AddLinkFlow) {
+    if (isVariable(item) || isStock(item)) {
+      return {
+        ...state,
+        state: EStateCanvas.DragginNewLinkFlow,
+        dragStart: item,
+      };
+    }
+  }
 
+  return state;
+}
+
+function variableToStock(state: IStateCanvas, item: string): IStateCanvas {
+  return state;
+}
+
+function stockToVariable(state: IStateCanvas, item: string): IStateCanvas {
+  return state;
+}
+
+function reverseLink(state: IStateCanvas, item: string): IStateCanvas {
+  return state;
+}
+
+function reverseFlow(state: IStateCanvas, item: string): IStateCanvas {
   return state;
 }
 
@@ -39,9 +98,21 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
     };
   }
 
-  //if(isVariable(item) || isStock(item)) {
-  //  return toggleVariableStock(state, item);
-  //}
+  if (isVariable(item)) {
+    return variableToStock(state, item);
+  }
+
+  if (isStock(item)) {
+    return stockToVariable(state, item);
+  }
+
+  if (isLink(item)) {
+    return reverseLink(state, item);
+  }
+
+  if (isFlow(item)) {
+    return reverseFlow(state, item);
+  }
 
   return state;
 }
@@ -132,10 +203,33 @@ function reducerDragginNewLinkFlowUp(
   xy: Point,
   item: string,
 ) {
-  return {
-    ...state,
-    state: EStateCanvas.Idle,
-  };
+  if (isVariable(state.dragStart)) {
+    let links = state.links.slice();
+    const name = createLink(links, state.dragStart, item);
+    return {
+      ...state,
+      state: EStateCanvas.Idle,
+      links: links,
+    };
+  }
+
+  if (isStock(state.dragStart)) {
+    let flows = state.flows.slice();
+    let name;
+    if (isStock(item)) {
+      name = createFlow(flows, state.dragStart, item);
+    }
+    if (item === "") {
+      name = createFlow(flows, state.dragStart, xy);
+    }
+    return {
+      ...state,
+      state: EStateCanvas.Idle,
+      flows: flows,
+    };
+  }
+
+  return state;
 }
 
 const reducersDragginNewLinkFlow: MouseReducers = {

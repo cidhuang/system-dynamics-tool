@@ -62,29 +62,7 @@ export function useApp(): [
     const view = app.view as unknown as HTMLElement;
 
     setOffset({ x: view.offsetLeft ?? 0, y: view.offsetTop ?? 0 });
-    /*
-    let text = new Text("(100, 100)");
-    text.name = "test";
-    text.style.align = "center";
-    text.style.fill = "black";
-    text.x = 100;
-    text.y = 100;
-    text.style.fill = "red";
-    text.style.fontWeight = "normal";
 
-    app.stage.addChild(text);
-
-    let text2 = new Text("(0, 0)");
-    text2.name = "test";
-    text2.style.align = "center";
-    text2.style.fill = "black";
-    text2.x = 0;
-    text2.y = 0;
-    text2.style.fill = "black";
-    text2.style.fontWeight = "normal";
-
-    app.stage.addChild(text2);
-    */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [app?.view]);
 

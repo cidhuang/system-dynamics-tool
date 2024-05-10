@@ -9,6 +9,9 @@ import {
   Variable,
   isVariable,
   indexOf,
+  Stock,
+  Link,
+  Flow,
 } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
@@ -21,6 +24,12 @@ interface SystemMapCanvasProps {
   zoomOut: number;
   variables: Variable[];
   onVariablesChange: (variables: Variable[]) => void;
+  links: Link[];
+  onLinksChange: (links: Link[]) => void;
+  stocks: Stock[];
+  onStocksChange: (stocks: Stock[]) => void;
+  flows: Flow[];
+  onFlowsChange: (flows: Flow[]) => void;
 }
 
 export const SystemMapCanvas = ({
@@ -29,6 +38,12 @@ export const SystemMapCanvas = ({
   zoomOut,
   variables,
   onVariablesChange,
+  links,
+  onLinksChange,
+  stocks,
+  onStocksChange,
+  flows,
+  onFlowsChange,
 }: SystemMapCanvasProps) => {
   const [app, setApp, offset, scale, handleZoomIn, handleZoomOut] = useApp();
 
@@ -39,8 +54,11 @@ export const SystemMapCanvas = ({
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
     state: EStateCanvas.Idle,
-    xy0: { x: 0, y: 0 },
+    dragStart: "",
     variables: variables,
+    links: links,
+    stocks: stocks,
+    flows: flows,
   });
 
   const x = (x: number): number => {
@@ -78,6 +96,24 @@ export const SystemMapCanvas = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.variables]);
+
+  useEffect(() => {
+    onLinksChange(state.links);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.links]);
+
+  useEffect(() => {
+    onStocksChange(state.stocks);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.stocks]);
+
+  useEffect(() => {
+    onFlowsChange(state.flows);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.flows]);
 
   useEffect(() => {
     if (app === undefined) {

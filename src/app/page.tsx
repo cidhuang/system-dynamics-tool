@@ -3,7 +3,12 @@
 import { useState, Suspense } from "react";
 import { useTranslation } from "next-export-i18n";
 
-import { Point, Variable } from "@/components/SystemMapCanvas/lib/types";
+import {
+  Variable,
+  Link,
+  Stock,
+  Flow,
+} from "@/components/SystemMapCanvas/lib/types";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
 import { SystemMapCanvasMode } from "@/components/SystemMapCanvas/SystemMapCanvasMode";
@@ -18,9 +23,18 @@ function HomeImp() {
   );
   const [zoomIn, setZoomIn] = useState<number>(1);
   const [zoomOut, setZoomOut] = useState<number>(1);
-  const variables = new Array<Variable>();
 
+  const variables = new Array<Variable>();
   function handleVariablesChange(variables: Variable[]): void {}
+
+  const links = new Array<Link>();
+  function handleLinksChange(links: Link[]): void {}
+
+  const stocks = new Array<Stock>();
+  function handleStocksChange(stocks: Stock[]): void {}
+
+  const flows = new Array<Flow>();
+  function handleFlowsChange(flows: Flow[]): void {}
 
   function handleModeClick(mode1: ESystemMapCanvasMode) {
     setMode(mode1);
@@ -162,6 +176,12 @@ function HomeImp() {
         zoomOut={zoomOut}
         variables={variables}
         onVariablesChange={handleVariablesChange}
+        links={links}
+        onLinksChange={handleLinksChange}
+        stocks={stocks}
+        onStocksChange={handleStocksChange}
+        flows={flows}
+        onFlowsChange={handleFlowsChange}
       />
     </>
   );
