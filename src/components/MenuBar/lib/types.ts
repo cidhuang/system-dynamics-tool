@@ -2,6 +2,7 @@ export interface IMenuItem {
   label: string;
   handler: (arg: any) => void;
   arg: any;
+  disabled?: boolean;
 }
 
 export interface IMenu {

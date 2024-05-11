@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useReducer, type SyntheticEvent } from "react";
 import { Stage } from "@pixi/react";
-//import useUndoable from 'use-undoable';
+import useUndo from "use-undo";
 
 import {
   Point,
@@ -17,16 +17,24 @@ import { addViewVariable, updateViewVariable } from "./lib/variable";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
-  zoomIn: number;
-  zoomOut: number;
+  cmdZoomIn: number;
+  cmdZoomOut: number;
+  cmdUndo: number;
+  cmdRedo: number;
+  onCanUndoChanged: (canUndo: boolean) => void;
+  onCanRedoChanged: (canRedo: boolean) => void;
   items: IItems;
   onItemsChange: (items: IItems) => void;
 }
 
 export const SystemMapCanvas = ({
   mode,
-  zoomIn,
-  zoomOut,
+  cmdZoomIn,
+  cmdZoomOut,
+  cmdUndo,
+  cmdRedo,
+  onCanUndoChanged,
+  onCanRedoChanged,
   items,
   onItemsChange,
 }: SystemMapCanvasProps) => {
@@ -42,6 +50,19 @@ export const SystemMapCanvas = ({
     dragStart: "",
     items: items,
   });
+
+  const [
+    itemsState,
+    {
+      set: setItems,
+      reset: resetItems,
+      undo: undoItems,
+      redo: redoItems,
+      canUndo,
+      canRedo,
+    },
+  ] = useUndo(items);
+  const { present: presentItems } = itemsState;
 
   const x = (x: number): number => {
     const left = offset?.x ?? 0;
@@ -65,15 +86,46 @@ export const SystemMapCanvas = ({
     handleZoomIn();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoomIn]);
+  }, [cmdZoomIn]);
 
   useEffect(() => {
     handleZoomOut();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoomOut]);
+  }, [cmdZoomOut]);
 
   useEffect(() => {
+    undoItems();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cmdUndo]);
+
+  useEffect(() => {
+    redoItems();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cmdRedo]);
+
+  useEffect(() => {
+    onCanUndoChanged(canUndo);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canUndo]);
+
+  useEffect(() => {
+    onCanRedoChanged(canRedo);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canRedo]);
+
+  useEffect(() => {
+    dispatch({ type: "UndoRedo", items: presentItems });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presentItems]);
+
+  useEffect(() => {
+    setItems(state.items);
     onItemsChange(state.items);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

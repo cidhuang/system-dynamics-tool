@@ -2,23 +2,48 @@ import { useState } from "react";
 import { useTranslation } from "next-export-i18n";
 import { IMenu } from "@/components/MenuBar/lib/types";
 
-export function useMenu(): [number, number, Array<IMenu>] {
+export function useMenu(): [
+  number,
+  number,
+  number,
+  number,
+  (canUndo: boolean) => void,
+  (canRedo: boolean) => void,
+  Array<IMenu>,
+] {
   const { t } = useTranslation();
 
-  const [zoomIn, setZoomIn] = useState<number>(1);
-  const [zoomOut, setZoomOut] = useState<number>(1);
+  const [cmdZoomIn, setCmdZoomIn] = useState<number>(1);
+  const [cmdZoomOut, setCmdZoomOut] = useState<number>(1);
+
+  const [cmdUndo, setCmdUndo] = useState<number>(1);
+  const [cmdRedo, setCmdRedo] = useState<number>(1);
+  const [canUndo, setCanUndo] = useState<boolean>(false);
+  const [canRedo, setCanRedo] = useState<boolean>(false);
 
   function handlerMenuItem(arg: any) {
     console.log("handlerMenuItem", arg);
   }
 
-  function handleZoomInOut(arg: any) {
-    if (arg == "Zoom In") {
-      setZoomIn(zoomIn + 1);
-    }
-    if (arg == "Zoom Out") {
-      setZoomOut(zoomOut + 1);
-    }
+  function handlerZoomIn(arg: any) {
+    setCmdZoomIn(cmdZoomIn + 1);
+  }
+  function handlerZoomOut(arg: any) {
+    setCmdZoomOut(cmdZoomOut + 1);
+  }
+
+  function handlerUndo(arg: any) {
+    setCmdUndo(cmdUndo + 1);
+  }
+  function handlerRedo(arg: any) {
+    setCmdRedo(cmdRedo + 1);
+  }
+
+  function handlerCanUndoChanged(canUndo: boolean) {
+    setCanUndo(canUndo);
+  }
+  function handlerCanRedoChanged(canRedo: boolean) {
+    setCanRedo(canRedo);
   }
 
   const menus: Array<IMenu> = [
@@ -62,13 +87,15 @@ export function useMenu(): [number, number, Array<IMenu>] {
       items: [
         {
           label: t("Undo"),
-          handler: handlerMenuItem,
+          handler: handlerUndo,
           arg: "Undo",
+          disabled: !canUndo,
         },
         {
           label: t("Redo"),
-          handler: handlerMenuItem,
+          handler: handlerRedo,
           arg: "Redo",
+          disabled: !canRedo,
         },
       ],
     },
@@ -77,12 +104,12 @@ export function useMenu(): [number, number, Array<IMenu>] {
       items: [
         {
           label: t("Zoom In"),
-          handler: handleZoomInOut,
+          handler: handlerZoomIn,
           arg: "Zoom In",
         },
         {
           label: t("Zoom Out"),
-          handler: handleZoomInOut,
+          handler: handlerZoomOut,
           arg: "Zoom Out",
         },
       ],
@@ -109,5 +136,13 @@ export function useMenu(): [number, number, Array<IMenu>] {
     },
   ];
 
-  return [zoomIn, zoomOut, menus];
+  return [
+    cmdZoomIn,
+    cmdZoomOut,
+    cmdUndo,
+    cmdRedo,
+    handlerCanUndoChanged,
+    handlerCanRedoChanged,
+    menus,
+  ];
 }

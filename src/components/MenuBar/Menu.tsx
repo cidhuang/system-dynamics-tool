@@ -43,7 +43,10 @@ export const Menu = ({
               onClick={() => {
                 handleMenuItemClick(index, i, item);
               }}
-              className="menu-item"
+              disabled={item.disabled ?? false}
+              className={
+                item.disabled ?? false ? "menu-item-disabled" : "menu-item"
+              }
             >
               {item.label}
             </button>

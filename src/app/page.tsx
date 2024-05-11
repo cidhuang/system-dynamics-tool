@@ -11,7 +11,15 @@ import { SystemMapCanvasMode } from "@/components/SystemMapCanvas/SystemMapCanva
 import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
 
 function HomeImp() {
-  const [zoomIn, zoomOut, menus] = useMenu();
+  const [
+    cmdZoomIn,
+    cmdZoomOut,
+    cmdUndo,
+    cmdRedo,
+    handlerCanUndoChanged,
+    handlerCanRedoChanged,
+    menus,
+  ] = useMenu();
   const [mode, modes, handleModeClick] = useMode();
   const [items, handleItemsChange] = useItem();
 
@@ -35,8 +43,12 @@ function HomeImp() {
       </Suspense>
       <SystemMapCanvas
         mode={mode}
-        zoomIn={zoomIn}
-        zoomOut={zoomOut}
+        cmdZoomIn={cmdZoomIn}
+        cmdZoomOut={cmdZoomOut}
+        cmdUndo={cmdUndo}
+        cmdRedo={cmdRedo}
+        onCanUndoChanged={handlerCanUndoChanged}
+        onCanRedoChanged={handlerCanRedoChanged}
         items={items}
         onItemsChange={handleItemsChange}
       />
