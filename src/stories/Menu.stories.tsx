@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
-import { Menu, IMenuItem } from "../components/MenuBar/Menu";
+import { Menu } from "../components/MenuBar/Menu";
+import { IMenuItem } from "@/components/MenuBar/lib/types";
 
 const meta: Meta<typeof Menu> = {
   title: "MenuBar/Menu",

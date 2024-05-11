@@ -15,7 +15,7 @@ import {
 } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
-import { useApp } from "./appHook";
+import { useApp } from "./lib/useApp";
 import { addViewVariable, updateViewVariable } from "./lib/variable";
 
 interface SystemMapCanvasProps {

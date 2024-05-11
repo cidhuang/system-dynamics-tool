@@ -1,44 +1,15 @@
 "use client";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-import i18n from "../../../i18n/index";
+import { Menu } from "./Menu";
+import { IMenu, IMenuItem } from "./lib/types";
+import { useLanguage } from "./lib/useLanguage";
 
-import { Menu, IMenu, IMenuItem } from "./Menu";
-
-export const MenuBar = ({
-  language,
-  menus,
-}: {
-  language: string;
-  menus: IMenu[];
-}) => {
-  function handlerLangItem(arg: any) {
-    const tmp = new URLSearchParams(searchParams);
-    tmp.set("lang", arg);
-    router.push(pathname + "?" + tmp.toString());
-  }
-
-  const menuLang = {
-    label: language,
-    items: Object.keys(i18n.translations).map((key, i) => {
-      return {
-        label:
-          i18n.translations[key as unknown as keyof typeof i18n.translations][
-            "__language__"
-          ],
-        handler: handlerLangItem,
-        arg: key,
-      };
-    }),
-  };
+export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
+  const [languages] = useLanguage();
 
   const [dropMenu, setDropMenu] = useState<number>(-1);
-
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   function handleMenuClick(index: number) {
     if (dropMenu === index) {
@@ -74,7 +45,7 @@ export const MenuBar = ({
           index={menus.length}
           onClick={handleMenuClick}
           onItemClick={handleItemClick}
-          menu={menuLang}
+          menu={languages}
         />
       </div>
     </nav>

@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Application, type ICanvas } from "pixi.js";
 
 import { Point } from "@/components/SystemMapCanvas/lib/types";
 
 export function useApp(): [
   Application<ICanvas> | undefined,
-  any,
+  Dispatch<SetStateAction<Application<ICanvas> | undefined>>,
   Point,
   Point,
   () => void,
