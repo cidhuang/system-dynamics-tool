@@ -13,16 +13,7 @@ import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
 function HomeImp() {
   const [zoomIn, zoomOut, menus] = useMenu();
   const [mode, modes, handleModeClick] = useMode();
-  const [
-    variables,
-    links,
-    stocks,
-    flows,
-    handleVariablesChange,
-    handleLinksChange,
-    handleStocksChange,
-    handleFlowsChange,
-  ] = useItem();
+  const [items, handleItemsChange] = useItem();
 
   return (
     <>
@@ -46,14 +37,8 @@ function HomeImp() {
         mode={mode}
         zoomIn={zoomIn}
         zoomOut={zoomOut}
-        variables={variables}
-        onVariablesChange={handleVariablesChange}
-        links={links}
-        onLinksChange={handleLinksChange}
-        stocks={stocks}
-        onStocksChange={handleStocksChange}
-        flows={flows}
-        onFlowsChange={handleFlowsChange}
+        items={items}
+        onItemsChange={handleItemsChange}
       />
     </>
   );

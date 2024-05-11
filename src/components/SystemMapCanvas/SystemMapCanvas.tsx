@@ -6,12 +6,9 @@ import { Stage } from "@pixi/react";
 
 import {
   Point,
-  Variable,
   isVariable,
   indexOf,
-  Stock,
-  Link,
-  Flow,
+  IItems,
 } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
@@ -22,28 +19,16 @@ interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
   zoomIn: number;
   zoomOut: number;
-  variables: Variable[];
-  onVariablesChange: (variables: Variable[]) => void;
-  links: Link[];
-  onLinksChange: (links: Link[]) => void;
-  stocks: Stock[];
-  onStocksChange: (stocks: Stock[]) => void;
-  flows: Flow[];
-  onFlowsChange: (flows: Flow[]) => void;
+  items: IItems;
+  onItemsChange: (items: IItems) => void;
 }
 
 export const SystemMapCanvas = ({
   mode,
   zoomIn,
   zoomOut,
-  variables,
-  onVariablesChange,
-  links,
-  onLinksChange,
-  stocks,
-  onStocksChange,
-  flows,
-  onFlowsChange,
+  items,
+  onItemsChange,
 }: SystemMapCanvasProps) => {
   const [app, setApp, offset, scale, handleZoomIn, handleZoomOut] = useApp();
 
@@ -55,10 +40,7 @@ export const SystemMapCanvas = ({
     mode: mode,
     state: EStateCanvas.Idle,
     dragStart: "",
-    variables: variables,
-    links: links,
-    stocks: stocks,
-    flows: flows,
+    items: items,
   });
 
   const x = (x: number): number => {
@@ -92,36 +74,18 @@ export const SystemMapCanvas = ({
   }, [zoomOut]);
 
   useEffect(() => {
-    onVariablesChange(state.variables);
+    onItemsChange(state.items);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.variables]);
-
-  useEffect(() => {
-    onLinksChange(state.links);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.links]);
-
-  useEffect(() => {
-    onStocksChange(state.stocks);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.stocks]);
-
-  useEffect(() => {
-    onFlowsChange(state.flows);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.flows]);
+  }, [state.items]);
 
   useEffect(() => {
     if (app === undefined) {
       return;
     }
 
-    for (let i = 0; i < state.variables.length; i++) {
-      const variable = state.variables[i];
+    for (let i = 0; i < state.items.variables.length; i++) {
+      const variable = state.items.variables[i];
       if (!updateViewVariable(app.stage, variable)) {
         addViewVariable(app.stage, variable);
       }
@@ -134,13 +98,13 @@ export const SystemMapCanvas = ({
       //  app?.stage.removeChildAt(i);
       //}
 
-      if (isVariable(name) && indexOf(state.variables, name) < 0) {
+      if (isVariable(name) && indexOf(state.items.variables, name) < 0) {
         app?.stage.removeChildAt(i);
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.variables]);
+  }, [state.items.variables]);
 
   function handleMouseDown(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;

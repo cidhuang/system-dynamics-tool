@@ -130,3 +130,10 @@ export function createFlow(
 
   return name;
 }
+
+export interface IItems {
+  variables: Variable[];
+  links: Link[];
+  stocks: Stock[];
+  flows: Flow[];
+}

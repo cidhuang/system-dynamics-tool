@@ -90,11 +90,11 @@ function reverseFlow(state: IStateCanvas, item: string): IStateCanvas {
 
 function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   if (item === "") {
-    let variables = state.variables.slice();
-    const name = createVariable(variables, xy);
+    let items = structuredClone(state.items);
+    const name = createVariable(items.variables, xy);
     return {
       ...state,
-      variables: variables,
+      items: items,
     };
   }
 
@@ -204,28 +204,28 @@ function reducerDragginNewLinkFlowUp(
   item: string,
 ) {
   if (isVariable(state.dragStart)) {
-    let links = state.links.slice();
-    const name = createLink(links, state.dragStart, item);
+    let items = structuredClone(state.items);
+    const name = createLink(items.links, state.dragStart, item);
     return {
       ...state,
       state: EStateCanvas.Idle,
-      links: links,
+      items: items,
     };
   }
 
   if (isStock(state.dragStart)) {
-    let flows = state.flows.slice();
+    let items = structuredClone(state.items);
     let name;
     if (isStock(item)) {
-      name = createFlow(flows, state.dragStart, item);
+      name = createFlow(items.flows, state.dragStart, item);
     }
     if (item === "") {
-      name = createFlow(flows, state.dragStart, xy);
+      name = createFlow(items.flows, state.dragStart, xy);
     }
     return {
       ...state,
       state: EStateCanvas.Idle,
-      flows: flows,
+      items: items,
     };
   }
 
@@ -246,7 +246,6 @@ const reducers: StateReducers = {
   [EStateCanvas.DragginNewLinkFlow]: reducersDragginNewLinkFlow,
 };
 
-// Reducer
 export function reducerMouse(
   state: IStateCanvas,
   action: ActionMouse,

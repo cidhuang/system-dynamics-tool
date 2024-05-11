@@ -1,10 +1,4 @@
-import {
-  Point,
-  Variable,
-  Link,
-  Stock,
-  Flow,
-} from "@/components/SystemMapCanvas/lib/types";
+import { Point, IItems } from "@/components/SystemMapCanvas/lib/types";
 
 export enum ESystemMapCanvasMode {
   MoveVariableStock,
@@ -24,10 +18,7 @@ export interface IStateCanvas {
   mode: ESystemMapCanvasMode;
   state: EStateCanvas;
   dragStart: string;
-  variables: Variable[];
-  links: Link[];
-  stocks: Stock[];
-  flows: Flow[];
+  items: IItems;
 }
 
 export type MouseReducers = Record<

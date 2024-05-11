@@ -4,18 +4,20 @@ import {
   Link,
   Stock,
   Flow,
+  IItems,
 } from "@/components/SystemMapCanvas/lib/types";
 
-export function useItem(): [
-  Variable[],
-  Link[],
-  Stock[],
-  Flow[],
-  (variables: Variable[]) => void,
-  (links: Link[]) => void,
-  (stocks: Stock[]) => void,
-  (flows: Flow[]) => void,
-] {
+export function useItem(): [IItems, (items: IItems) => void] {
+  const [items, setItems] = useState<IItems>({
+    variables: new Array<Variable>(),
+    links: new Array<Link>(),
+    stocks: new Array<Stock>(),
+    flows: new Array<Flow>(),
+  });
+  function handleItemsChange(items: IItems): void {
+    setItems(items);
+  }
+  /*
   const [variables, setVariables] = useState<Variable[]>(new Array<Variable>());
   function handleVariablesChange(variables: Variable[]): void {
     setVariables(variables);
@@ -35,8 +37,9 @@ export function useItem(): [
   function handleFlowsChange(flows: Flow[]): void {
     setFlows(flows);
   }
-
+  */
   return [
+    /*
     variables,
     links,
     stocks,
@@ -45,5 +48,8 @@ export function useItem(): [
     handleLinksChange,
     handleStocksChange,
     handleFlowsChange,
+    */
+    items,
+    handleItemsChange,
   ];
 }
