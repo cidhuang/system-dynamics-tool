@@ -30,6 +30,7 @@ export function useLanguage(): [IMenu] {
           ],
         handler: handlerLangItem,
         arg: key,
+        enabled: true,
       };
     }),
   };

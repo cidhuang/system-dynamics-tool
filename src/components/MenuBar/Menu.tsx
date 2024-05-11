@@ -43,9 +43,9 @@ export const Menu = ({
               onClick={() => {
                 handleMenuItemClick(index, i, item);
               }}
-              disabled={item.disabled ?? false}
+              disabled={!item.enabled ?? false}
               className={
-                item.disabled ?? false ? "menu-item-disabled" : "menu-item"
+                item.enabled ?? false ? "menu-item" : "menu-item-disabled"
               }
             >
               {item.label}

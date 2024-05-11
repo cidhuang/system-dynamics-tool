@@ -171,6 +171,7 @@ export const SystemMapCanvas = ({
 
   function handleMouseDown(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
+    e.stopPropagation();
     //console.log(e);
 
     if (e.button !== 0) {
@@ -193,6 +194,7 @@ export const SystemMapCanvas = ({
 
   function handleMouseMove(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
+    e.stopPropagation();
     //console.log(e);
 
     if (e.button !== 0) {
@@ -212,6 +214,7 @@ export const SystemMapCanvas = ({
 
   function handleMouseUp(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
+    e.stopPropagation();
     //console.log(e);
 
     if (e.button !== 0) {
@@ -231,6 +234,7 @@ export const SystemMapCanvas = ({
 
   function handleDoubleClick(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
+    e.stopPropagation();
     //console.log(e);
 
     if (e.button !== 0) {
@@ -249,6 +253,7 @@ export const SystemMapCanvas = ({
 
   function handleClick(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
+    e.stopPropagation();
     //console.log(e);
 
     if (e.button !== 0) {
@@ -263,6 +268,7 @@ export const SystemMapCanvas = ({
 
   function handleContextMenu(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
+    e.stopPropagation();
     e.preventDefault();
   }
 
