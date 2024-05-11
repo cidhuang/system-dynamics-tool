@@ -13,7 +13,11 @@ import {
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
 import { useApp } from "./lib/useApp";
-import { addViewVariable, updateViewVariable } from "./lib/variable";
+import {
+  addViewVariable,
+  updateViewVariable,
+  nameVariable,
+} from "./lib/variable";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
@@ -38,17 +42,24 @@ export const SystemMapCanvas = ({
   items,
   onItemsChange,
 }: SystemMapCanvasProps) => {
-  const [app, setApp, offset, scale, handleZoomIn, handleZoomOut] = useApp();
+  const [
+    app,
+    setApp,
+    handleZoomIn,
+    handleZoomOut,
+    XY,
+    startMovingCanvas,
+    moveCanvas,
+  ] = useApp();
 
-  const [position, setPosition] = useState<Point>({ x: 0, y: 0 });
   const [isMovingCanvas, setIsMovingCanvas] = useState<boolean>(false);
-  const [xy0, setXY0] = useState<Point>({ x: 0, y: 0 });
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
     state: EStateCanvas.Idle,
     dragStart: "",
     items: items,
+    cmdUndoAdd: 0,
   });
 
   const [
@@ -63,20 +74,6 @@ export const SystemMapCanvas = ({
     },
   ] = useUndo(items);
   const { present: presentItems } = itemsState;
-
-  const x = (x: number): number => {
-    const left = offset?.x ?? 0;
-    return (
-      (x - left + document.documentElement.scrollLeft - position.x) / scale.x
-    );
-  };
-
-  const y = (y: number): number => {
-    const top = offset?.y ?? 0;
-    return (
-      (y - top + document.documentElement.scrollTop - position.y) / scale.y
-    );
-  };
 
   useEffect(() => {
     dispatch({ type: "Mode", mode: mode });
@@ -129,7 +126,7 @@ export const SystemMapCanvas = ({
     onItemsChange(state.items);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.items]);
+  }, [state.cmdUndoAdd]);
 
   useEffect(() => {
     if (app === undefined) {
@@ -158,22 +155,39 @@ export const SystemMapCanvas = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.items.variables]);
 
+  function itemName(xy: Point): string {
+    if (app === undefined) {
+      return "";
+    }
+
+    let name = "";
+    name = nameVariable(app?.stage, state.items.variables, xy);
+    if (name !== "") {
+      return name;
+    }
+
+    return name;
+  }
+
   function handleMouseDown(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
     //console.log(e);
 
-    const X = x(e.clientX);
-    const Y = y(e.clientY);
+    if (e.button !== 0) {
+      return;
+    }
 
-    const item = "";
+    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const item = itemName(xyCanvas);
+
     if (item === "") {
       setIsMovingCanvas(true);
-      setXY0({ x: X, y: Y });
+      startMovingCanvas(xyCanvas);
       return;
     }
 
     if (e.button === 0) {
-      dispatch({ type: "MouseLeftDown", xy: { x: X, y: Y }, item: item });
+      dispatch({ type: "MouseLeftDown", xy: xyMap, item: item });
     }
   }
 
@@ -181,62 +195,70 @@ export const SystemMapCanvas = ({
     const e = event as unknown as MouseEvent;
     //console.log(e);
 
-    const X = x(e.clientX);
-    const Y = y(e.clientY);
-    //const name = hover(X, Y);
-
-    if (isMovingCanvas) {
-      const position1 = {
-        x: position.x + (X - xy0.x) * scale.x,
-        y: position.y + (Y - xy0.y) * scale.y,
-      };
-      app?.stage.position.set(position1.x, position1.y);
-
+    if (e.button !== 0) {
       return;
     }
 
-    dispatch({ type: "MouseMove", xy: { x: X, y: Y }, item: "" });
+    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const item = itemName(xyCanvas);
+
+    if (isMovingCanvas) {
+      moveCanvas(xyCanvas);
+      return;
+    }
+
+    dispatch({ type: "MouseMove", xy: xyMap, item: item });
   }
 
   function handleMouseUp(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
     //console.log(e);
 
-    const X = x(e.clientX);
-    const Y = y(e.clientY);
-
-    if (isMovingCanvas) {
-      setIsMovingCanvas(false);
-      setPosition({
-        x: app?.stage.position.x ?? 0,
-        y: app?.stage.position.y ?? 0,
-      });
+    if (e.button !== 0) {
       return;
     }
 
-    if (e.button === 0) {
-      dispatch({ type: "MouseLeftUp", xy: { x: X, y: Y }, item: "" });
+    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const item = itemName(xyCanvas);
+
+    if (isMovingCanvas) {
+      setIsMovingCanvas(false);
+      return;
     }
+
+    dispatch({ type: "MouseLeftUp", xy: xyMap, item: item });
   }
 
   function handleDoubleClick(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
     //console.log(e);
 
-    const X = x(e.clientX);
-    const Y = y(e.clientY);
+    if (e.button !== 0) {
+      return;
+    }
 
-    dispatch({ type: "MouseLeftDoubleClick", xy: { x: X, y: Y }, item: "" });
+    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const item = itemName(xyCanvas);
+
+    dispatch({
+      type: "MouseLeftDoubleClick",
+      xy: xyMap,
+      item: item,
+    });
   }
 
   function handleClick(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
     //console.log(e);
 
-    const X = x(e.clientX);
-    const Y = y(e.clientY);
+    if (e.button !== 0) {
+      return;
+    }
 
-    //dispatch({ type: "MouseLeftClick", xy: { x: X, y: Y }, item: "" });
+    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const item = itemName(xyCanvas);
+
+    //dispatch({ type: "MouseLeftClick", xy: xyMap, item: "" });
   }
 
   function handleContextMenu(event: SyntheticEvent) {

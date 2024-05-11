@@ -19,6 +19,7 @@ export interface IStateCanvas {
   state: EStateCanvas;
   dragStart: string;
   items: IItems;
+  cmdUndoAdd: number;
 }
 
 export type MouseReducers = Record<

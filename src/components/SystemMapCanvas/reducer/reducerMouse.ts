@@ -1,5 +1,6 @@
 import {
   Point,
+  indexOf,
   isVariable,
   createVariable,
   isStock,
@@ -73,19 +74,43 @@ function reducerIdleDown(state: IStateCanvas, xy: Point, item: string) {
 }
 
 function variableToStock(state: IStateCanvas, item: string): IStateCanvas {
-  return state;
+  let items = structuredClone(state.items);
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
 }
 
 function stockToVariable(state: IStateCanvas, item: string): IStateCanvas {
-  return state;
+  let items = structuredClone(state.items);
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
 }
 
 function reverseLink(state: IStateCanvas, item: string): IStateCanvas {
-  return state;
+  let items = structuredClone(state.items);
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
 }
 
 function reverseFlow(state: IStateCanvas, item: string): IStateCanvas {
-  return state;
+  let items = structuredClone(state.items);
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
 }
 
 function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
@@ -95,6 +120,7 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
     return {
       ...state,
       items: items,
+      cmdUndoAdd: state.cmdUndoAdd + 1,
     };
   }
 
@@ -127,13 +153,20 @@ function reducerMovingVariableMove(
   xy: Point,
   item: string,
 ) {
-  return state;
+  let items = structuredClone(state.items);
+  const i = indexOf(items.variables, state.dragStart);
+  items.variables[i].xy = xy;
+  return {
+    ...state,
+    items: items,
+  };
 }
 
 function reducerMovingVariableUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
   };
 }
 
@@ -150,6 +183,7 @@ function reducerMovingStockUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
   };
 }
 
@@ -166,6 +200,7 @@ function reducerShapingLinkUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
   };
 }
 
@@ -182,6 +217,7 @@ function reducerShapingFlowUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
   };
 }
 
@@ -210,6 +246,7 @@ function reducerDragginNewLinkFlowUp(
       ...state,
       state: EStateCanvas.Idle,
       items: items,
+      cmdUndoAdd: state.cmdUndoAdd + 1,
     };
   }
 
@@ -226,6 +263,7 @@ function reducerDragginNewLinkFlowUp(
       ...state,
       state: EStateCanvas.Idle,
       items: items,
+      cmdUndoAdd: state.cmdUndoAdd + 1,
     };
   }
 
