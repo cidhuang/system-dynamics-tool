@@ -2,14 +2,12 @@ import type { Point } from "./types";
 
 /**
  * The properties of a circle
- * @property x x of center
- * @prop y y of center
+ * @property center x,y of centerr
  * @prop radius radius of the circle
  * @interface
  */
 export interface ICircle {
-  x: number;
-  y: number;
+  center: Point;
   radius: number;
 }
 
@@ -35,7 +33,7 @@ export function getCircle(p1: Point, p2: Point, p3: Point): ICircle {
   const y = (a * g - c * e) / (a * f - b * e);
   const radius = Math.sqrt((x - p1.x) * (x - p1.x) + (y - p1.y) * (y - p1.y));
 
-  return { x, y, radius };
+  return { center: { x, y }, radius };
 }
 
 /**

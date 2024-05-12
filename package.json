@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^10.6.0",
+    "@pixi/graphics-smooth": "^1.1.0",
     "@pixi/react": "^7.1.2",
     "next": "14.1.4",
     "pixi.js": "^7.4.2",

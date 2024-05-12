@@ -17,9 +17,11 @@ export enum EStateCanvas {
 export interface IStateCanvas {
   mode: ESystemMapCanvasMode;
   state: EStateCanvas;
-  dragStart: string;
   items: IItems;
   cmdUndoAdd: number;
+  dragStart?: string;
+  dragLinkEnd?: string | Point;
+  dragLinkMid?: Point;
 }
 
 export type MouseReducers = Record<

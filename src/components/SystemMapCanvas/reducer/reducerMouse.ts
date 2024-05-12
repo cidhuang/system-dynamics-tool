@@ -153,6 +153,9 @@ function reducerMovingVariableMove(
   xy: Point,
   item: string,
 ) {
+  if (state.dragStart === undefined) {
+    return state;
+  }
   let items = structuredClone(state.items);
   const i = indexOf(items.variables, state.dragStart);
   items.variables[i].xy = xy;
@@ -231,6 +234,23 @@ function reducerDragginNewLinkFlowMove(
   xy: Point,
   item: string,
 ) {
+  if (state.dragStart === undefined) {
+    return state;
+  }
+
+  if (isVariable(state.dragStart)) {
+    if (isVariable(item) || isFlow(item)) {
+      return {
+        ...state,
+        dragLinkEnd: item,
+      };
+    }
+    return {
+      ...state,
+      dragLinkEnd: xy,
+    };
+  }
+
   return state;
 }
 
@@ -239,15 +259,22 @@ function reducerDragginNewLinkFlowUp(
   xy: Point,
   item: string,
 ) {
+  if (state.dragStart === undefined) {
+    return state;
+  }
+
   if (isVariable(state.dragStart)) {
-    let items = structuredClone(state.items);
-    const name = createLink(items.links, state.dragStart, item);
-    return {
-      ...state,
-      state: EStateCanvas.Idle,
-      items: items,
-      cmdUndoAdd: state.cmdUndoAdd + 1,
-    };
+    if (isVariable(item) || isFlow(item)) {
+      let items = structuredClone(state.items);
+      const name = createLink(items.links, state.dragStart, item);
+      return {
+        ...state,
+        state: EStateCanvas.Idle,
+        items: items,
+        cmdUndoAdd: state.cmdUndoAdd + 1,
+        dragLinkEnd: undefined,
+      };
+    }
   }
 
   if (isStock(state.dragStart)) {
@@ -267,7 +294,12 @@ function reducerDragginNewLinkFlowUp(
     };
   }
 
-  return state;
+  return {
+    ...state,
+    state: EStateCanvas.Idle,
+    dragStart: undefined,
+    dragLinkEnd: undefined,
+  };
 }
 
 const reducersDragginNewLinkFlow: MouseReducers = {
