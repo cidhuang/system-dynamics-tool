@@ -12,7 +12,7 @@ export function addViewLink(
   const edge = new ViewEdge(start, end);
   edge.name = name;
   edge.color = "grey";
-  edge.width = 4;
+  edge.width = 8;
   edge.arrowHeadLength = 15;
   edge.isDashed = true;
   edge.isPolyline = false;
@@ -39,34 +39,7 @@ export function updateViewLink(
   return true;
 }
 
-export function nameLink(
-  stage: Container<DisplayObject>,
-  links: Link[],
-  xy: Point,
-): string {
-  for (let i = 0; i < links.length; i++) {
-    const link = links[i];
-    const index = indexOf(stage.children, link.name);
-    if (index < 0) {
-      continue;
-    }
-
-    const child = stage.children[index];
-    if (child.name === null) {
-      alert("item no name");
-      continue;
-    }
-    const bounds = child.getBounds();
-    //console.log(xy, bounds);
-    if (
-      xy.x >= bounds.left &&
-      xy.x <= bounds.right &&
-      xy.y >= bounds.top &&
-      xy.y <= bounds.bottom
-    ) {
-      return child.name;
-    }
-  }
-
-  return "";
+export function isOnLink(item: DisplayObject, xy: Point): boolean {
+  const edge = item as ViewEdge;
+  return edge.contains(xy.x, xy.y);
 }

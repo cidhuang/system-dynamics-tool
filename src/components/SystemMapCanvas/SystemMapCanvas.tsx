@@ -17,9 +17,9 @@ import { useCanvas } from "./lib/useCanvas";
 import {
   addViewVariable,
   updateViewVariable,
-  nameVariable,
+  isOnVariable,
 } from "./lib/variable";
-import { addViewLink, updateViewLink } from "./lib/link";
+import { addViewLink, updateViewLink, isOnLink } from "./lib/link";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
@@ -47,6 +47,7 @@ export const SystemMapCanvas = ({
   const [
     app,
     setApp,
+    viewportPosition,
     handleZoomIn,
     handleZoomOut,
     XY,
@@ -155,10 +156,6 @@ export const SystemMapCanvas = ({
     for (let i = app?.stage.children.length - 1; i >= 0; i--) {
       const name = app?.stage.children[i].name ?? "";
 
-      //if (isEdge(name) && indexOf(state.items.links, name) < 0) {
-      //  app?.stage.removeChildAt(i);
-      //}
-
       if (isLink(name) && indexOf(state.items.links, name) < 0) {
         app?.stage.removeChildAt(i);
       }
@@ -171,7 +168,7 @@ export const SystemMapCanvas = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.items]);
 
-  //drag link
+  // drag link
   useEffect(() => {
     if (app === undefined) {
       return;
@@ -196,14 +193,6 @@ export const SystemMapCanvas = ({
         endPoint = state.dragLinkEnd;
       }
     }
-    /* 
-    else if (
-      mouseState.draggingX !== undefined &&
-      mouseState.draggingY !== undefined
-    ) {
-      endPoint = new Point(mouseState.draggingX, mouseState.draggingY);
-    }
-    */
 
     const dragLink = indexOf(app?.stage.children, "dragLink");
 
@@ -222,33 +211,41 @@ export const SystemMapCanvas = ({
     if (state.dragStart === undefined) {
       return;
     }
-    /*
-    if (
-      (mouseState.draggingX === undefined ||
-        mouseState.draggingY === undefined) &&
-      state.dragLinkEnd === undefined
-    ) {
-      return;
-    }
-    */
-    //addViewDragging(startPoint, endPoint, "dragLink");
+
     addViewLink(app?.stage, "dragLink", startPoint, endPoint);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.dragLinkEnd, state.dragLinkMid]);
 
-  function itemName(xy: Point): string {
+  function itemName(xyCanvas: Point, xyMap: Point): string {
     if (app === undefined) {
       return "";
     }
 
-    let name = "";
-    name = nameVariable(app?.stage, state.items.variables, xy);
-    if (name !== "") {
-      return name;
+    if (app?.stage === null) {
+      return "";
     }
 
-    return name;
+    for (let i = 0; i < app?.stage.children.length; i++) {
+      const item = app?.stage.children[i];
+      if (item.name === null) {
+        continue;
+      }
+
+      if (isVariable(item.name)) {
+        if (isOnVariable(item, xyCanvas)) {
+          return item.name;
+        }
+      }
+
+      if (isLink(item.name)) {
+        if (isOnLink(item, xyMap)) {
+          return item.name;
+        }
+      }
+    }
+
+    return "";
   }
 
   function handleMouseDown(event: SyntheticEvent) {
@@ -261,7 +258,8 @@ export const SystemMapCanvas = ({
     }
 
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas);
+    const item = itemName(xyCanvas, xyMap);
+    console.log(item, viewportPosition);
 
     if (item === "") {
       setIsMovingViewport(true);
@@ -284,7 +282,7 @@ export const SystemMapCanvas = ({
     }
 
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas);
+    const item = itemName(xyCanvas, xyMap);
 
     if (isMovingViewport) {
       moveViewport(xyCanvas);
@@ -304,7 +302,7 @@ export const SystemMapCanvas = ({
     }
 
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas);
+    const item = itemName(xyCanvas, xyMap);
 
     if (isMovingViewport) {
       setIsMovingViewport(false);
@@ -324,7 +322,7 @@ export const SystemMapCanvas = ({
     }
 
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas);
+    const item = itemName(xyCanvas, xyMap);
 
     dispatch({
       type: "MouseLeftDoubleClick",
@@ -343,7 +341,7 @@ export const SystemMapCanvas = ({
     }
 
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas);
+    const item = itemName(xyCanvas, xyMap);
 
     //dispatch({ type: "MouseLeftClick", xy: xyMap, item: "" });
   }

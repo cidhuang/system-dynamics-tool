@@ -196,7 +196,16 @@ const reducersMovingStock: MouseReducers = {
 };
 
 function reducerShapingLinkMove(state: IStateCanvas, xy: Point, item: string) {
-  return state;
+  if (state.dragStart === undefined) {
+    return state;
+  }
+  let items = structuredClone(state.items);
+  const i = indexOf(items.links, state.dragStart);
+  items.links[i].mid = xy;
+  return {
+    ...state,
+    items: items,
+  };
 }
 
 function reducerShapingLinkUp(state: IStateCanvas, xy: Point, item: string) {

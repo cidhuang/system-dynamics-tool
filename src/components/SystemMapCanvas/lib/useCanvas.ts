@@ -6,6 +6,7 @@ import { Point } from "@/components/SystemMapCanvas/lib/types";
 export function useCanvas(): [
   Application<ICanvas> | undefined,
   Dispatch<SetStateAction<Application<ICanvas> | undefined>>,
+  Point,
   () => void,
   () => void,
   (x: number, y: number) => [Point, Point],
@@ -102,6 +103,7 @@ export function useCanvas(): [
   return [
     app,
     setApp,
+    viewportPosition,
     handleZoomIn,
     handleZoomOut,
     XY,
