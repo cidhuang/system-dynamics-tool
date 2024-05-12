@@ -9,7 +9,7 @@ describe("Check getCircle", () => {
   test("Check the result of getCircle", () => {
     expect(
       getCircle({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }),
-    ).toStrictEqual({ x: 100, y: 0, radius: 100 });
+    ).toStrictEqual({ center: { x: 100, y: 0 }, radius: 100 });
   });
 });
 
