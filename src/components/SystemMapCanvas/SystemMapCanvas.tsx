@@ -12,7 +12,7 @@ import {
 } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
-import { useApp } from "./lib/useApp";
+import { useCanvas } from "./lib/useCanvas";
 import {
   addViewVariable,
   updateViewVariable,
@@ -50,7 +50,7 @@ export const SystemMapCanvas = ({
     XY,
     startMovingCanvas,
     moveCanvas,
-  ] = useApp();
+  ] = useCanvas();
 
   const [isMovingCanvas, setIsMovingCanvas] = useState<boolean>(false);
 
