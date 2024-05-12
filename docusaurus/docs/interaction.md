@@ -34,7 +34,8 @@ state "Common" as common {
   state "Shaping Link" as shapeLink : mouse move
   state "Shaping Flow" as shapeFlow : mouse move
   state ": create Variable" as addVariable #white ##white
-  state ": toggle Variable \n / Stock" as toggleVariableStock #white ##white
+  state ": toggle Variable \n and Stock" as toggleVariableStock #white ##white
+  state ": toggle Positive \n and Negative" as togglePositiveNegative #white ##white
   state ": change direction" as changeDirection #white ##white
 
   [*] -> idle
@@ -53,7 +54,10 @@ state "Common" as common {
   idle -[#purple]-> toggleVariableStock : double click \n on Varialble \n / Stock
   toggleVariableStock -up-> idle
 
-  idle -[#purple]-> changeDirection : double click \n on Link \n / Flow
+  idle -[#purple]-> togglePositiveNegative : double click \n on Link
+  togglePositiveNegative -up-> idle
+
+  idle -[#purple]-> changeDirection : double click \n on Flow
   changeDirection -up-> idle
 
 }
