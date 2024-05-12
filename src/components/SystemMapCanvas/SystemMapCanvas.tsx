@@ -48,11 +48,11 @@ export const SystemMapCanvas = ({
     handleZoomIn,
     handleZoomOut,
     XY,
-    startMovingCanvas,
-    moveCanvas,
+    startMovingViewport,
+    moveViewport,
   ] = useCanvas();
 
-  const [isMovingCanvas, setIsMovingCanvas] = useState<boolean>(false);
+  const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
@@ -182,8 +182,8 @@ export const SystemMapCanvas = ({
     const item = itemName(xyCanvas);
 
     if (item === "") {
-      setIsMovingCanvas(true);
-      startMovingCanvas(xyCanvas);
+      setIsMovingViewport(true);
+      startMovingViewport(xyCanvas);
       return;
     }
 
@@ -204,8 +204,8 @@ export const SystemMapCanvas = ({
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
     const item = itemName(xyCanvas);
 
-    if (isMovingCanvas) {
-      moveCanvas(xyCanvas);
+    if (isMovingViewport) {
+      moveViewport(xyCanvas);
       return;
     }
 
@@ -224,8 +224,8 @@ export const SystemMapCanvas = ({
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
     const item = itemName(xyCanvas);
 
-    if (isMovingCanvas) {
-      setIsMovingCanvas(false);
+    if (isMovingViewport) {
+      setIsMovingViewport(false);
       return;
     }
 
