@@ -3,7 +3,10 @@ import { Application, type ICanvas } from "pixi.js";
 
 import { Point } from "@/components/SystemMapCanvas/lib/types";
 
-export function useCanvas(): [
+export function useCanvas(
+  offset: () => Point,
+  editing: string,
+): [
   Application<ICanvas> | undefined,
   Dispatch<SetStateAction<Application<ICanvas> | undefined>>,
   Point,
@@ -34,6 +37,9 @@ export function useCanvas(): [
   };
 
   function handleWheel(event: WheelEvent) {
+    if (editing !== "") {
+      return;
+    }
     const e = event as unknown as WheelEvent;
     e.preventDefault();
 
@@ -69,14 +75,9 @@ export function useCanvas(): [
   }, [scale]);
 
   const XY = (x: number, y: number): [Point, Point] => {
-    const xCanvas =
-      x +
-        document.documentElement.scrollLeft -
-        (app?.view as unknown as HTMLElement)?.offsetLeft ?? 0;
-    const yCanvas =
-      y +
-        document.documentElement.scrollTop -
-        (app?.view as unknown as HTMLElement)?.offsetTop ?? 0;
+    const canvasPosition = offset();
+    const xCanvas = x + document.documentElement.scrollLeft - canvasPosition.x;
+    const yCanvas = y + document.documentElement.scrollTop - canvasPosition.y;
 
     const xMap = (xCanvas - viewportPosition.x) / scale.x;
     const yMap = (yCanvas - viewportPosition.y) / scale.y;

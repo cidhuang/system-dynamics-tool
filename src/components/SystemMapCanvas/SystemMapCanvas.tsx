@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect, useReducer, type SyntheticEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useReducer,
+  useRef,
+  type SyntheticEvent,
+} from "react";
 import { Stage } from "@pixi/react";
 import useUndo from "use-undo";
 
@@ -20,6 +26,7 @@ import {
   isOnVariable,
 } from "./lib/variable";
 import { addViewLink, updateViewLink, isOnLink } from "./lib/link";
+import { Text } from "pixi.js";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
@@ -44,6 +51,10 @@ export const SystemMapCanvas = ({
   items,
   onItemsChange,
 }: SystemMapCanvasProps) => {
+  const [selected, setSelected] = useState<string>("");
+  const [editing, setEditing] = useState<string>("");
+  const [moving, setMoving] = useState<boolean>(false);
+
   const [
     app,
     setApp,
@@ -53,9 +64,16 @@ export const SystemMapCanvas = ({
     XY,
     startMovingViewport,
     moveViewport,
-  ] = useCanvas();
+  ] = useCanvas(offset, editing);
+
+  const ref = useRef(null);
 
   const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
+  const [inputPosition, setInputPosition] = useState<Point>({ x: 0, y: 0 });
+  const [inputVisible, setInputVisible] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [inputWidth, setInputWidth] = useState<number>(100);
+  const [inputHeight, setInputHeight] = useState<number>(100);
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
@@ -217,6 +235,26 @@ export const SystemMapCanvas = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.dragLinkEnd, state.dragLinkMid]);
 
+  useEffect(() => {
+    if (app === undefined) {
+      return;
+    }
+
+    if (!isVariable(editing)) {
+      return;
+    }
+
+    const index = indexOf(app?.stage.children, editing);
+    const text = app?.stage.children[index] as Text;
+    const bounds = text.getBounds();
+    console.log(bounds);
+    setInputWidth(Math.max(300, bounds.width));
+    setInputHeight(bounds.height);
+    setInputValue(text.text);
+    setInputPosition({ x: bounds.x, y: bounds.y });
+    setInputVisible(true);
+  }, [editing]);
+
   function itemName(xyCanvas: Point, xyMap: Point): string {
     if (app === undefined) {
       return "";
@@ -248,7 +286,18 @@ export const SystemMapCanvas = ({
     return "";
   }
 
+  function offset(): Point {
+    return {
+      x: (ref.current as unknown as HTMLElement).offsetLeft,
+      y: (ref.current as unknown as HTMLElement).offsetTop,
+    };
+  }
+
   function handleMouseDown(event: SyntheticEvent) {
+    setMoving(false);
+    if (editing !== "") {
+      return;
+    }
     const e = event as unknown as MouseEvent;
     e.stopPropagation();
     //console.log(e);
@@ -259,7 +308,6 @@ export const SystemMapCanvas = ({
 
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
     const item = itemName(xyCanvas, xyMap);
-    console.log(item, viewportPosition);
 
     if (item === "") {
       setIsMovingViewport(true);
@@ -273,6 +321,10 @@ export const SystemMapCanvas = ({
   }
 
   function handleMouseMove(event: SyntheticEvent) {
+    setMoving(true);
+    if (editing !== "") {
+      return;
+    }
     const e = event as unknown as MouseEvent;
     e.stopPropagation();
     //console.log(e);
@@ -293,6 +345,9 @@ export const SystemMapCanvas = ({
   }
 
   function handleMouseUp(event: SyntheticEvent) {
+    if (editing !== "") {
+      return;
+    }
     const e = event as unknown as MouseEvent;
     e.stopPropagation();
     //console.log(e);
@@ -313,6 +368,9 @@ export const SystemMapCanvas = ({
   }
 
   function handleDoubleClick(event: SyntheticEvent) {
+    if (editing !== "") {
+      return;
+    }
     const e = event as unknown as MouseEvent;
     e.stopPropagation();
     //console.log(e);
@@ -332,6 +390,12 @@ export const SystemMapCanvas = ({
   }
 
   function handleClick(event: SyntheticEvent) {
+    if (moving) {
+      return;
+    }
+    if (editing !== "") {
+      return;
+    }
     const e = event as unknown as MouseEvent;
     e.stopPropagation();
     //console.log(e);
@@ -343,6 +407,12 @@ export const SystemMapCanvas = ({
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
     const item = itemName(xyCanvas, xyMap);
 
+    if (item === selected) {
+      setEditing(item);
+      return;
+    }
+    setSelected(item);
+
     //dispatch({ type: "MouseLeftClick", xy: xyMap, item: "" });
   }
 
@@ -352,22 +422,53 @@ export const SystemMapCanvas = ({
     e.preventDefault();
   }
 
+  function handleInputKeyDown(event: SyntheticEvent) {
+    const e = event as unknown as KeyboardEvent;
+    if (e.code === "Enter") {
+      const index = indexOf(state.items.variables, editing);
+      const item = structuredClone(state.items.variables[index]);
+      if (item.text !== inputValue) {
+        item.text = inputValue.replace("\\n", "\n").replace("\\\n", "\\n");
+        dispatch({ type: "ChangeItems", variables: [item] });
+      }
+      setEditing("");
+      setSelected("");
+      setInputVisible(false);
+    }
+  }
   return (
-    <Stage
-      width={800}
-      height={600}
-      onMount={setApp as any}
-      options={{
-        backgroundColor: 0xeef1f5,
-        antialias: true,
-        backgroundAlpha: 1,
-      }}
-      onContextMenu={handleContextMenu}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onDoubleClick={handleDoubleClick}
-      onClick={handleClick}
-    ></Stage>
+    <div ref={ref} className="relative">
+      <div className="absolute left-0 top-0">
+        <Stage
+          width={800}
+          height={600}
+          onMount={setApp as any}
+          options={{
+            backgroundColor: 0xeef1f5,
+            antialias: true,
+            backgroundAlpha: 1,
+          }}
+          onContextMenu={handleContextMenu}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onDoubleClick={handleDoubleClick}
+          onClick={handleClick}
+        ></Stage>
+      </div>
+      <div
+        className="absolute"
+        hidden={!inputVisible}
+        style={{ left: inputPosition.x + "px", top: inputPosition.y + "px" }}
+      >
+        <textarea
+          placeholder=""
+          value={inputValue}
+          onKeyDown={handleInputKeyDown}
+          onChange={(e) => setInputValue(e.target.value)}
+          style={{ width: inputWidth, height: inputHeight, resize: "none" }}
+        ></textarea>
+      </div>
+    </div>
   );
 };

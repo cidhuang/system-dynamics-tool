@@ -28,6 +28,7 @@ export function updateViewVariable(
   }
 
   const text = stage.children[index] as Text;
+  text.text = variable.text;
   text.x = variable.xy.x;
   text.y = variable.xy.y;
   text.style.fill = "black";
