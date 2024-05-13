@@ -274,33 +274,37 @@ function reducerDragginNewLinkFlowUp(
 
   if (isVariable(state.dragStart)) {
     if (isVariable(item) || isFlow(item)) {
+      if (state.dragStart !== item) {
+        let items = structuredClone(state.items);
+        const name = createLink(items.links, state.dragStart, item);
+        return {
+          ...state,
+          state: EStateCanvas.Idle,
+          items: items,
+          cmdUndoAdd: state.cmdUndoAdd + 1,
+          dragLinkEnd: undefined,
+        };
+      }
+    }
+  }
+
+  if (isStock(state.dragStart)) {
+    if (state.dragStart !== item) {
       let items = structuredClone(state.items);
-      const name = createLink(items.links, state.dragStart, item);
+      let name;
+      if (isStock(item)) {
+        name = createFlow(items.flows, state.dragStart, item);
+      }
+      if (item === "") {
+        name = createFlow(items.flows, state.dragStart, xy);
+      }
       return {
         ...state,
         state: EStateCanvas.Idle,
         items: items,
         cmdUndoAdd: state.cmdUndoAdd + 1,
-        dragLinkEnd: undefined,
       };
     }
-  }
-
-  if (isStock(state.dragStart)) {
-    let items = structuredClone(state.items);
-    let name;
-    if (isStock(item)) {
-      name = createFlow(items.flows, state.dragStart, item);
-    }
-    if (item === "") {
-      name = createFlow(items.flows, state.dragStart, xy);
-    }
-    return {
-      ...state,
-      state: EStateCanvas.Idle,
-      items: items,
-      cmdUndoAdd: state.cmdUndoAdd + 1,
-    };
   }
 
   return {
