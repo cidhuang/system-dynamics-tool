@@ -14,7 +14,7 @@ export function addViewLink(
   edge.color = "grey";
   edge.width = 8;
   edge.arrowHeadLength = 15;
-  edge.isDashed = true;
+  edge.isDashed = false;
   edge.isPolyline = false;
   stage.addChild(edge);
 }

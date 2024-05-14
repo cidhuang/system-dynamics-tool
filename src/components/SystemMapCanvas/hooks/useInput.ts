@@ -26,7 +26,7 @@ export function useInput(
     const index = indexOf(app?.stage.children, editing);
     const item = app?.stage.children[index];
     const bounds = getVariableBounds(item);
-    console.log(bounds);
+
     setInputWidth(Math.max(300, bounds.width));
     setInputHeight(bounds.height);
     setInputValue(getVariableText(item));

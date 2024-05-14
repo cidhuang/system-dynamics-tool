@@ -11,7 +11,7 @@ import { EOrientation, getOrientation, getCircle } from "../circle";
 export class ViewEdge extends Graphics {
   protected _start: Point;
   protected _end: Point;
-  protected _mid: Point;
+  protected _mid: Point | undefined;
 
   protected _color: ColorSource = 0;
   protected _width: number = 2;
@@ -50,13 +50,17 @@ export class ViewEdge extends Graphics {
     return this._mid;
   }
   set mid(mid: Point | undefined) {
-    let x = mid?.x ?? (this._start.x + this._end.x) / 2;
-    let y = mid?.y ?? (this._start.y + this._end.y) / 2;
-    if (this._mid.x === x && this._mid.y === y) {
+    if (this._mid === undefined && mid === undefined) {
       return;
     }
 
-    this._mid = { x, y };
+    if (this._mid !== undefined && mid !== undefined) {
+      if (this._mid.x === mid.x && this._mid.y === mid.y) {
+        return;
+      }
+    }
+
+    this._mid = mid;
     this.update();
   }
 
@@ -208,20 +212,12 @@ export class ViewEdge extends Graphics {
 
     this._start = start;
     this._end = end;
+    this._mid = mid;
 
     if (isPolyline === undefined) {
       this._isPolyline = false;
     } else {
       this._isPolyline = isPolyline;
-    }
-
-    if (mid === undefined) {
-      this._mid = {
-        x: (start.x + end.x) / 2,
-        y: (start.y + end.y) / 2,
-      };
-    } else {
-      this._mid = mid;
     }
 
     this.update();
@@ -241,40 +237,55 @@ export class ViewEdge extends Graphics {
     let arrowDirectionAngle = 0;
     if (this._isPolyline) {
       this.moveTo(this._start.x, this._start.y);
-      this.lineTo(this._mid.x, this._mid.y);
+      if (this._mid !== undefined) {
+        this.lineTo(this._mid.x, this._mid.y);
+      }
       this.lineTo(this._end.x, this._end.y);
-      arrowDirectionAngle = Math.atan2(
-        this._end.y - this._mid.y,
-        this._end.x - this._mid.x,
-      );
+      if (this._mid !== undefined) {
+        arrowDirectionAngle = Math.atan2(
+          this._end.y - this._mid.y,
+          this._end.x - this._mid.x,
+        );
+      } else {
+        arrowDirectionAngle = Math.atan2(
+          this._end.y - this._start.y,
+          this._end.x - this._start.x,
+        );
+      }
     } else {
-      this._orientation = getOrientation(this._start, this._mid, this._end);
-
-      if (this._orientation === EOrientation.Collinear) {
+      if (this._mid === undefined) {
+        this._orientation = EOrientation.Collinear;
         this.moveTo(this._start.x, this._start.y);
         this.lineTo(this._end.x, this._end.y);
       } else {
-        const circle = getCircle(this._start, this._mid, this._end);
+        this._orientation = getOrientation(this._start, this._mid, this._end);
 
-        this._center = circle.center;
-        this._radius = circle.radius;
-        this._startAngle = Math.atan2(
-          this._start.y - this._center.y,
-          this._start.x - this._center.x,
-        );
-        this._endAngle = Math.atan2(
-          this._end.y - this._center.y,
-          this._end.x - this._center.x,
-        );
+        if (this._orientation === EOrientation.Collinear) {
+          this.moveTo(this._start.x, this._start.y);
+          this.lineTo(this._end.x, this._end.y);
+        } else {
+          const circle = getCircle(this._start, this._mid, this._end);
 
-        this.arc(
-          this._center.x,
-          this._center.y,
-          this._radius,
-          this._startAngle,
-          this._endAngle,
-          this._orientation === EOrientation.Counterclockwise,
-        );
+          this._center = circle.center;
+          this._radius = circle.radius;
+          this._startAngle = Math.atan2(
+            this._start.y - this._center.y,
+            this._start.x - this._center.x,
+          );
+          this._endAngle = Math.atan2(
+            this._end.y - this._center.y,
+            this._end.x - this._center.x,
+          );
+
+          this.arc(
+            this._center.x,
+            this._center.y,
+            this._radius,
+            this._startAngle,
+            this._endAngle,
+            this._orientation === EOrientation.Counterclockwise,
+          );
+        }
       }
 
       switch (this._orientation) {
