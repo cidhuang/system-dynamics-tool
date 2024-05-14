@@ -26,7 +26,9 @@ import {
   isOnVariable,
 } from "./lib/variable";
 import { addViewLink, updateViewLink, isOnLink } from "./lib/link";
-import { Text } from "pixi.js";
+
+import { InputTextArea } from "./InputTextArea";
+import { useInput } from "./lib/useInput";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
@@ -58,7 +60,6 @@ export const SystemMapCanvas = ({
   const [
     app,
     setApp,
-    viewportPosition,
     handleZoomIn,
     handleZoomOut,
     XY,
@@ -66,14 +67,18 @@ export const SystemMapCanvas = ({
     moveViewport,
   ] = useCanvas(offset, editing);
 
+  const [
+    inputPosition,
+    inputVisible,
+    inputValue,
+    inputWidth,
+    inputHeight,
+    setInputVisible,
+  ] = useInput(app, editing);
+
   const ref = useRef(null);
 
   const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
-  const [inputPosition, setInputPosition] = useState<Point>({ x: 0, y: 0 });
-  const [inputVisible, setInputVisible] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState<string>("");
-  const [inputWidth, setInputWidth] = useState<number>(100);
-  const [inputHeight, setInputHeight] = useState<number>(100);
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
@@ -234,26 +239,6 @@ export const SystemMapCanvas = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.dragLinkEnd, state.dragLinkMid]);
-
-  useEffect(() => {
-    if (app === undefined) {
-      return;
-    }
-
-    if (!isVariable(editing)) {
-      return;
-    }
-
-    const index = indexOf(app?.stage.children, editing);
-    const text = app?.stage.children[index] as Text;
-    const bounds = text.getBounds();
-    console.log(bounds);
-    setInputWidth(Math.max(300, bounds.width));
-    setInputHeight(bounds.height);
-    setInputValue(text.text);
-    setInputPosition({ x: bounds.x, y: bounds.y });
-    setInputVisible(true);
-  }, [editing]);
 
   function itemName(xyCanvas: Point, xyMap: Point): string {
     if (app === undefined) {
@@ -422,22 +407,20 @@ export const SystemMapCanvas = ({
     e.preventDefault();
   }
 
-  function handleInputKeyDown(event: SyntheticEvent) {
-    const e = event as unknown as KeyboardEvent;
-    if (e.code === "Enter") {
-      const index = indexOf(state.items.variables, editing);
-      const item = structuredClone(state.items.variables[index]);
-      if (item.text !== inputValue) {
-        item.text = inputValue.replace("\\n", "\n").replace("\\\n", "\\n");
-        dispatch({ type: "ChangeItems", variables: [item] });
-      }
-      setEditing("");
-      setSelected("");
-      setInputVisible(false);
+  function handleNameKeyEnterDown(value: string) {
+    const index = indexOf(state.items.variables, editing);
+    const item = structuredClone(state.items.variables[index]);
+    if (item.text !== value) {
+      item.text = value;
+      dispatch({ type: "ChangeItems", variables: [item] });
     }
+    setEditing("");
+    setSelected("");
+    setInputVisible(false);
   }
+
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative -z-10">
       <div className="absolute left-0 top-0">
         <Stage
           width={800}
@@ -456,19 +439,14 @@ export const SystemMapCanvas = ({
           onClick={handleClick}
         ></Stage>
       </div>
-      <div
-        className="absolute"
-        hidden={!inputVisible}
-        style={{ left: inputPosition.x + "px", top: inputPosition.y + "px" }}
-      >
-        <textarea
-          placeholder=""
-          value={inputValue}
-          onKeyDown={handleInputKeyDown}
-          onChange={(e) => setInputValue(e.target.value)}
-          style={{ width: inputWidth, height: inputHeight, resize: "none" }}
-        ></textarea>
-      </div>
+      <InputTextArea
+        visible={inputVisible}
+        xy={inputPosition}
+        width={inputWidth}
+        height={inputHeight}
+        value0={inputValue}
+        onKeyEnterDown={handleNameKeyEnterDown}
+      />
     </div>
   );
 };

@@ -21,28 +21,28 @@ export function useMenu(): [
   const [canUndo, setCanUndo] = useState<boolean>(false);
   const [canRedo, setCanRedo] = useState<boolean>(false);
 
-  function handlerMenuItem(arg: any) {
-    console.log("handlerMenuItem", arg);
+  function handleMenuItem(arg: any) {
+    console.log("handleMenuItem", arg);
   }
 
-  function handlerZoomIn(arg: any) {
+  function handleZoomIn(arg: any) {
     setCmdZoomIn(cmdZoomIn + 1);
   }
-  function handlerZoomOut(arg: any) {
+  function handleZoomOut(arg: any) {
     setCmdZoomOut(cmdZoomOut + 1);
   }
 
-  function handlerUndo(arg: any) {
+  function handleUndo(arg: any) {
     setCmdUndo(cmdUndo + 1);
   }
-  function handlerRedo(arg: any) {
+  function handleRedo(arg: any) {
     setCmdRedo(cmdRedo + 1);
   }
 
-  function handlerCanUndoChanged(canUndo: boolean) {
+  function handleCanUndoChanged(canUndo: boolean) {
     setCanUndo(canUndo);
   }
-  function handlerCanRedoChanged(canRedo: boolean) {
+  function handleCanRedoChanged(canRedo: boolean) {
     setCanRedo(canRedo);
   }
 
@@ -52,32 +52,32 @@ export function useMenu(): [
       items: [
         {
           label: t("New"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "New",
         },
         {
           label: t("Save"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Save",
         },
         {
           label: t("Load"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Load",
         },
         {
           label: t("Save As"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Save As",
         },
         {
           label: t("Import"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Import",
         },
         {
           label: t("Export"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Export",
         },
       ],
@@ -87,13 +87,13 @@ export function useMenu(): [
       items: [
         {
           label: t("Undo"),
-          handler: handlerUndo,
+          handler: handleUndo,
           arg: "Undo",
           enabled: canUndo,
         },
         {
           label: t("Redo"),
-          handler: handlerRedo,
+          handler: handleRedo,
           arg: "Redo",
           enabled: canRedo,
         },
@@ -104,13 +104,13 @@ export function useMenu(): [
       items: [
         {
           label: t("Zoom In"),
-          handler: handlerZoomIn,
+          handler: handleZoomIn,
           arg: "Zoom In",
           enabled: true,
         },
         {
           label: t("Zoom Out"),
-          handler: handlerZoomOut,
+          handler: handleZoomOut,
           arg: "Zoom Out",
           enabled: true,
         },
@@ -121,17 +121,17 @@ export function useMenu(): [
       items: [
         {
           label: t("Find Loops"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Find Loops",
         },
         {
           label: t("Find Archetypes"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Find Archetypes",
         },
         {
           label: t("Auto Position"),
-          handler: handlerMenuItem,
+          handler: handleMenuItem,
           arg: "Auto Position",
         },
       ],
@@ -143,8 +143,8 @@ export function useMenu(): [
     cmdZoomOut,
     cmdUndo,
     cmdRedo,
-    handlerCanUndoChanged,
-    handlerCanRedoChanged,
+    handleCanUndoChanged,
+    handleCanRedoChanged,
     menus,
   ];
 }

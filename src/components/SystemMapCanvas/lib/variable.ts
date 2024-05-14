@@ -1,4 +1,4 @@
-import { Container, DisplayObject, Text } from "pixi.js";
+import { Container, DisplayObject, Rectangle, Text } from "pixi.js";
 import { Point, Variable, indexOf } from "./types";
 
 export function addViewVariable(
@@ -51,4 +51,14 @@ export function isOnVariable(item: DisplayObject, xy: Point): boolean {
   }
 
   return false;
+}
+
+export function getVariableBounds(item: DisplayObject): Rectangle {
+  const text = item as Text;
+  return text.getBounds();
+}
+
+export function getVariableText(item: DisplayObject): string {
+  const text = item as Text;
+  return text.text;
 }

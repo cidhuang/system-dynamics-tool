@@ -14,7 +14,7 @@ export function useLanguage(): [IMenu] {
 
   const language = t("__language__");
 
-  function handlerLangItem(arg: any) {
+  function handleLangItem(arg: any) {
     const tmp = new URLSearchParams(searchParams);
     tmp.set("lang", arg);
     router.push(pathname + "?" + tmp.toString());
@@ -28,7 +28,7 @@ export function useLanguage(): [IMenu] {
           i18n.translations[key as unknown as keyof typeof i18n.translations][
             "__language__"
           ],
-        handler: handlerLangItem,
+        handler: handleLangItem,
         arg: key,
         enabled: true,
       };
