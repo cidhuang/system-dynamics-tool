@@ -10,20 +10,14 @@ import {
 import { Stage } from "@pixi/react";
 import useUndo from "use-undo";
 
-import {
-  Point,
-  isVariable,
-  isLink,
-  indexOf,
-  IItems,
-} from "@/components/SystemMapCanvas/lib/types";
+import { indexOf, IItems } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
-import { useCanvas } from "./lib/useCanvas";
+import { useMouse } from "./hooks/useMouse";
 
 import { InputTextArea } from "./InputTextArea";
-import { useInput } from "./lib/useInput";
-import { useView } from "./lib/useView";
+import { useInput } from "./hooks/useInput";
+import { useView } from "./hooks/useView";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
@@ -52,8 +46,6 @@ export const SystemMapCanvas = ({
 
   const [selected, setSelected] = useState<string>("");
   const [editing, setEditing] = useState<string>("");
-  const [moving, setMoving] = useState<boolean>(false);
-  const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
@@ -75,17 +67,18 @@ export const SystemMapCanvas = ({
   ] = useUndo(items);
   const { present: presentItems } = itemsState;
 
+  const [app, setApp, itemName] = useView(state);
+
   const [
-    app,
-    setApp,
     handleZoomIn,
     handleZoomOut,
-    XY,
-    startMovingViewport,
-    moveViewport,
-  ] = useCanvas(ref, editing);
-
-  const [itemName] = useView(app, state);
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleDoubleClick,
+    handleClick,
+    handleContextMenu,
+  ] = useMouse(app, ref, editing, dispatch, itemName, handleEdit);
 
   const [
     inputPosition,
@@ -149,133 +142,12 @@ export const SystemMapCanvas = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cmdUndoAdd]);
 
-  function handleMouseDown(event: SyntheticEvent) {
-    setMoving(false);
-    if (editing !== "") {
-      return;
-    }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
-
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas, xyMap);
-
-    if (item === "") {
-      setIsMovingViewport(true);
-      startMovingViewport(xyCanvas);
-      return;
-    }
-
-    if (e.button === 0) {
-      dispatch({ type: "MouseLeftDown", xy: xyMap, item: item });
-    }
-  }
-
-  function handleMouseMove(event: SyntheticEvent) {
-    setMoving(true);
-    if (editing !== "") {
-      return;
-    }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
-
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas, xyMap);
-
-    if (isMovingViewport) {
-      moveViewport(xyCanvas);
-      return;
-    }
-
-    dispatch({ type: "MouseMove", xy: xyMap, item: item });
-  }
-
-  function handleMouseUp(event: SyntheticEvent) {
-    if (editing !== "") {
-      return;
-    }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
-
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas, xyMap);
-
-    if (isMovingViewport) {
-      setIsMovingViewport(false);
-      return;
-    }
-
-    dispatch({ type: "MouseLeftUp", xy: xyMap, item: item });
-  }
-
-  function handleDoubleClick(event: SyntheticEvent) {
-    if (editing !== "") {
-      return;
-    }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
-
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas, xyMap);
-
-    dispatch({
-      type: "MouseLeftDoubleClick",
-      xy: xyMap,
-      item: item,
-    });
-  }
-
-  function handleClick(event: SyntheticEvent) {
-    if (moving) {
-      return;
-    }
-    if (editing !== "") {
-      return;
-    }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
-
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
-    const item = itemName(xyCanvas, xyMap);
-
+  function handleEdit(item: string) {
     if (item === selected) {
       setEditing(item);
       return;
     }
     setSelected(item);
-
-    //dispatch({ type: "MouseLeftClick", xy: xyMap, item: "" });
-  }
-
-  function handleContextMenu(event: SyntheticEvent) {
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    e.preventDefault();
   }
 
   function handleNameKeyEnterDown(value: string) {

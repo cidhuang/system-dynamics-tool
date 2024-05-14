@@ -1,5 +1,5 @@
 import { Container, DisplayObject, Text } from "pixi.js";
-import { Point, Link, indexOf } from "./types";
+import { Point, Link, indexOf } from "../types";
 import { ViewEdge } from "./ViewEdge";
 
 export function addViewLink(

@@ -1,5 +1,5 @@
 import { Container, DisplayObject, Rectangle, Text } from "pixi.js";
-import { Point, Variable, indexOf } from "./types";
+import { Point, Variable, indexOf } from "../types";
 
 export function addViewVariable(
   stage: Container<DisplayObject>,

@@ -1,15 +1,23 @@
-import { useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 import { IStateCanvas } from "../reducer/types";
-import { indexOf, Point } from "./types";
-import { isVariable, isLink } from "./types";
-import { isOnLink, updateViewLink, addViewLink } from "./link";
-import { isOnVariable, updateViewVariable, addViewVariable } from "./variable";
+import { indexOf, Point } from "../lib/types";
+import { isVariable, isLink } from "../lib/types";
+import { isOnLink, updateViewLink, addViewLink } from "../lib/view/link";
+import {
+  isOnVariable,
+  updateViewVariable,
+  addViewVariable,
+} from "../lib/view/variable";
 
 export function useView(
-  app: Application<ICanvas> | undefined,
   state: IStateCanvas,
-): [(xyCanvas: Point, xyMap: Point) => string] {
+): [
+  Application<ICanvas> | undefined,
+  Dispatch<SetStateAction<Application<ICanvas> | undefined>>,
+  (xyCanvas: Point, xyMap: Point) => string,
+] {
+  const [app, setApp] = useState<Application<ICanvas>>();
   useEffect(() => {
     if (app === undefined) {
       return;
@@ -128,5 +136,5 @@ export function useView(
     return "";
   }
 
-  return [itemName];
+  return [app, setApp, itemName];
 }
