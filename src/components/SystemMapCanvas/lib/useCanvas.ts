@@ -1,10 +1,16 @@
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import {
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+  MutableRefObject,
+} from "react";
 import { Application, type ICanvas } from "pixi.js";
 
 import { Point } from "@/components/SystemMapCanvas/lib/types";
 
 export function useCanvas(
-  offset: () => Point,
+  ref: MutableRefObject<null>,
   editing: string,
 ): [
   Application<ICanvas> | undefined,
@@ -74,9 +80,14 @@ export function useCanvas(
   }, [scale]);
 
   const XY = (x: number, y: number): [Point, Point] => {
-    const canvasPosition = offset();
-    const xCanvas = x + document.documentElement.scrollLeft - canvasPosition.x;
-    const yCanvas = y + document.documentElement.scrollTop - canvasPosition.y;
+    const xCanvas =
+      x +
+      document.documentElement.scrollLeft -
+      (ref.current as unknown as HTMLElement).offsetLeft;
+    const yCanvas =
+      y +
+      document.documentElement.scrollTop -
+      (ref.current as unknown as HTMLElement).offsetTop;
 
     const xMap = (xCanvas - viewportPosition.x) / scale.x;
     const yMap = (yCanvas - viewportPosition.y) / scale.y;

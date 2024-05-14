@@ -20,15 +20,10 @@ import {
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
 import { useCanvas } from "./lib/useCanvas";
-import {
-  addViewVariable,
-  updateViewVariable,
-  isOnVariable,
-} from "./lib/variable";
-import { addViewLink, updateViewLink, isOnLink } from "./lib/link";
 
 import { InputTextArea } from "./InputTextArea";
 import { useInput } from "./lib/useInput";
+import { useView } from "./lib/useView";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
@@ -53,31 +48,11 @@ export const SystemMapCanvas = ({
   items,
   onItemsChange,
 }: SystemMapCanvasProps) => {
+  const ref = useRef(null);
+
   const [selected, setSelected] = useState<string>("");
   const [editing, setEditing] = useState<string>("");
   const [moving, setMoving] = useState<boolean>(false);
-
-  const [
-    app,
-    setApp,
-    handleZoomIn,
-    handleZoomOut,
-    XY,
-    startMovingViewport,
-    moveViewport,
-  ] = useCanvas(offset, editing);
-
-  const [
-    inputPosition,
-    inputVisible,
-    inputValue,
-    inputWidth,
-    inputHeight,
-    setInputVisible,
-  ] = useInput(app, editing);
-
-  const ref = useRef(null);
-
   const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
 
   const [state, dispatch] = useReducer(reducer, {
@@ -99,6 +74,27 @@ export const SystemMapCanvas = ({
     },
   ] = useUndo(items);
   const { present: presentItems } = itemsState;
+
+  const [
+    app,
+    setApp,
+    handleZoomIn,
+    handleZoomOut,
+    XY,
+    startMovingViewport,
+    moveViewport,
+  ] = useCanvas(ref, editing);
+
+  const [itemName] = useView(app, state);
+
+  const [
+    inputPosition,
+    inputVisible,
+    inputValue,
+    inputWidth,
+    inputHeight,
+    setInputVisible,
+  ] = useInput(app, editing);
 
   useEffect(() => {
     dispatch({ type: "Mode", mode: mode });
@@ -152,131 +148,6 @@ export const SystemMapCanvas = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cmdUndoAdd]);
-
-  useEffect(() => {
-    if (app === undefined) {
-      return;
-    }
-
-    for (let i = 0; i < state.items.links.length; i++) {
-      const link = state.items.links[i];
-      const start =
-        state.items.variables[indexOf(state.items.variables, link.start)].xy;
-      const end =
-        state.items.variables[indexOf(state.items.variables, link.end)].xy;
-      if (!updateViewLink(app.stage, link.name, start, end, link.mid)) {
-        addViewLink(app.stage, link.name, start, end);
-      }
-    }
-
-    for (let i = 0; i < state.items.variables.length; i++) {
-      const variable = state.items.variables[i];
-      if (!updateViewVariable(app.stage, variable)) {
-        addViewVariable(app.stage, variable);
-      }
-    }
-
-    for (let i = app?.stage.children.length - 1; i >= 0; i--) {
-      const name = app?.stage.children[i].name ?? "";
-
-      if (isLink(name) && indexOf(state.items.links, name) < 0) {
-        app?.stage.removeChildAt(i);
-      }
-
-      if (isVariable(name) && indexOf(state.items.variables, name) < 0) {
-        app?.stage.removeChildAt(i);
-      }
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.items]);
-
-  // drag link
-  useEffect(() => {
-    if (app === undefined) {
-      return;
-    }
-
-    let startPoint = undefined;
-    if (state.dragStart !== undefined) {
-      const index = indexOf(state.items.variables, state.dragStart);
-      if (index >= 0) {
-        startPoint = state.items.variables[index].xy;
-      }
-    }
-
-    let endPoint = undefined;
-    if (state.dragLinkEnd !== undefined) {
-      if (typeof state.dragLinkEnd === "string") {
-        const index = indexOf(state.items.variables, state.dragLinkEnd);
-        if (index >= 0) {
-          endPoint = state.items.variables[index].xy;
-        }
-      } else {
-        endPoint = state.dragLinkEnd;
-      }
-    }
-
-    const dragLink = indexOf(app?.stage.children, "dragLink");
-
-    if (startPoint === undefined || endPoint === undefined) {
-      if (dragLink >= 0) {
-        app?.stage.removeChildAt(dragLink);
-      }
-      return;
-    }
-
-    if (dragLink >= 0) {
-      updateViewLink(app?.stage, "dragLink", startPoint, endPoint);
-      return;
-    }
-
-    if (state.dragStart === undefined) {
-      return;
-    }
-
-    addViewLink(app?.stage, "dragLink", startPoint, endPoint);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.dragLinkEnd, state.dragLinkMid]);
-
-  function itemName(xyCanvas: Point, xyMap: Point): string {
-    if (app === undefined) {
-      return "";
-    }
-
-    if (app?.stage === null) {
-      return "";
-    }
-
-    for (let i = 0; i < app?.stage.children.length; i++) {
-      const item = app?.stage.children[i];
-      if (item.name === null) {
-        continue;
-      }
-
-      if (isVariable(item.name)) {
-        if (isOnVariable(item, xyCanvas)) {
-          return item.name;
-        }
-      }
-
-      if (isLink(item.name)) {
-        if (isOnLink(item, xyMap)) {
-          return item.name;
-        }
-      }
-    }
-
-    return "";
-  }
-
-  function offset(): Point {
-    return {
-      x: (ref.current as unknown as HTMLElement).offsetLeft,
-      y: (ref.current as unknown as HTMLElement).offsetTop,
-    };
-  }
 
   function handleMouseDown(event: SyntheticEvent) {
     setMoving(false);
