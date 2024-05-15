@@ -29,7 +29,9 @@ export function useView(
         state.items.variables[indexOf(state.items.variables, link.start)].xy;
       const end =
         state.items.variables[indexOf(state.items.variables, link.end)].xy;
-      if (!updateViewLink(app.stage, link.name, start, end, link.mid)) {
+      if (
+        !updateViewLink(app.stage, link.name, link.isPlus, start, end, link.mid)
+      ) {
         addViewLink(app.stage, link.name, start, end);
       }
     }
@@ -92,7 +94,7 @@ export function useView(
     }
 
     if (dragLink >= 0) {
-      updateViewLink(app?.stage, "dragLink", startPoint, endPoint);
+      updateViewLink(app?.stage, "dragLink", true, startPoint, endPoint);
       return;
     }
 

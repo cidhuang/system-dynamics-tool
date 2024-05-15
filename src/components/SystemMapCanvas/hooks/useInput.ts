@@ -6,8 +6,8 @@ import { getVariableBounds, getVariableText } from "../lib/view/variable";
 
 export function useInput(
   app: Application<ICanvas> | undefined,
-  editing: string,
-  setEditing: Dispatch<SetStateAction<string>>,
+  editingText: string,
+  setEditingText: Dispatch<SetStateAction<string>>,
 ): [Point, boolean, string, number, number, Dispatch<SetStateAction<boolean>>] {
   const [inputPosition, setInputPosition] = useState<Point>({ x: 0, y: 0 });
   const [inputVisible, setInputVisible] = useState<boolean>(false);
@@ -20,12 +20,12 @@ export function useInput(
       return;
     }
 
-    if (!isVariable(editing)) {
-      setEditing("");
+    if (!isVariable(editingText)) {
+      setEditingText("");
       return;
     }
 
-    const index = indexOf(app?.stage.children, editing);
+    const index = indexOf(app?.stage.children, editingText);
     const item = app?.stage.children[index];
     const bounds = getVariableBounds(item);
 
@@ -36,7 +36,7 @@ export function useInput(
     setInputVisible(true);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editing]);
+  }, [editingText]);
 
   return [
     inputPosition,

@@ -13,7 +13,7 @@ import { Actions } from "../reducer/reducer";
 export function useMouse(
   app: Application<ICanvas> | undefined,
   ref: MutableRefObject<null>,
-  editing: string,
+  editingText: string,
   dispatch: Dispatch<Actions>,
   itemName: (xyCanvas: Point, xyMap: Point) => string,
   handleEdit: (item: string) => void,
@@ -50,7 +50,7 @@ export function useMouse(
   };
 
   function handleWheel(event: WheelEvent) {
-    if (editing !== "") {
+    if (editingText !== "") {
       return;
     }
     const e = event as unknown as WheelEvent;
@@ -121,7 +121,7 @@ export function useMouse(
 
   function handleMouseDown(event: SyntheticEvent) {
     setMoving(false);
-    if (editing !== "") {
+    if (editingText !== "") {
       return;
     }
     const e = event as unknown as MouseEvent;
@@ -148,7 +148,7 @@ export function useMouse(
 
   function handleMouseMove(event: SyntheticEvent) {
     setMoving(true);
-    if (editing !== "") {
+    if (editingText !== "") {
       return;
     }
     const e = event as unknown as MouseEvent;
@@ -171,7 +171,7 @@ export function useMouse(
   }
 
   function handleMouseUp(event: SyntheticEvent) {
-    if (editing !== "") {
+    if (editingText !== "") {
       return;
     }
     const e = event as unknown as MouseEvent;
@@ -194,7 +194,7 @@ export function useMouse(
   }
 
   function handleDoubleClick(event: SyntheticEvent) {
-    if (editing !== "") {
+    if (editingText !== "") {
       return;
     }
     const e = event as unknown as MouseEvent;
@@ -219,7 +219,7 @@ export function useMouse(
     if (moving) {
       return;
     }
-    if (editing !== "") {
+    if (editingText !== "") {
       return;
     }
     const e = event as unknown as MouseEvent;

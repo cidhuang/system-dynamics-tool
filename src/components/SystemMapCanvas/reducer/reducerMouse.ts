@@ -93,8 +93,16 @@ function stockToVariable(state: IStateCanvas, item: string): IStateCanvas {
   };
 }
 
-function reverseLink(state: IStateCanvas, item: string): IStateCanvas {
+function toggleLinkRelation(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
+  const index = indexOf(items.links, item);
+
+  if (index < 0) {
+    alert();
+    return state;
+  }
+  const link = items.links[index];
+  link.isPlus = !link.isPlus;
 
   return {
     ...state,
@@ -103,7 +111,7 @@ function reverseLink(state: IStateCanvas, item: string): IStateCanvas {
   };
 }
 
-function reverseFlow(state: IStateCanvas, item: string): IStateCanvas {
+function reverseFlowDirection(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
 
   return {
@@ -133,11 +141,11 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   }
 
   if (isLink(item)) {
-    return reverseLink(state, item);
+    return toggleLinkRelation(state, item);
   }
 
   if (isFlow(item)) {
-    return reverseFlow(state, item);
+    return reverseFlowDirection(state, item);
   }
 
   return state;

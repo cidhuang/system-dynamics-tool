@@ -10,7 +10,11 @@ import {
 import { Stage } from "@pixi/react";
 import useUndo from "use-undo";
 
-import { indexOf, IItems } from "@/components/SystemMapCanvas/lib/types";
+import {
+  indexOf,
+  IItems,
+  isVariable,
+} from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
 import { useMouse } from "./hooks/useMouse";
@@ -45,7 +49,7 @@ export const SystemMapCanvas = ({
   const ref = useRef(null);
 
   const [selected, setSelected] = useState<string>("");
-  const [editing, setEditing] = useState<string>("");
+  const [editingText, setEditingText] = useState<string>("");
 
   const [state, dispatch] = useReducer(reducer, {
     mode: mode,
@@ -78,7 +82,7 @@ export const SystemMapCanvas = ({
     handleDoubleClick,
     handleClick,
     handleContextMenu,
-  ] = useMouse(app, ref, editing, dispatch, itemName, handleEdit);
+  ] = useMouse(app, ref, editingText, dispatch, itemName, handleEdit);
 
   const [
     inputPosition,
@@ -87,7 +91,7 @@ export const SystemMapCanvas = ({
     inputWidth,
     inputHeight,
     setInputVisible,
-  ] = useInput(app, editing, setEditing);
+  ] = useInput(app, editingText, setEditingText);
 
   useEffect(() => {
     dispatch({ type: "Mode", mode: mode });
@@ -144,20 +148,22 @@ export const SystemMapCanvas = ({
 
   function handleEdit(item: string) {
     if (item === selected) {
-      setEditing(item);
-      return;
+      if (isVariable(item)) {
+        setEditingText(item);
+        return;
+      }
     }
     setSelected(item);
   }
 
   function handleNameKeyEnterDown(value: string) {
-    const index = indexOf(state.items.variables, editing);
+    const index = indexOf(state.items.variables, editingText);
     const item = structuredClone(state.items.variables[index]);
     if (item.text !== value) {
       item.text = value;
       dispatch({ type: "ChangeItems", variables: [item] });
     }
-    setEditing("");
+    setEditingText("");
     setSelected("");
     setInputVisible(false);
   }

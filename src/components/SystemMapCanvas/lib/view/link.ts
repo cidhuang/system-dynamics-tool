@@ -22,6 +22,7 @@ export function addViewLink(
 export function updateViewLink(
   stage: Container<DisplayObject>,
   name: string,
+  isPlus: boolean,
   start: Point,
   end: Point,
   mid?: Point,
@@ -32,6 +33,7 @@ export function updateViewLink(
   }
 
   const view = stage.children[index] as ViewEdge;
+  view.isDashed = !isPlus;
   view.start = start;
   view.end = end;
   view.mid = mid;
