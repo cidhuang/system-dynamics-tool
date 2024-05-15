@@ -1,4 +1,13 @@
-import type { Point } from "./types";
+/**
+ * The poisition of a point
+ * @property x x of point
+ * @prop y y of point
+ * @interface
+ */
+export interface Point {
+  x: number;
+  y: number;
+}
 
 /**
  * The properties of a circle
@@ -6,7 +15,7 @@ import type { Point } from "./types";
  * @prop radius radius of the circle
  * @interface
  */
-export interface ICircle {
+export interface Circle {
   center: Point;
   radius: number;
 }
@@ -20,7 +29,7 @@ export interface ICircle {
  * @param p3 - the 3rd point
  * @returns - the circle formed by 3 points.
  */
-export function getCircle(p1: Point, p2: Point, p3: Point): ICircle {
+export function getCircle(p1: Point, p2: Point, p3: Point): Circle {
   const e = 2 * (p2.x - p1.x);
   const f = 2 * (p2.y - p1.y);
   const g = p2.x ** 2 - p1.x ** 2 + p2.y ** 2 - p1.y ** 2;
@@ -74,4 +83,24 @@ export function getOrientation(p1: Point, p2: Point, p3: Point): EOrientation {
  */
 export function toDegree(angle: number): number {
   return (angle * 180) / Math.PI;
+}
+
+export interface Line {
+  p0: Point;
+  p1: Point;
+}
+
+export interface Arc {
+  center: Point;
+  radius: number;
+  startAngle: number;
+  endAngle: number;
+  anticlockwise: boolean;
+}
+
+export interface Rectangle {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }

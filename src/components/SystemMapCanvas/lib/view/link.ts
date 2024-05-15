@@ -1,6 +1,7 @@
 import { Container, DisplayObject, Text } from "pixi.js";
-import { Point, Link, indexOf } from "../types";
+import { indexOf } from "../types";
 import { ViewEdge } from "./ViewEdge";
+import { Point } from "../geometry";
 
 export function addViewLink(
   stage: Container<DisplayObject>,

@@ -1,4 +1,5 @@
-import { Point, IItems } from "@/components/SystemMapCanvas/lib/types";
+import { IItems } from "@/components/SystemMapCanvas/lib/types";
+import { Point } from "../lib/geometry";
 
 export enum ESystemMapCanvasMode {
   MoveVariableStock,

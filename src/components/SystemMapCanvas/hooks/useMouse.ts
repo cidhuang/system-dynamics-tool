@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Application, type ICanvas } from "pixi.js";
 
-import { Point } from "@/components/SystemMapCanvas/lib/types";
+import { Point } from "../lib/geometry";
 import { Actions } from "../reducer/reducer";
 
 export function useMouse(

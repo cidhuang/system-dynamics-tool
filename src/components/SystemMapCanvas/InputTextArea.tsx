@@ -1,6 +1,6 @@
 import { useState, useEffect, SyntheticEvent } from "react";
 
-import { Point } from "@/components/SystemMapCanvas/lib/types";
+import { Point } from "./lib/geometry";
 
 export const InputTextArea = ({
   visible,
@@ -26,6 +26,10 @@ export const InputTextArea = ({
   function handleKeyDown(event: SyntheticEvent) {
     const e = event as unknown as KeyboardEvent;
     if (e.code === "Enter") {
+      if (value.replaceAll(" ", "").replaceAll("\n", "") === "") {
+        onKeyEnterDown(value0);
+        return;
+      }
       onKeyEnterDown(value.replaceAll("\\n", "\n").replaceAll("\\\n", "\\n"));
     }
   }

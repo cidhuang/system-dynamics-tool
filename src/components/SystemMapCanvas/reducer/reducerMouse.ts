@@ -1,5 +1,4 @@
 import {
-  Point,
   indexOf,
   isVariable,
   createVariable,
@@ -10,6 +9,7 @@ import {
   isFlow,
   createFlow,
 } from "@/components/SystemMapCanvas/lib/types";
+import { Point } from "../lib/geometry";
 
 import {
   EStateCanvas,

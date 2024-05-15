@@ -1,13 +1,4 @@
-/**
- * The poisition of a point
- * @property x x of point
- * @prop y y of point
- * @interface
- */
-export interface Point {
-  x: number;
-  y: number;
-}
+import { Point } from "./geometry";
 
 export function indexOf(array: any[], name: string): number {
   for (let i = 0; i < array.length; i++) {
@@ -136,4 +127,82 @@ export interface IItems {
   links: Link[];
   stocks: Stock[];
   flows: Flow[];
+}
+
+export function getPoint4View(
+  variable0: Variable,
+  p1: Point,
+  mid?: Point,
+): Point {
+  const charWidth = 7;
+  const charHeight = 20;
+
+  const p0 = variable0.xy;
+  const dx = p1.x - p0.x;
+  const dy = p1.y - p0.y;
+  const slope = dy / dx;
+
+  const strings0 = variable0.text.split("\n");
+  const width0 =
+    charWidth *
+    strings0.reduce((str0, str1) => {
+      return str0.length > str1.length ? str0 : str1;
+    }).length;
+  const height0 = charHeight * strings0.length;
+  const slope0 = height0 / width0;
+
+  const dx0 = height0 / slope;
+  const dy0 = width0 * slope;
+
+  let point = structuredClone(p0);
+
+  if (mid === undefined) {
+    if (dx === 0) {
+      if (dy > 0) {
+        point.y += height0;
+      }
+
+      if (dy < 0) {
+        point.y -= height0;
+      }
+    } else if (dx > 0) {
+      if (slope > 0) {
+        if (slope0 > slope) {
+          point.x += width0;
+          point.y += dy0;
+        } else {
+          point.x += dx0;
+          point.y += height0;
+        }
+      } else {
+        if (slope0 > -slope) {
+          point.x += width0;
+          point.y += dy0;
+        } else {
+          point.x -= dx0;
+          point.y -= height0;
+        }
+      }
+    } else {
+      if (slope > 0) {
+        if (slope0 > slope) {
+          point.x -= width0;
+          point.y -= dy0;
+        } else {
+          point.x -= dx0;
+          point.y -= height0;
+        }
+      } else {
+        if (slope0 > -slope) {
+          point.x -= width0;
+          point.y -= dy0;
+        } else {
+          point.x += dx0;
+          point.y += height0;
+        }
+      }
+    }
+  }
+
+  return point;
 }

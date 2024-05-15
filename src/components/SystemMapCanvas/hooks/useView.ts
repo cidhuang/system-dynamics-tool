@@ -1,14 +1,14 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 import { IStateCanvas } from "../reducer/types";
-import { indexOf, Point } from "../lib/types";
-import { isVariable, isLink } from "../lib/types";
+import { indexOf, isVariable, isLink, getPoint4View } from "../lib/types";
 import { isOnLink, updateViewLink, addViewLink } from "../lib/view/link";
 import {
   isOnVariable,
   updateViewVariable,
   addViewVariable,
 } from "../lib/view/variable";
+import { Point } from "../lib/geometry";
 
 export function useView(
   state: IStateCanvas,
@@ -25,10 +25,14 @@ export function useView(
 
     for (let i = 0; i < state.items.links.length; i++) {
       const link = state.items.links[i];
-      const start =
-        state.items.variables[indexOf(state.items.variables, link.start)].xy;
-      const end =
-        state.items.variables[indexOf(state.items.variables, link.end)].xy;
+      const startV =
+        state.items.variables[indexOf(state.items.variables, link.start)];
+      const endV =
+        state.items.variables[indexOf(state.items.variables, link.end)];
+
+      const start = getPoint4View(startV, endV.xy, link.mid);
+      const end = getPoint4View(endV, startV.xy, link.mid);
+
       if (
         !updateViewLink(app.stage, link.name, link.isPlus, start, end, link.mid)
       ) {
@@ -64,20 +68,22 @@ export function useView(
       return;
     }
 
-    let startPoint = undefined;
+    let startV = undefined;
     if (state.dragStart !== undefined) {
       const index = indexOf(state.items.variables, state.dragStart);
       if (index >= 0) {
-        startPoint = state.items.variables[index].xy;
+        startV = state.items.variables[index];
       }
     }
 
     let endPoint = undefined;
+    let endV = undefined;
     if (state.dragLinkEnd !== undefined) {
       if (typeof state.dragLinkEnd === "string") {
         const index = indexOf(state.items.variables, state.dragLinkEnd);
         if (index >= 0) {
-          endPoint = state.items.variables[index].xy;
+          endV = state.items.variables[index];
+          endPoint = endV.xy;
         }
       } else {
         endPoint = state.dragLinkEnd;
@@ -86,15 +92,21 @@ export function useView(
 
     const dragLink = indexOf(app?.stage.children, "dragLink");
 
-    if (startPoint === undefined || endPoint === undefined) {
+    if (startV === undefined || endPoint === undefined) {
       if (dragLink >= 0) {
         app?.stage.removeChildAt(dragLink);
       }
       return;
     }
 
+    const startPoint = getPoint4View(startV, endPoint);
+    let end = endPoint;
+    if (endV !== undefined) {
+      end = getPoint4View(endV, startV.xy);
+    }
+
     if (dragLink >= 0) {
-      updateViewLink(app?.stage, "dragLink", true, startPoint, endPoint);
+      updateViewLink(app?.stage, "dragLink", true, startPoint, end);
       return;
     }
 
@@ -102,7 +114,11 @@ export function useView(
       return;
     }
 
-    addViewLink(app?.stage, "dragLink", startPoint, endPoint);
+    if (state.dragStart === state.dragLinkEnd) {
+      return;
+    }
+
+    addViewLink(app?.stage, "dragLink", startPoint, end);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.dragLinkEnd, state.dragLinkMid]);

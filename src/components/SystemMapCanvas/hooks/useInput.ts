@@ -1,8 +1,10 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 
-import { Point, isVariable, indexOf } from "../lib/types";
+import { isVariable, indexOf } from "../lib/types";
 import { getVariableBounds, getVariableText } from "../lib/view/variable";
+
+import { Point } from "../lib/geometry";
 
 export function useInput(
   app: Application<ICanvas> | undefined,

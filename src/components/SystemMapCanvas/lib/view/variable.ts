@@ -1,5 +1,6 @@
 import { Container, DisplayObject, Rectangle, Text } from "pixi.js";
-import { Point, Variable, indexOf } from "../types";
+import { Variable, indexOf } from "../types";
+import { Point } from "../geometry";
 
 export function addViewVariable(
   stage: Container<DisplayObject>,
@@ -10,8 +11,8 @@ export function addViewVariable(
   text.name = variable.name;
   text.style.align = "center";
   text.style.fill = "black";
-  text.x = variable.xy.x;
-  text.y = variable.xy.y;
+  text.x = variable.xy.x - text.width / 2;
+  text.y = variable.xy.y - text.height / 2;
   text.style.fill = "black";
   text.style.fontWeight = "normal";
 
@@ -29,8 +30,8 @@ export function updateViewVariable(
 
   const text = stage.children[index] as Text;
   text.text = variable.text;
-  text.x = variable.xy.x;
-  text.y = variable.xy.y;
+  text.x = variable.xy.x - text.width / 2;
+  text.y = variable.xy.y - text.height / 2;
   text.style.fill = "black";
   text.style.fontWeight = "normal";
 
@@ -38,8 +39,8 @@ export function updateViewVariable(
 }
 
 export function isOnVariable(item: DisplayObject, xy: Point): boolean {
-  const text = item as Text;
-  const bounds = text.getBounds();
+  //const text = item as Text;
+  const bounds = getVariableBounds(item); //.getBounds();
   //console.log(xy, bounds);
   if (
     xy.x >= bounds.left &&

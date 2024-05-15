@@ -4,9 +4,9 @@ import {
 } from "@pixi/graphics-smooth";
 // import { Graphics } from 'pixi.js';
 import { Polygon, type ColorSource } from "pixi.js";
-import { Point } from "../types";
+import { Point } from "../geometry";
 
-import { EOrientation, getOrientation, getCircle } from "../circle";
+import { EOrientation, getOrientation, getCircle } from "../geometry";
 
 export class ViewEdge extends Graphics {
   protected _start: Point;
