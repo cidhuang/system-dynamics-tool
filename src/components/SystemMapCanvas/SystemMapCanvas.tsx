@@ -87,7 +87,7 @@ export const SystemMapCanvas = ({
     inputWidth,
     inputHeight,
     setInputVisible,
-  ] = useInput(app, editing);
+  ] = useInput(app, editing, setEditing);
 
   useEffect(() => {
     dispatch({ type: "Mode", mode: mode });

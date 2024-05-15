@@ -7,6 +7,7 @@ import { getVariableBounds, getVariableText } from "../lib/view/variable";
 export function useInput(
   app: Application<ICanvas> | undefined,
   editing: string,
+  setEditing: Dispatch<SetStateAction<string>>,
 ): [Point, boolean, string, number, number, Dispatch<SetStateAction<boolean>>] {
   const [inputPosition, setInputPosition] = useState<Point>({ x: 0, y: 0 });
   const [inputVisible, setInputVisible] = useState<boolean>(false);
@@ -20,6 +21,7 @@ export function useInput(
     }
 
     if (!isVariable(editing)) {
+      setEditing("");
       return;
     }
 
