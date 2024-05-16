@@ -20,14 +20,6 @@ sidebar_position: 2
 @startuml Interaction
 hide empty description
 
-state "Edit (Item) Window" as editWindow {
-  state "Off" as editOff #yellow : hide window
-  state "On" as editOn : show window
-  [*] --> editOff
-  editOff --> editOn : click \n on (Item)
-  editOn -up-> editOff : click \n on background
-}
-
 state "Common" as common {
   state "Idle" as idle #yellow
   state "Moving Viewport" as moveViewport : mouse move
@@ -35,8 +27,8 @@ state "Common" as common {
   state "Shaping Flow" as shapeFlow : mouse move
   state ": create Variable" as addVariable #white ##white
   state ": toggle Variable \n and Stock" as toggleVariableStock #white ##white
-  state ": toggle Positive \n and Negative" as togglePositiveNegative #white ##white
-  state ": change direction" as changeDirection #white ##white
+  state ": toggle Relation" as togglePositiveNegative #white ##white
+  state ": toggle direction" as toggleDirection #white ##white
 
   [*] -> idle
   idle -up[#blue]-> shapeLink : down \n on Link
@@ -48,7 +40,7 @@ state "Common" as common {
   idle -up[#green]-> moveViewport : down \n on background
   moveViewport --> idle : up
 
-  idle -[#red]-> addVariable : double click \n on background
+  idle -[#green]-> addVariable : double click \n on background
   addVariable -up-> idle
 
   idle -[#purple]-> toggleVariableStock : double click \n on Varialble \n / Stock
@@ -57,49 +49,84 @@ state "Common" as common {
   idle -[#purple]-> togglePositiveNegative : double click \n on Link
   togglePositiveNegative -up-> idle
 
-  idle -[#purple]-> changeDirection : double click \n on Flow
-  changeDirection -up-> idle
+  idle -[#purple]-> toggleDirection : double click \n on Flow
+  toggleDirection -up-> idle
+
+}
+
+state "Edit (Item) Window" as editWindow {
+  state "Idle" as idleEdit #yellow
+  state "(Item) Selected" as selected
+  state "(Item) Editing" as editing : show window
+
+  [*] -> idleEdit
+  idleEdit -[#brown]-> selected : click \n on (Item)
+  selected -up[#brown]-> idleEdit : click \n on background
+  selected -[#brown]> editing : click \n on (Item) \n (after 1 sec)
+  editing -up[#brown]-> idleEdit : click \n on background \n : hide window
+}
+
+state "Delete (Item) Mode" as delete {
+  state "Idle" as idleDelete #yellow
+  state ": delete (Item)" as deleteItem #white ##white
+
+  [*] -> idleDelete
+  idleDelete -[#purple]-> deleteItem : double click \n on (Item)
+  deleteItem -up-> idleDelete
+
+}
+
+state "Toggle Link Direction Mode" as toggleLinkDirectionMode {
+  state "Idle" as idleLinkDirection #yellow
+  state ": toggle direction" as toggleLinkDirection #white ##white
+
+  [*] -> idleLinkDirection
+  idleLinkDirection -[#purple]-> toggleLinkDirection : double click \n on Link
+  toggleLinkDirection -up-> idleLinkDirection
 
 }
 
 state "Move Variable / Stock Mode" as modeMoveVariableStock {
-  state "Idle" as idle1 #yellow
+  state "Idle" as idleMoveVariable #yellow
   state "Moving Variable" as moveVariable : mouse move
   state "Moving Stock" as moveStock : mouse move
 
-  [*] -> idle1
+  [*] -> idleMoveVariable
 
-  idle1 -[#blue]-> moveVariable : down \n on Variable
-  moveVariable -up-> idle1 : up
+  idleMoveVariable -[#blue]-> moveVariable : down \n on Variable
+  moveVariable -up-> idleMoveVariable : up
 
-  idle1 -[#blue]-> moveStock : down \n on Stock
-  moveStock -up-> idle1 : up
+  idleMoveVariable -[#blue]-> moveStock : down \n on Stock
+  moveStock -up-> idleMoveVariable : up
 
 }
 
 state "Add Link / Flow Mode" as modeAddLinkFlow {
-  state "Idle" as idle2 #yellow
+  state "Idle" as idleAddLink #yellow
   state "Dragging New \n Link / Flow" as dragNewLinkFlow : mouse move
   state ": create Link" as addLink #white ##white
   state ": create Flow" as addFlow #white ##white
 
-  [*] -> idle2
+  [*] -> idleAddLink
 
-  idle2 -[#red]-> dragNewLinkFlow : down \n on Variable \n / Stock
+  idleAddLink -[#blue]-> dragNewLinkFlow : down \n on Variable \n / Stock
 
   dragNewLinkFlow -left> addLink : up \n on Variable \n / Valve \n from Variable
-  addLink -up-> idle2
+  addLink -up-> idleAddLink
 
   dragNewLinkFlow -> addFlow : up \n on Stock \n / background \n from Stock
-  addFlow -up-> idle2
+  addFlow -up-> idleAddLink
 
 }
 
 [*] -> modeMoveVariableStock
 modeMoveVariableStock -> modeAddLinkFlow
-modeAddLinkFlow -> modeMoveVariableStock
+modeAddLinkFlow -left> modeMoveVariableStock
 
-modeMoveVariableStock -up[hidden]-> editWindow
+delete -up[hidden]-> common
+toggleLinkDirectionMode -[hidden]> delete
+delete -[hidden]> editWindow
+modeMoveVariableStock -up[hidden]-> toggleLinkDirectionMode
 
 @enduml
 ```
