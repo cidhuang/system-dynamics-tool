@@ -4,6 +4,7 @@ import {
   Dispatch,
   MutableRefObject,
   SyntheticEvent,
+  SetStateAction,
 } from "react";
 import { Application, type ICanvas } from "pixi.js";
 
@@ -13,6 +14,8 @@ import { Actions } from "../reducer/reducer";
 export function useMouse(
   app: Application<ICanvas> | undefined,
   ref: MutableRefObject<null>,
+  selected: string,
+  setSelected: Dispatch<SetStateAction<string>>,
   editingText: string,
   dispatch: Dispatch<Actions>,
   itemName: (xyCanvas: Point, xyMap: Point) => string,
@@ -28,6 +31,7 @@ export function useMouse(
   (event: SyntheticEvent) => void,
 ] {
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
+  const [editable, setEditable] = useState<boolean>(false);
 
   const [moving, setMoving] = useState<boolean>(false);
   const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
@@ -147,6 +151,8 @@ export function useMouse(
   }
 
   function handleMouseMove(event: SyntheticEvent) {
+    setSelected("");
+
     setMoving(true);
     if (editingText !== "") {
       return;
@@ -194,6 +200,8 @@ export function useMouse(
   }
 
   function handleDoubleClick(event: SyntheticEvent) {
+    setSelected("");
+
     if (editingText !== "") {
       return;
     }
@@ -233,7 +241,22 @@ export function useMouse(
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
     const item = itemName(xyCanvas, xyMap);
 
-    handleEdit(item);
+    if (selected !== item) {
+      setSelected(item);
+      setEditable(false);
+      setTimeout(() => {
+        setEditable(true);
+      }, 1000);
+      return;
+    }
+
+    if (selected === item) {
+      if (!editable) {
+        return;
+      }
+      handleEdit(item);
+      setSelected(item);
+    }
 
     //dispatch({ type: "MouseLeftClick", xy: xyMap, item: "" });
   }

@@ -72,7 +72,16 @@ export const SystemMapCanvas = ({
     handleDoubleClick,
     handleClick,
     handleContextMenu,
-  ] = useMouse(app, ref, editingText, dispatch, itemName, handleEdit);
+  ] = useMouse(
+    app,
+    ref,
+    selected,
+    setSelected,
+    editingText,
+    dispatch,
+    itemName,
+    handleEdit,
+  );
 
   const [
     inputPosition,
@@ -137,13 +146,9 @@ export const SystemMapCanvas = ({
   }, [state.cmdUndoAdd]);
 
   function handleEdit(item: string) {
-    if (item === selected) {
-      if (isVariable(item)) {
-        setEditingText(item);
-        return;
-      }
+    if (isVariable(item)) {
+      setEditingText(item);
     }
-    setSelected(item);
   }
 
   function handleNameKeyEnterDown(value: string) {
