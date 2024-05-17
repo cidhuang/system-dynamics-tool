@@ -1,5 +1,4 @@
 import {
-  indexOf,
   isVariable,
   createVariable,
   isStock,
@@ -95,7 +94,7 @@ function stockToVariable(state: IStateCanvas, item: string): IStateCanvas {
 
 function toggleLinkRelation(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
-  const index = indexOf(items.links, item);
+  const index = items.links.findIndex((link) => link.name === item);
 
   if (index < 0) {
     alert();
@@ -165,7 +164,9 @@ function reducerMovingVariableMove(
     return state;
   }
   let items = structuredClone(state.items);
-  const i = indexOf(items.variables, state.dragStart);
+  const i = items.variables.findIndex(
+    (variable) => variable.name === state.dragStart,
+  );
   items.variables[i].xy = xy;
   return {
     ...state,
@@ -208,7 +209,7 @@ function reducerShapingLinkMove(state: IStateCanvas, xy: Point, item: string) {
     return state;
   }
   let items = structuredClone(state.items);
-  const i = indexOf(items.links, state.dragStart);
+  const i = items.links.findIndex((link) => link.name === state.dragStart);
   items.links[i].mid = xy;
   return {
     ...state,

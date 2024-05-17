@@ -1,20 +1,10 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useReducer,
-  useRef,
-  type SyntheticEvent,
-} from "react";
+import { useState, useEffect, useReducer, useRef } from "react";
 import { Stage } from "@pixi/react";
 import useUndo from "use-undo";
 
-import {
-  indexOf,
-  IItems,
-  isVariable,
-} from "@/components/SystemMapCanvas/lib/types";
+import { IItems, isVariable } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
 import { useMouse } from "./hooks/useMouse";
@@ -157,8 +147,12 @@ export const SystemMapCanvas = ({
   }
 
   function handleNameKeyEnterDown(value: string) {
-    const index = indexOf(state.items.variables, editingText);
-    const item = structuredClone(state.items.variables[index]);
+    const item = structuredClone(
+      state.items.variables.find((variable) => variable.name === editingText),
+    );
+    if (item === undefined) {
+      return;
+    }
     if (item.text !== value) {
       item.text = value;
       dispatch({ type: "ChangeItems", variables: [item] });

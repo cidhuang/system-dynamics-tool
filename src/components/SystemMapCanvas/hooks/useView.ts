@@ -1,7 +1,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 import { IStateCanvas } from "../reducer/types";
-import { indexOf, isVariable, isLink, getPoint4View } from "../lib/types";
+import { isVariable, isLink, getIntersection } from "../lib/types";
 import { isOnLink, updateViewLink, addViewLink } from "../lib/view/link";
 import {
   isOnVariable,
@@ -23,15 +23,20 @@ export function useView(
       return;
     }
 
-    for (let i = 0; i < state.items.links.length; i++) {
-      const link = state.items.links[i];
-      const startV =
-        state.items.variables[indexOf(state.items.variables, link.start)];
-      const endV =
-        state.items.variables[indexOf(state.items.variables, link.end)];
+    for (const link of state.items.links) {
+      const startV = state.items.variables.find(
+        (varialbe) => varialbe.name === link.start,
+      );
+      const endV = state.items.variables.find(
+        (variable) => variable.name === link.end,
+      );
 
-      const start = getPoint4View(startV, endV.xy, link.mid);
-      const end = getPoint4View(endV, startV.xy, link.mid);
+      if (startV === undefined || endV === undefined) {
+        continue;
+      }
+
+      const start = getIntersection(startV, endV.xy, link.mid);
+      const end = getIntersection(endV, startV.xy, link.mid);
 
       if (
         !updateViewLink(app.stage, link.name, link.isPlus, start, end, link.mid)
@@ -40,8 +45,7 @@ export function useView(
       }
     }
 
-    for (let i = 0; i < state.items.variables.length; i++) {
-      const variable = state.items.variables[i];
+    for (const variable of state.items.variables) {
       if (!updateViewVariable(app.stage, variable)) {
         addViewVariable(app.stage, variable);
       }
@@ -50,11 +54,18 @@ export function useView(
     for (let i = app?.stage.children.length - 1; i >= 0; i--) {
       const name = app?.stage.children[i].name ?? "";
 
-      if (isLink(name) && indexOf(state.items.links, name) < 0) {
+      if (
+        isLink(name) &&
+        state.items.links.findIndex((link) => link.name === name) < 0
+      ) {
         app?.stage.removeChildAt(i);
       }
 
-      if (isVariable(name) && indexOf(state.items.variables, name) < 0) {
+      if (
+        isVariable(name) &&
+        state.items.variables.findIndex((variable) => variable.name === name) <
+          0
+      ) {
         app?.stage.removeChildAt(i);
       }
     }
@@ -70,19 +81,19 @@ export function useView(
 
     let startV = undefined;
     if (state.dragStart !== undefined) {
-      const index = indexOf(state.items.variables, state.dragStart);
-      if (index >= 0) {
-        startV = state.items.variables[index];
-      }
+      startV = state.items.variables.find(
+        (variable) => variable.name === state.dragStart,
+      );
     }
 
     let endPoint = undefined;
     let endV = undefined;
     if (state.dragLinkEnd !== undefined) {
       if (typeof state.dragLinkEnd === "string") {
-        const index = indexOf(state.items.variables, state.dragLinkEnd);
-        if (index >= 0) {
-          endV = state.items.variables[index];
+        endV = state.items.variables.find(
+          (variable) => variable.name === state.dragLinkEnd,
+        );
+        if (endV !== undefined) {
           endPoint = endV.xy;
         }
       } else {
@@ -90,7 +101,9 @@ export function useView(
       }
     }
 
-    const dragLink = indexOf(app?.stage.children, "dragLink");
+    const dragLink = app?.stage.children.findIndex(
+      (child) => child.name === "dragLink",
+    );
 
     if (startV === undefined || endPoint === undefined) {
       if (dragLink >= 0) {
@@ -99,10 +112,10 @@ export function useView(
       return;
     }
 
-    const startPoint = getPoint4View(startV, endPoint);
+    const startPoint = getIntersection(startV, endPoint);
     let end = endPoint;
     if (endV !== undefined) {
-      end = getPoint4View(endV, startV.xy);
+      end = getIntersection(endV, startV.xy);
     }
 
     if (dragLink >= 0) {
@@ -132,8 +145,7 @@ export function useView(
       return "";
     }
 
-    for (let i = 0; i < app?.stage.children.length; i++) {
-      const item = app?.stage.children[i];
+    for (const item of app?.stage.children) {
       if (item.name === null) {
         continue;
       }

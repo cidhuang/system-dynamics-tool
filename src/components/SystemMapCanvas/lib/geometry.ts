@@ -65,7 +65,7 @@ export enum EOrientation {
  * @param p3 - the 3rd point
  * @returns - the orientation of 3 points
  */
-export function getOrientation(p1: Point, p2: Point, p3: Point): EOrientation {
+function getOrientation(p1: Point, p2: Point, p3: Point): EOrientation {
   const val = (p2.y - p1.y) * (p3.x - p2.x) - (p2.x - p1.x) * (p3.y - p2.y);
 
   if (val === 0) {
@@ -103,4 +103,27 @@ export interface Rectangle {
   y: number;
   width: number;
   height: number;
+}
+
+export function getArc(start: Point, end: Point, mid?: Point): Arc | undefined {
+  if (mid === undefined) {
+    return;
+  }
+  const orientation = getOrientation(start, mid, end);
+  if (orientation === EOrientation.Collinear) {
+    return;
+  }
+  const circle = getCircle(start, mid, end);
+  const startAngle = Math.atan2(
+    start.y - circle.center.y,
+    start.x - circle.center.x,
+  );
+  const endAngle = Math.atan2(end.y - circle.center.y, end.x - circle.center.x);
+  return {
+    center: circle.center,
+    radius: circle.radius,
+    startAngle,
+    endAngle,
+    anticlockwise: orientation === EOrientation.Counterclockwise,
+  };
 }

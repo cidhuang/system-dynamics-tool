@@ -1,5 +1,4 @@
 import { Container, DisplayObject, Text } from "pixi.js";
-import { indexOf } from "../types";
 import { ViewEdge } from "./ViewEdge";
 import { Point } from "../geometry";
 
@@ -9,7 +8,6 @@ export function addViewLink(
   start: Point,
   end: Point,
 ) {
-  //console.log(link);
   const edge = new ViewEdge(start, end);
   edge.name = name;
   edge.color = "grey";
@@ -28,12 +26,12 @@ export function updateViewLink(
   end: Point,
   mid?: Point,
 ): boolean {
-  const index = indexOf(stage.children, name);
-  if (index < 0) {
+  const item = stage.children.find((child) => child.name === name);
+  if (item === undefined) {
     return false;
   }
 
-  const view = stage.children[index] as ViewEdge;
+  const view = item as ViewEdge;
   view.isDashed = !isPlus;
   view.start = start;
   view.end = end;

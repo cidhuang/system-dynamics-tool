@@ -1,4 +1,4 @@
-import { Variable, Link, Stock, Flow, IItems, indexOf } from "../lib/types";
+import { Variable, Link, Stock, Flow, IItems } from "../lib/types";
 import { isMouse, ActionMouse, reducerMouse } from "./reducerMouse";
 import { IStateCanvas, ESystemMapCanvasMode, EStateCanvas } from "./types";
 
@@ -54,30 +54,26 @@ export function reducerChangeItems(
 ): IStateCanvas {
   let items = structuredClone(state.items);
   if (action.variables) {
-    for (let i = 0; i < action.variables.length; i++) {
-      const item = action.variables[i];
-      const index = indexOf(items.variables, item.name);
+    for (const item of action.variables) {
+      const index = items.variables.findIndex((tmp) => tmp.name === item.name);
       items.variables[index] = item;
     }
   }
   if (action.links) {
-    for (let i = 0; i < action.links.length; i++) {
-      const item = action.links[i];
-      const index = indexOf(items.links, item.name);
+    for (const item of action.links) {
+      const index = items.links.findIndex((tmp) => tmp.name === item.name);
       items.links[index] = item;
     }
   }
   if (action.stocks) {
-    for (let i = 0; i < action.stocks.length; i++) {
-      const item = action.stocks[i];
-      const index = indexOf(items.stocks, item.name);
+    for (const item of action.stocks) {
+      const index = items.stocks.findIndex((tmp) => tmp.name === item.name);
       items.stocks[index] = item;
     }
   }
   if (action.flows) {
-    for (let i = 0; i < action.flows.length; i++) {
-      const item = action.flows[i];
-      const index = indexOf(items.flows, item.name);
+    for (const item of action.flows) {
+      const index = items.flows.findIndex((tmp) => tmp.name === item.name);
       items.flows[index] = item;
     }
   }

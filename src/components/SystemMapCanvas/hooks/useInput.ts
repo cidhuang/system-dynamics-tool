@@ -1,7 +1,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 
-import { isVariable, indexOf } from "../lib/types";
+import { isVariable } from "../lib/types";
 import { getVariableBounds, getVariableText } from "../lib/view/variable";
 
 import { Point } from "../lib/geometry";
@@ -27,8 +27,10 @@ export function useInput(
       return;
     }
 
-    const index = indexOf(app?.stage.children, editingText);
-    const item = app?.stage.children[index];
+    const item = app.stage.children.find((child) => child.name === editingText);
+    if (item === undefined) {
+      return;
+    }
     const bounds = getVariableBounds(item);
 
     setInputWidth(Math.max(300, bounds.width));

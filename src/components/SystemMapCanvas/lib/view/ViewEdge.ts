@@ -4,9 +4,7 @@ import {
 } from "@pixi/graphics-smooth";
 // import { Graphics } from 'pixi.js';
 import { Polygon, type ColorSource } from "pixi.js";
-import { Point } from "../geometry";
-
-import { EOrientation, getOrientation, getCircle } from "../geometry";
+import { Point, getArc } from "../geometry";
 
 export class ViewEdge extends Graphics {
   protected _start: Point;
@@ -196,13 +194,6 @@ export class ViewEdge extends Graphics {
     return this._polygon?.contains(x, y) ?? false;
   }
 
-  protected _orientation: EOrientation = EOrientation.Collinear;
-
-  protected _center: Point = { x: 0, y: 0 };
-  protected _radius: number = Infinity;
-  protected _startAngle: number = 0;
-  protected _endAngle: number = 0;
-
   protected _polygon: Polygon | undefined = undefined;
 
   constructor(start: Point, end: Point);
@@ -253,56 +244,29 @@ export class ViewEdge extends Graphics {
         );
       }
     } else {
-      if (this._mid === undefined) {
-        this._orientation = EOrientation.Collinear;
+      const arc = getArc(this._start, this._end, this._mid);
+
+      if (arc !== undefined) {
+        this.arc(
+          arc.center.x,
+          arc.center.y,
+          arc.radius,
+          arc.startAngle,
+          arc.endAngle,
+          arc.anticlockwise,
+        );
+        if (arc.anticlockwise) {
+          arrowDirectionAngle = arc.endAngle - Math.PI / 2;
+        } else {
+          arrowDirectionAngle = arc.endAngle + Math.PI / 2;
+        }
+      } else {
         this.moveTo(this._start.x, this._start.y);
         this.lineTo(this._end.x, this._end.y);
-      } else {
-        this._orientation = getOrientation(this._start, this._mid, this._end);
-
-        if (this._orientation === EOrientation.Collinear) {
-          this.moveTo(this._start.x, this._start.y);
-          this.lineTo(this._end.x, this._end.y);
-        } else {
-          const circle = getCircle(this._start, this._mid, this._end);
-
-          this._center = circle.center;
-          this._radius = circle.radius;
-          this._startAngle = Math.atan2(
-            this._start.y - this._center.y,
-            this._start.x - this._center.x,
-          );
-          this._endAngle = Math.atan2(
-            this._end.y - this._center.y,
-            this._end.x - this._center.x,
-          );
-
-          this.arc(
-            this._center.x,
-            this._center.y,
-            this._radius,
-            this._startAngle,
-            this._endAngle,
-            this._orientation === EOrientation.Counterclockwise,
-          );
-        }
-      }
-
-      switch (this._orientation) {
-        case EOrientation.Collinear:
-          arrowDirectionAngle = Math.atan2(
-            this._end.y - this._start.y,
-            this._end.x - this._start.x,
-          );
-          break;
-        case EOrientation.Clockwise:
-          arrowDirectionAngle = this._endAngle + Math.PI / 2;
-          break;
-        case EOrientation.Counterclockwise:
-          arrowDirectionAngle = this._endAngle - Math.PI / 2;
-          break;
-        default:
-          break;
+        arrowDirectionAngle = Math.atan2(
+          this._end.y - this._start.y,
+          this._end.x - this._start.x,
+        );
       }
     }
 

@@ -1,24 +1,8 @@
-import {
-  Point,
-  getOrientation,
-  getCircle,
-  EOrientation,
-  Circle,
-  toDegree,
-} from "./geometry";
-
-export function indexOf(array: any[], name: string): number {
-  for (let i = 0; i < array.length; i++) {
-    if (array[i].name === name) {
-      return i;
-    }
-  }
-  return -1;
-}
+import { Point, getArc } from "./geometry";
 
 function genName(array: any[], prefix: string): string {
   let i = 0;
-  while (indexOf(array, prefix + i.toString()) >= 0) {
+  while (array.findIndex((item) => item.name === prefix + i.toString()) >= 0) {
     i++;
   }
 
@@ -136,7 +120,7 @@ export interface IItems {
   flows: Flow[];
 }
 
-export function getPoint4View(
+export function getIntersection(
   variable0: Variable,
   p1: Point,
   mid?: Point,
@@ -159,14 +143,9 @@ export function getPoint4View(
 
   let point = structuredClone(p0);
 
-  const orientation =
-    mid !== undefined ? getOrientation(p0, p1, mid) : undefined;
+  const arc = getArc(p0, p1, mid);
 
-  if (
-    mid === undefined ||
-    orientation === undefined ||
-    orientation === EOrientation.Collinear
-  ) {
+  if (mid === undefined || arc === undefined) {
     const slope0 = height0 / width0;
 
     const dx0 = height0 / slope;
@@ -221,10 +200,6 @@ export function getPoint4View(
     return point;
   }
 
-  const circle = getCircle(p0, p1, mid);
-  const angle0 = Math.atan2(p0.y - circle.center.y, p0.x - circle.center.x);
-  const angle1 = Math.atan2(p1.y - circle.center.y, p1.x - circle.center.x);
-
   const x0 = p0.x - width0;
   const x1 = p0.x + width0;
   const y0 = p0.y - height0;
@@ -234,86 +209,76 @@ export function getPoint4View(
     return point;
   }
 
-  const x0Data = getPointX(x0, circle);
-  const x1Data = getPointX(x1, circle);
-  const y0Data = getPointY(y0, circle);
-  const y1Data = getPointY(y1, circle);
+  const x0Ints = getIntersections4X(x0, arc.center, arc.radius);
+  const x1Ints = getIntersections4X(x1, arc.center, arc.radius);
+  const y0Ints = getIntersections4Y(y0, arc.center, arc.radius);
+  const y1Ints = getIntersections4Y(y1, arc.center, arc.radius);
 
-  let tmp = [];
-  tmp.push({ x: x0, y: x0Data.y0, angle: x0Data.angle0 });
-  tmp.push({ x: x0, y: x0Data.y1, angle: x0Data.angle1 });
-  tmp.push({ x: x1, y: x1Data.y0, angle: x1Data.angle0 });
-  tmp.push({ x: x1, y: x1Data.y1, angle: x1Data.angle1 });
-  tmp.push({ x: y0Data.x0, y: y0, angle: y0Data.angle0 });
-  tmp.push({ x: y0Data.x1, y: y0, angle: y0Data.angle1 });
-  tmp.push({ x: y1Data.x0, y: y1, angle: y1Data.angle0 });
-  tmp.push({ x: y1Data.x1, y: y1, angle: y1Data.angle1 });
+  let angles = [];
+  angles.push({ x: x0, y: x0Ints[0].y, angle: x0Ints[0].angle });
+  angles.push({ x: x0, y: x0Ints[1].y, angle: x0Ints[1].angle });
+  angles.push({ x: x1, y: x1Ints[0].y, angle: x1Ints[0].angle });
+  angles.push({ x: x1, y: x1Ints[1].y, angle: x1Ints[1].angle });
+  angles.push({ x: y0Ints[0].x, y: y0, angle: y0Ints[0].angle });
+  angles.push({ x: y0Ints[1].x, y: y0, angle: y0Ints[1].angle });
+  angles.push({ x: y1Ints[0].x, y: y1, angle: y1Ints[0].angle });
+  angles.push({ x: y1Ints[1].x, y: y1, angle: y1Ints[1].angle });
 
-  const tmp2 = tmp.filter((item) => {
+  const ints = angles.filter((item) => {
     return item.x >= x0 && item.x <= x1 && item.y >= y0 && item.y <= y1;
   });
 
-  if (orientation == EOrientation.Clockwise) {
-    if (tmp2[0].angle < angle0 && tmp2[0].angle > angle1) {
-      return { x: tmp2[0].x, y: tmp2[0].y };
-    }
-    if (tmp2[0].angle > angle0 && tmp2[0].angle < angle1) {
-      return { x: tmp2[1].x, y: tmp2[1].y };
-    }
-    if (tmp2[1].angle < angle0 && tmp2[1].angle > angle1) {
-      return { x: tmp2[1].x, y: tmp2[1].y };
-    }
-    if (tmp2[1].angle > angle0 && tmp2[1].angle < angle1) {
-      return { x: tmp2[0].x, y: tmp2[0].y };
-    }
-  } else {
-    if (tmp2[0].angle < angle0 && tmp2[0].angle > angle1) {
-      return { x: tmp2[1].x, y: tmp2[1].y };
-    }
-    if (tmp2[0].angle > angle0 && tmp2[0].angle < angle1) {
-      return { x: tmp2[0].x, y: tmp2[0].y };
-    }
-    if (tmp2[1].angle < angle0 && tmp2[1].angle > angle1) {
-      return { x: tmp2[0].x, y: tmp2[0].y };
-    }
-    if (tmp2[1].angle > angle0 && tmp2[1].angle < angle1) {
-      return { x: tmp2[1].x, y: tmp2[1].y };
-    }
+  const i0 = arc.anticlockwise ? 0 : 1;
+  const i1 = arc.anticlockwise ? 1 : 0;
+
+  if (ints[i0].angle < arc.startAngle && ints[i0].angle > arc.endAngle) {
+    return { x: ints[0].x, y: ints[0].y };
+  }
+  if (ints[i0].angle > arc.startAngle && ints[i0].angle < arc.endAngle) {
+    return { x: ints[1].x, y: ints[1].y };
+  }
+  if (ints[i1].angle < arc.startAngle && ints[i1].angle > arc.endAngle) {
+    return { x: ints[1].x, y: ints[1].y };
+  }
+  if (ints[i1].angle > arc.startAngle && ints[i1].angle < arc.endAngle) {
+    return { x: ints[0].x, y: ints[0].y };
   }
 
   return point;
 }
 
-function getPointX(
+function getIntersections4X(
   x: number,
-  circle: Circle,
-): { y0: number; angle0: number; y1: number; angle1: number } {
-  const r = Math.sqrt(
-    circle.radius * circle.radius -
-      (x - circle.center.x) * (x - circle.center.x),
-  );
-  const y0 = circle.center.y + r;
-  const y1 = circle.center.y - r;
+  center: Point,
+  radius: number,
+): [{ y: number; angle: number }, { y: number; angle: number }] {
+  const r = Math.sqrt(radius * radius - (x - center.x) * (x - center.x));
+  const y0 = center.y + r;
+  const y1 = center.y - r;
 
-  const angle0 = Math.atan2(y0 - circle.center.y, x - circle.center.x);
-  const angle1 = Math.atan2(y1 - circle.center.y, x - circle.center.x);
+  const angle0 = Math.atan2(y0 - center.y, x - center.x);
+  const angle1 = Math.atan2(y1 - center.y, x - center.x);
 
-  return { y0, angle0, y1, angle1 };
+  return [
+    { y: y0, angle: angle0 },
+    { y: y1, angle: angle1 },
+  ];
 }
 
-function getPointY(
+function getIntersections4Y(
   y: number,
-  circle: Circle,
-): { x0: number; angle0: number; x1: number; angle1: number } {
-  const r = Math.sqrt(
-    circle.radius * circle.radius -
-      (y - circle.center.y) * (y - circle.center.y),
-  );
-  const x0 = circle.center.x + r;
-  const x1 = circle.center.x - r;
+  center: Point,
+  radius: number,
+): [{ x: number; angle: number }, { x: number; angle: number }] {
+  const r = Math.sqrt(radius * radius - (y - center.y) * (y - center.y));
+  const x0 = center.x + r;
+  const x1 = center.x - r;
 
-  const angle0 = Math.atan2(y - circle.center.y, x0 - circle.center.x);
-  const angle1 = Math.atan2(y - circle.center.y, x1 - circle.center.x);
+  const angle0 = Math.atan2(y - center.y, x0 - center.x);
+  const angle1 = Math.atan2(y - center.y, x1 - center.x);
 
-  return { x0, angle0, x1, angle1 };
+  return [
+    { x: x0, angle: angle0 },
+    { x: x1, angle: angle1 },
+  ];
 }
