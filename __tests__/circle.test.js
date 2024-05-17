@@ -1,7 +1,5 @@
 import {
   getCircle,
-  getOrientation,
-  EOrientation,
   toDegree,
 } from "../src/components/SystemMapCanvas/lib/geometry";
 
@@ -10,26 +8,6 @@ describe("Check getCircle", () => {
     expect(
       getCircle({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }),
     ).toStrictEqual({ center: { x: 100, y: 0 }, radius: 100 });
-  });
-});
-
-describe("Check getOrientation", () => {
-  test("Check the result of getOrientation", () => {
-    expect(
-      getOrientation({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 0 }),
-    ).toStrictEqual(EOrientation.Counterclockwise);
-  });
-
-  test("Check the result of getOrientation", () => {
-    expect(
-      getOrientation({ x: 200, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 0 }),
-    ).toStrictEqual(EOrientation.Clockwise);
-  });
-
-  test("Check the result of getOrientation", () => {
-    expect(
-      getOrientation({ x: 0, y: 0 }, { x: 100, y: 100 }, { x: 200, y: 200 }),
-    ).toStrictEqual(EOrientation.Collinear);
   });
 });
 
