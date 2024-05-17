@@ -7,8 +7,9 @@ export function addViewLink(
   name: string,
   start: Point,
   end: Point,
+  mid?: Point,
 ) {
-  const edge = new ViewEdge(start, end);
+  const edge = mid ? new ViewEdge(start, end, mid) : new ViewEdge(start, end);
   edge.name = name;
   edge.color = "grey";
   edge.width = 8;

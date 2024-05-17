@@ -41,7 +41,7 @@ export function useView(
       if (
         !updateViewLink(app.stage, link.name, link.isPlus, start, end, link.mid)
       ) {
-        addViewLink(app.stage, link.name, start, end);
+        addViewLink(app.stage, link.name, start, end, link.mid);
       }
     }
 
