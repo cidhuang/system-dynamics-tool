@@ -18,6 +18,42 @@ export function reducerMode(
   };
 }
 
+const toggleLinkDirection = ["ToggleLinkDirection"] as const;
+type ToggleLinkDirection = (typeof toggleLinkDirection)[number];
+const isToggleLinkDirection = (x: any): x is ToggleLinkDirection =>
+  toggleLinkDirection.includes(x);
+type ActionToggleLinkDirection = {
+  type: ToggleLinkDirection;
+  enabled: boolean;
+};
+
+export function reducerToggleLinkDirection(
+  state: IStateCanvas,
+  action: ActionToggleLinkDirection,
+): IStateCanvas {
+  return {
+    ...state,
+    toggleLinkDirection: action.enabled,
+    state: EStateCanvas.Idle,
+  };
+}
+
+const deleteItem = ["DeleteItem"] as const;
+type DeleteItem = (typeof deleteItem)[number];
+const isDeleteItem = (x: any): x is DeleteItem => deleteItem.includes(x);
+type ActionDeleteItem = { type: DeleteItem; enabled: boolean };
+
+export function reducerDeleteItem(
+  state: IStateCanvas,
+  action: ActionDeleteItem,
+): IStateCanvas {
+  return {
+    ...state,
+    deleteItem: action.enabled,
+    state: EStateCanvas.Idle,
+  };
+}
+
 const undoRedo = ["UndoRedo"] as const;
 type UndoRedo = (typeof undoRedo)[number];
 const isUndoRedo = (x: any): x is UndoRedo => undoRedo.includes(x);
@@ -90,7 +126,9 @@ export type Actions =
   | ActionMouse
   | ActionMode
   | ActionUndoRedo
-  | ActionChangeItems;
+  | ActionChangeItems
+  | ActionToggleLinkDirection
+  | ActionDeleteItem;
 
 export function reducer(state: IStateCanvas, action: Actions): IStateCanvas {
   let r = state;
@@ -108,6 +146,14 @@ export function reducer(state: IStateCanvas, action: Actions): IStateCanvas {
 
   if (isChangeItems(action.type)) {
     r = reducerChangeItems(state, action as ActionChangeItems);
+  }
+
+  if (isToggleLinkDirection(action.type)) {
+    r = reducerToggleLinkDirection(state, action as ActionToggleLinkDirection);
+  }
+
+  if (isDeleteItem(action.type)) {
+    r = reducerDeleteItem(state, action as ActionDeleteItem);
   }
 
   //console.log("reducer", r);

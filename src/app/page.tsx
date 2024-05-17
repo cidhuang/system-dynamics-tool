@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
 import { useMenu } from "./lib/useMenu";
 import { useMode } from "./lib/useMode";
@@ -20,8 +20,18 @@ function HomeImp() {
     handlerCanRedoChanged,
     menus,
   ] = useMenu();
-  const [mode, modes, handleModeClick] = useMode();
+  const [
+    mode,
+    modes,
+    handleModeClick,
+    labelToggleLinkDirection,
+    lableDeleteItem,
+  ] = useMode();
   const [items, handleItemsChange] = useItem();
+
+  const [toggleLinkDirection, setToggleLinkDirection] =
+    useState<boolean>(false);
+  const [deleteItem, setDeleteItem] = useState<boolean>(false);
 
   return (
     <>
@@ -39,10 +49,28 @@ function HomeImp() {
               />
             );
           })}
+          <button
+            onClick={() => {
+              setToggleLinkDirection(!toggleLinkDirection);
+            }}
+            className={toggleLinkDirection ? "btn-mode-selected" : "btn-mode"}
+          >
+            {labelToggleLinkDirection}
+          </button>
+          <button
+            onClick={() => {
+              setDeleteItem(!deleteItem);
+            }}
+            className={deleteItem ? "btn-mode-selected" : "btn-mode"}
+          >
+            {lableDeleteItem}
+          </button>
         </div>
       </Suspense>
       <SystemMapCanvas
         mode={mode}
+        toggleLinkDirection={toggleLinkDirection}
+        deleteItem={deleteItem}
         cmdZoomIn={cmdZoomIn}
         cmdZoomOut={cmdZoomOut}
         cmdUndo={cmdUndo}

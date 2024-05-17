@@ -18,5 +18,7 @@
   "Find Archetypes": "搜尋基模",
   "Auto Position": "自動定位",
   "Move Variable / Stock": "移動變數",
-  "Add Link / Flow": "新增因果關係"
+  "Add Link / Flow": "新增因果關係",
+  "Toogle Link Direction": "翻轉因果關係方向",
+  "Delete Item": "刪除元件"
 }

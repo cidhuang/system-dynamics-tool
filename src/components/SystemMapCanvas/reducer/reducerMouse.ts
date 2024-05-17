@@ -72,6 +72,23 @@ function reducerIdleDown(state: IStateCanvas, xy: Point, item: string) {
   return state;
 }
 
+function removeVariable(state: IStateCanvas, item: string): IStateCanvas {
+  let items = structuredClone(state.items);
+
+  items.variables = items.variables.filter(
+    (varialbe) => varialbe.name !== item,
+  );
+  items.links = items.links.filter(
+    (link) => link.start !== item && link.end !== item,
+  );
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
+}
+
 function variableToStock(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
 
@@ -92,6 +109,18 @@ function stockToVariable(state: IStateCanvas, item: string): IStateCanvas {
   };
 }
 
+function removeLink(state: IStateCanvas, item: string): IStateCanvas {
+  let items = structuredClone(state.items);
+
+  items.links = items.links.filter((link) => link.name !== item);
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
+}
+
 function toggleLinkRelation(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
   const index = items.links.findIndex((link) => link.name === item);
@@ -102,6 +131,26 @@ function toggleLinkRelation(state: IStateCanvas, item: string): IStateCanvas {
   }
   const link = items.links[index];
   link.isPlus = !link.isPlus;
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
+}
+
+function toggleLinkDirection(state: IStateCanvas, item: string): IStateCanvas {
+  let items = structuredClone(state.items);
+  const index = items.links.findIndex((link) => link.name === item);
+
+  if (index < 0) {
+    alert();
+    return state;
+  }
+  const link = items.links[index];
+  const tmp = link.start;
+  link.start = link.end;
+  link.end = tmp;
 
   return {
     ...state,
@@ -132,6 +181,9 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   }
 
   if (isVariable(item)) {
+    if (state.deleteItem) {
+      return removeVariable(state, item);
+    }
     return variableToStock(state, item);
   }
 
@@ -140,6 +192,12 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   }
 
   if (isLink(item)) {
+    if (state.deleteItem) {
+      return removeLink(state, item);
+    }
+    if (state.toggleLinkDirection) {
+      return toggleLinkDirection(state, item);
+    }
     return toggleLinkRelation(state, item);
   }
 

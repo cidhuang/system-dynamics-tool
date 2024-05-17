@@ -6,6 +6,8 @@ export function useMode(): [
   ESystemMapCanvasMode,
   Array<{ label: string; mode: ESystemMapCanvasMode }>,
   (mode: ESystemMapCanvasMode) => void,
+  string,
+  string,
 ] {
   const { t } = useTranslation();
 
@@ -25,5 +27,14 @@ export function useMode(): [
     { label: t("Add Link / Flow"), mode: ESystemMapCanvasMode.AddLinkFlow },
   ];
 
-  return [mode, modes, handleModeClick];
+  const labelToggleLinkDirection = t("Toogle Link Direction");
+  const lableDeleteItem = t("Delete Item");
+
+  return [
+    mode,
+    modes,
+    handleModeClick,
+    labelToggleLinkDirection,
+    lableDeleteItem,
+  ];
 }

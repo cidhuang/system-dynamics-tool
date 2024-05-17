@@ -15,6 +15,8 @@ import { useView } from "./hooks/useView";
 
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
+  toggleLinkDirection: boolean;
+  deleteItem: boolean;
   cmdZoomIn: number;
   cmdZoomOut: number;
   cmdUndo: number;
@@ -27,6 +29,8 @@ interface SystemMapCanvasProps {
 
 export const SystemMapCanvas = ({
   mode,
+  toggleLinkDirection,
+  deleteItem,
   cmdZoomIn,
   cmdZoomOut,
   cmdUndo,
@@ -46,6 +50,8 @@ export const SystemMapCanvas = ({
     state: EStateCanvas.Idle,
     items: items,
     cmdUndoAdd: 0,
+    toggleLinkDirection: toggleLinkDirection,
+    deleteItem: deleteItem,
   });
 
   const [
@@ -144,6 +150,18 @@ export const SystemMapCanvas = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cmdUndoAdd]);
+
+  useEffect(() => {
+    dispatch({ type: "ToggleLinkDirection", enabled: toggleLinkDirection });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggleLinkDirection]);
+
+  useEffect(() => {
+    dispatch({ type: "DeleteItem", enabled: deleteItem });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteItem]);
 
   function handleEdit(item: string) {
     if (isVariable(item)) {
