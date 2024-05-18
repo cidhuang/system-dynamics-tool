@@ -20,6 +20,7 @@ export interface IStateCanvas {
   state: EStateCanvas;
   items: IItems;
   cmdUndoAdd: number;
+  cmdUndoReset: number;
   toggleLinkDirection: boolean;
   deleteItem: boolean;
   dragStart?: string;

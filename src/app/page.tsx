@@ -4,13 +4,38 @@ import { Suspense, useState } from "react";
 
 import { useMenu } from "./lib/useMenu";
 import { useMode } from "./lib/useMode";
-import { useItem } from "./lib/useItem";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
 import { SystemMapCanvasMode } from "@/components/SystemMapCanvas/SystemMapCanvasMode";
 import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
 
+import {
+  Variable,
+  Link,
+  Stock,
+  Flow,
+  IItems,
+} from "@/components/SystemMapCanvas/lib/types";
+
 function HomeImp() {
+  const [items0, setItems0] = useState<IItems>({
+    variables: new Array<Variable>(),
+    links: new Array<Link>(),
+    stocks: new Array<Stock>(),
+    flows: new Array<Flow>(),
+  });
+
+  const [items, setItems] = useState<IItems>({
+    variables: new Array<Variable>(),
+    links: new Array<Link>(),
+    stocks: new Array<Stock>(),
+    flows: new Array<Flow>(),
+  });
+
+  const [toggleLinkDirection, setToggleLinkDirection] =
+    useState<boolean>(false);
+  const [deleteItem, setDeleteItem] = useState<boolean>(false);
+
   const [
     cmdZoomIn,
     cmdZoomOut,
@@ -19,7 +44,8 @@ function HomeImp() {
     handlerCanUndoChanged,
     handlerCanRedoChanged,
     menus,
-  ] = useMenu();
+  ] = useMenu(setItems0, items);
+
   const [
     mode,
     modes,
@@ -27,11 +53,18 @@ function HomeImp() {
     labelToggleLinkDirection,
     lableDeleteItem,
   ] = useMode();
-  const [items, handleItemsChange] = useItem();
 
-  const [toggleLinkDirection, setToggleLinkDirection] =
-    useState<boolean>(false);
-  const [deleteItem, setDeleteItem] = useState<boolean>(false);
+  function handleItemsChange(items: IItems): void {
+    setItems(items);
+  }
+
+  function handleToggleLinkDirection(): void {
+    setToggleLinkDirection(!toggleLinkDirection);
+  }
+
+  function handleDeleteItem(): void {
+    setDeleteItem(!deleteItem);
+  }
 
   return (
     <>
@@ -50,17 +83,13 @@ function HomeImp() {
             );
           })}
           <button
-            onClick={() => {
-              setToggleLinkDirection(!toggleLinkDirection);
-            }}
+            onClick={handleToggleLinkDirection}
             className={toggleLinkDirection ? "btn-mode-selected" : "btn-mode"}
           >
             {labelToggleLinkDirection}
           </button>
           <button
-            onClick={() => {
-              setDeleteItem(!deleteItem);
-            }}
+            onClick={handleDeleteItem}
             className={deleteItem ? "btn-mode-selected" : "btn-mode"}
           >
             {lableDeleteItem}
@@ -77,7 +106,7 @@ function HomeImp() {
         cmdRedo={cmdRedo}
         onCanUndoChanged={handlerCanUndoChanged}
         onCanRedoChanged={handlerCanRedoChanged}
-        items={items}
+        items={items0}
         onItemsChange={handleItemsChange}
       />
     </>

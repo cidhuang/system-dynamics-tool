@@ -23,6 +23,12 @@ export function useView(
       return;
     }
 
+    for (const variable of state.items.variables) {
+      if (!updateViewVariable(app.stage, variable)) {
+        addViewVariable(app.stage, variable);
+      }
+    }
+
     for (const link of state.items.links) {
       const startV = state.items.variables.find(
         (varialbe) => varialbe.name === link.start,
@@ -38,16 +44,8 @@ export function useView(
       const start = getIntersection(startV, endV.xy, link.mid);
       const end = getIntersection(endV, startV.xy, link.mid);
 
-      if (
-        !updateViewLink(app.stage, link.name, link.isPlus, start, end, link.mid)
-      ) {
-        addViewLink(app.stage, link.name, start, end, link.mid);
-      }
-    }
-
-    for (const variable of state.items.variables) {
-      if (!updateViewVariable(app.stage, variable)) {
-        addViewVariable(app.stage, variable);
+      if (!updateViewLink(app.stage, link, start, end)) {
+        addViewLink(app.stage, link, start, end);
       }
     }
 
@@ -101,13 +99,13 @@ export function useView(
       }
     }
 
-    const dragLink = app?.stage.children.findIndex(
+    const indexDragLink = app?.stage.children.findIndex(
       (child) => child.name === "dragLink",
     );
 
     if (startV === undefined || endPoint === undefined) {
-      if (dragLink >= 0) {
-        app?.stage.removeChildAt(dragLink);
+      if (indexDragLink >= 0) {
+        app?.stage.removeChildAt(indexDragLink);
       }
       return;
     }
@@ -118,8 +116,14 @@ export function useView(
       end = getIntersection(endV, startV.xy);
     }
 
-    if (dragLink >= 0) {
-      updateViewLink(app?.stage, "dragLink", true, startPoint, end);
+    const dragLink = {
+      name: "dragLink",
+      isPlus: true,
+      start: "",
+      end: "",
+    };
+    if (indexDragLink >= 0) {
+      updateViewLink(app?.stage, dragLink, startPoint, end);
       return;
     }
 
@@ -131,7 +135,7 @@ export function useView(
       return;
     }
 
-    addViewLink(app?.stage, "dragLink", startPoint, end);
+    addViewLink(app?.stage, dragLink, startPoint, end);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.dragLinkEnd, state.dragLinkMid]);

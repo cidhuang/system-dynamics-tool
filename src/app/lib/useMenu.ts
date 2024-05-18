@@ -1,8 +1,23 @@
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "next-export-i18n";
+
+import { useFilePicker } from "use-file-picker";
+import saveFile from "save-as-file";
+
 import { IMenu } from "@/components/MenuBar/lib/types";
 
-export function useMenu(): [
+import {
+  Variable,
+  Link,
+  Stock,
+  Flow,
+  IItems,
+} from "@/components/SystemMapCanvas/lib/types";
+
+export function useMenu(
+  setItems0: Dispatch<SetStateAction<IItems>>,
+  items: IItems,
+): [
   number,
   number,
   number,
@@ -21,8 +36,47 @@ export function useMenu(): [
   const [canUndo, setCanUndo] = useState<boolean>(false);
   const [canRedo, setCanRedo] = useState<boolean>(false);
 
+  const { openFilePicker, filesContent, loading } = useFilePicker({
+    accept: ".json",
+    multiple: false,
+  });
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (filesContent[0] === undefined) {
+      return;
+    }
+    const items0 = JSON.parse(filesContent[0].content);
+    setItems0(items0);
+  }, [filesContent]);
+
   function handleMenuItem(arg: any) {
     console.log("handleMenuItem", arg);
+  }
+
+  function handleNew(arg: any) {
+    setItems0({
+      variables: new Array<Variable>(),
+      links: new Array<Link>(),
+      stocks: new Array<Stock>(),
+      flows: new Array<Flow>(),
+    });
+  }
+
+  function handleSave(arg: any) {
+    console.log("handleSave", arg);
+  }
+
+  function handleLoad(arg: any) {
+    openFilePicker();
+  }
+
+  function handleSaveAs(arg: any) {
+    const json = JSON.stringify(items);
+    const file = new File([json], "", { type: "application/json" });
+    saveFile(file, "system-map.json");
   }
 
   function handleZoomIn(arg: any) {
@@ -52,23 +106,26 @@ export function useMenu(): [
       items: [
         {
           label: t("New"),
-          handler: handleMenuItem,
+          handler: handleNew,
           arg: "New",
+          enabled: true,
         },
         {
           label: t("Save"),
-          handler: handleMenuItem,
+          handler: handleSave,
           arg: "Save",
         },
         {
           label: t("Load"),
-          handler: handleMenuItem,
+          handler: handleLoad,
           arg: "Load",
+          enabled: true,
         },
         {
           label: t("Save As"),
-          handler: handleMenuItem,
+          handler: handleSaveAs,
           arg: "Save As",
+          enabled: true,
         },
         {
           label: t("Import"),

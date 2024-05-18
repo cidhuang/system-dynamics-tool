@@ -50,6 +50,7 @@ export const SystemMapCanvas = ({
     state: EStateCanvas.Idle,
     items: items,
     cmdUndoAdd: 0,
+    cmdUndoReset: 0,
     toggleLinkDirection: toggleLinkDirection,
     deleteItem: deleteItem,
   });
@@ -162,6 +163,18 @@ export const SystemMapCanvas = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteItem]);
+
+  useEffect(() => {
+    dispatch({ type: "NewMap", items: items });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
+
+  useEffect(() => {
+    resetItems(state.items);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.cmdUndoReset]);
 
   function handleEdit(item: string) {
     if (isVariable(item)) {
