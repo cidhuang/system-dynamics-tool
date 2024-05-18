@@ -165,7 +165,7 @@ export const SystemMapCanvas = ({
   }, [deleteItem]);
 
   useEffect(() => {
-    dispatch({ type: "NewMap" });
+    dispatch({ type: "NewMap", items: items });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);

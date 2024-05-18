@@ -18,42 +18,6 @@ export function reducerMode(
   };
 }
 
-const toggleLinkDirection = ["ToggleLinkDirection"] as const;
-type ToggleLinkDirection = (typeof toggleLinkDirection)[number];
-const isToggleLinkDirection = (x: any): x is ToggleLinkDirection =>
-  toggleLinkDirection.includes(x);
-type ActionToggleLinkDirection = {
-  type: ToggleLinkDirection;
-  enabled: boolean;
-};
-
-export function reducerToggleLinkDirection(
-  state: IStateCanvas,
-  action: ActionToggleLinkDirection,
-): IStateCanvas {
-  return {
-    ...state,
-    toggleLinkDirection: action.enabled,
-    state: EStateCanvas.Idle,
-  };
-}
-
-const deleteItem = ["DeleteItem"] as const;
-type DeleteItem = (typeof deleteItem)[number];
-const isDeleteItem = (x: any): x is DeleteItem => deleteItem.includes(x);
-type ActionDeleteItem = { type: DeleteItem; enabled: boolean };
-
-export function reducerDeleteItem(
-  state: IStateCanvas,
-  action: ActionDeleteItem,
-): IStateCanvas {
-  return {
-    ...state,
-    deleteItem: action.enabled,
-    state: EStateCanvas.Idle,
-  };
-}
-
 const undoRedo = ["UndoRedo"] as const;
 type UndoRedo = (typeof undoRedo)[number];
 const isUndoRedo = (x: any): x is UndoRedo => undoRedo.includes(x);
@@ -70,30 +34,6 @@ export function reducerUndoRedo(
     ...state,
     state: EStateCanvas.Idle,
     items: action.items,
-  };
-}
-
-const newMap = ["NewMap"] as const;
-type NewMap = (typeof newMap)[number];
-const isNewMap = (x: any): x is NewMap => newMap.includes(x);
-type ActionNewMap = {
-  type: NewMap;
-};
-
-export function reducerNewMap(
-  state: IStateCanvas,
-  action: ActionNewMap,
-): IStateCanvas {
-  return {
-    ...state,
-    state: EStateCanvas.Idle,
-    items: {
-      variables: new Array<Variable>(),
-      links: new Array<Link>(),
-      stocks: new Array<Stock>(),
-      flows: new Array<Flow>(),
-    },
-    cmdUndoReset: state.cmdUndoReset + 1,
   };
 }
 
@@ -143,6 +83,62 @@ export function reducerChangeItems(
     state: EStateCanvas.Idle,
     items: items,
     cmdUndoAdd: state.cmdUndoAdd + 1,
+  };
+}
+
+const toggleLinkDirection = ["ToggleLinkDirection"] as const;
+type ToggleLinkDirection = (typeof toggleLinkDirection)[number];
+const isToggleLinkDirection = (x: any): x is ToggleLinkDirection =>
+  toggleLinkDirection.includes(x);
+type ActionToggleLinkDirection = {
+  type: ToggleLinkDirection;
+  enabled: boolean;
+};
+
+export function reducerToggleLinkDirection(
+  state: IStateCanvas,
+  action: ActionToggleLinkDirection,
+): IStateCanvas {
+  return {
+    ...state,
+    toggleLinkDirection: action.enabled,
+    state: EStateCanvas.Idle,
+  };
+}
+
+const deleteItem = ["DeleteItem"] as const;
+type DeleteItem = (typeof deleteItem)[number];
+const isDeleteItem = (x: any): x is DeleteItem => deleteItem.includes(x);
+type ActionDeleteItem = { type: DeleteItem; enabled: boolean };
+
+export function reducerDeleteItem(
+  state: IStateCanvas,
+  action: ActionDeleteItem,
+): IStateCanvas {
+  return {
+    ...state,
+    deleteItem: action.enabled,
+    state: EStateCanvas.Idle,
+  };
+}
+
+const newMap = ["NewMap"] as const;
+type NewMap = (typeof newMap)[number];
+const isNewMap = (x: any): x is NewMap => newMap.includes(x);
+type ActionNewMap = {
+  type: NewMap;
+  items: IItems;
+};
+
+export function reducerNewMap(
+  state: IStateCanvas,
+  action: ActionNewMap,
+): IStateCanvas {
+  return {
+    ...state,
+    state: EStateCanvas.Idle,
+    items: action.items,
+    cmdUndoReset: state.cmdUndoReset + 1,
   };
 }
 

@@ -1,42 +1,42 @@
 import { Container, DisplayObject, Text } from "pixi.js";
 import { ViewEdge } from "./ViewEdge";
 import { Point } from "../geometry";
+import { Link } from "../types";
 
 export function addViewLink(
   stage: Container<DisplayObject>,
-  name: string,
+  link: Link,
   start: Point,
   end: Point,
-  mid?: Point,
 ) {
-  const edge = mid ? new ViewEdge(start, end, mid) : new ViewEdge(start, end);
-  edge.name = name;
+  const edge = link.mid
+    ? new ViewEdge(start, end, link.mid)
+    : new ViewEdge(start, end);
+  edge.name = link.name;
   edge.color = "grey";
   edge.width = 8;
   edge.arrowHeadLength = 15;
-  edge.isDashed = false;
+  edge.isDashed = !link.isPlus;
   edge.isPolyline = false;
   stage.addChild(edge);
 }
 
 export function updateViewLink(
   stage: Container<DisplayObject>,
-  name: string,
-  isPlus: boolean,
+  link: Link,
   start: Point,
   end: Point,
-  mid?: Point,
 ): boolean {
-  const item = stage.children.find((child) => child.name === name);
+  const item = stage.children.find((child) => child.name === link.name);
   if (item === undefined) {
     return false;
   }
 
   const view = item as ViewEdge;
-  view.isDashed = !isPlus;
+  view.isDashed = !link.isPlus;
   view.start = start;
   view.end = end;
-  view.mid = mid;
+  view.mid = link.mid;
 
   return true;
 }

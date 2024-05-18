@@ -1,5 +1,9 @@
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { useTranslation } from "next-export-i18n";
+
+import { useFilePicker } from "use-file-picker";
+import saveFile from "save-as-file";
+
 import { IMenu } from "@/components/MenuBar/lib/types";
 
 import {
@@ -32,6 +36,22 @@ export function useMenu(
   const [canUndo, setCanUndo] = useState<boolean>(false);
   const [canRedo, setCanRedo] = useState<boolean>(false);
 
+  const { openFilePicker, filesContent, loading } = useFilePicker({
+    accept: ".json",
+    multiple: false,
+  });
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (filesContent[0] === undefined) {
+      return;
+    }
+    const items0 = JSON.parse(filesContent[0].content);
+    setItems0(items0);
+  }, [filesContent]);
+
   function handleMenuItem(arg: any) {
     console.log("handleMenuItem", arg);
   }
@@ -50,11 +70,13 @@ export function useMenu(
   }
 
   function handleLoad(arg: any) {
-    console.log("handleLoad", arg);
+    openFilePicker();
   }
 
   function handleSaveAs(arg: any) {
-    console.log("handleSaveAs", arg);
+    const json = JSON.stringify(items);
+    const file = new File([json], "", { type: "application/json" });
+    saveFile(file, "system-map.json");
   }
 
   function handleZoomIn(arg: any) {
