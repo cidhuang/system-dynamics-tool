@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { useTranslation } from "next-export-i18n";
 import { IMenu } from "@/components/MenuBar/lib/types";
 
-export function useMenu(): [
+import {
+  Variable,
+  Link,
+  Stock,
+  Flow,
+  IItems,
+} from "@/components/SystemMapCanvas/lib/types";
+
+export function useMenu(
+  setItems0: Dispatch<SetStateAction<IItems>>,
+  items: IItems,
+): [
   number,
   number,
   number,
@@ -23,6 +34,27 @@ export function useMenu(): [
 
   function handleMenuItem(arg: any) {
     console.log("handleMenuItem", arg);
+  }
+
+  function handleNew(arg: any) {
+    setItems0({
+      variables: new Array<Variable>(),
+      links: new Array<Link>(),
+      stocks: new Array<Stock>(),
+      flows: new Array<Flow>(),
+    });
+  }
+
+  function handleSave(arg: any) {
+    console.log("handleSave", arg);
+  }
+
+  function handleLoad(arg: any) {
+    console.log("handleLoad", arg);
+  }
+
+  function handleSaveAs(arg: any) {
+    console.log("handleSaveAs", arg);
   }
 
   function handleZoomIn(arg: any) {
@@ -52,23 +84,26 @@ export function useMenu(): [
       items: [
         {
           label: t("New"),
-          handler: handleMenuItem,
+          handler: handleNew,
           arg: "New",
+          enabled: true,
         },
         {
           label: t("Save"),
-          handler: handleMenuItem,
+          handler: handleSave,
           arg: "Save",
         },
         {
           label: t("Load"),
-          handler: handleMenuItem,
+          handler: handleLoad,
           arg: "Load",
+          enabled: true,
         },
         {
           label: t("Save As"),
-          handler: handleMenuItem,
+          handler: handleSaveAs,
           arg: "Save As",
+          enabled: true,
         },
         {
           label: t("Import"),

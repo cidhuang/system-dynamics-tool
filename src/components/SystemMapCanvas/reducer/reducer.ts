@@ -73,6 +73,30 @@ export function reducerUndoRedo(
   };
 }
 
+const newMap = ["NewMap"] as const;
+type NewMap = (typeof newMap)[number];
+const isNewMap = (x: any): x is NewMap => newMap.includes(x);
+type ActionNewMap = {
+  type: NewMap;
+};
+
+export function reducerNewMap(
+  state: IStateCanvas,
+  action: ActionNewMap,
+): IStateCanvas {
+  return {
+    ...state,
+    state: EStateCanvas.Idle,
+    items: {
+      variables: new Array<Variable>(),
+      links: new Array<Link>(),
+      stocks: new Array<Stock>(),
+      flows: new Array<Flow>(),
+    },
+    cmdUndoReset: state.cmdUndoReset + 1,
+  };
+}
+
 const changeItems = ["ChangeItems"] as const;
 type ChangeItems = (typeof changeItems)[number];
 const isChangeItems = (x: any): x is ChangeItems => changeItems.includes(x);
@@ -128,7 +152,8 @@ export type Actions =
   | ActionUndoRedo
   | ActionChangeItems
   | ActionToggleLinkDirection
-  | ActionDeleteItem;
+  | ActionDeleteItem
+  | ActionNewMap;
 
 export function reducer(state: IStateCanvas, action: Actions): IStateCanvas {
   let r = state;
@@ -154,6 +179,10 @@ export function reducer(state: IStateCanvas, action: Actions): IStateCanvas {
 
   if (isDeleteItem(action.type)) {
     r = reducerDeleteItem(state, action as ActionDeleteItem);
+  }
+
+  if (isNewMap(action.type)) {
+    r = reducerNewMap(state, action as ActionNewMap);
   }
 
   //console.log("reducer", r);
