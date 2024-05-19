@@ -36,6 +36,8 @@ export const InputTextArea = ({
           .replaceAll("\\\n", "\\n"),
       );
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (

@@ -50,6 +50,8 @@ export function useMenu(
     }
     const items0 = JSON.parse(filesContent[0].content);
     setItems0(items0);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filesContent]);
 
   function handleMenuItem(arg: any) {

@@ -127,3 +127,9 @@ export function getArc(start: Point, end: Point, mid?: Point): Arc | undefined {
     anticlockwise: orientation === EOrientation.Counterclockwise,
   };
 }
+
+export function getDistance(p0: Point, p1: Point): number {
+  const dx = p0.x - p1.x;
+  const dy = p0.y - p1.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}

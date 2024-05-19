@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Application, type ICanvas } from "pixi.js";
 
-import { Point } from "../lib/geometry";
+import { Point, getDistance } from "../lib/geometry";
 import { Actions } from "../reducer/reducer";
 
 export function useMouse(
@@ -48,6 +48,10 @@ export function useMouse(
     y: 0,
   });
   const [isTouched, setIsTouched] = useState<boolean>(false);
+  const [pinchPoints, setPinchPoints] = useState<[Point, Point]>([
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+  ]);
 
   const handleZoomOut = (): void => {
     setScale({ x: scale.x * 0.8, y: scale.y * 0.8 });
@@ -307,11 +311,19 @@ export function useMouse(
     e.stopPropagation();
     //console.log(e);
 
-    if (e.changedTouches.length < 1) {
+    if (e.targetTouches.length < 1) {
       return;
     }
 
-    handleDown(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    if (e.targetTouches.length >= 2) {
+      setPinchPoints([
+        { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY },
+        { x: e.targetTouches[1].clientX, y: e.targetTouches[1].clientY },
+      ]);
+      return;
+    }
+
+    handleDown(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
   }
 
   function handleTouchMove(event: SyntheticEvent) {
@@ -319,11 +331,35 @@ export function useMouse(
     e.stopPropagation();
     //console.log(e);
 
-    if (e.changedTouches.length < 1) {
+    if (e.targetTouches.length < 1) {
       return;
     }
 
-    handleMove(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    if (e.targetTouches.length >= 2) {
+      const p0: Point = {
+        x: e.targetTouches[0].clientX,
+        y: e.targetTouches[0].clientX,
+      };
+      const p1: Point = {
+        x: e.targetTouches[1].clientX,
+        y: e.targetTouches[1].clientX,
+      };
+      const d0 = getDistance(pinchPoints[0], pinchPoints[1]);
+      const d1 = getDistance(p0, p1);
+
+      const delta = 50;
+      if (d1 > d0 + delta) {
+        setPinchPoints([p0, p1]);
+        handleZoomIn();
+      }
+      if (d1 < d0 - delta) {
+        setPinchPoints([p0, p1]);
+        handleZoomOut();
+      }
+      return;
+    }
+
+    handleMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY);
   }
 
   function handleTouchUp(event: SyntheticEvent) {
@@ -334,7 +370,7 @@ export function useMouse(
     setIsTouched(true);
     setIsMouseMoved(false);
 
-    if (e.changedTouches.length < 1) {
+    if (e.targetTouches.length > 1) {
       return;
     }
 
