@@ -79,6 +79,9 @@ export const SystemMapCanvas = ({
     handleDoubleClick,
     handleClick,
     handleContextMenu,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchUp,
   ] = useMouse(
     app,
     ref,
@@ -87,7 +90,8 @@ export const SystemMapCanvas = ({
     editingText,
     dispatch,
     itemName,
-    handleEdit,
+    editTextStart,
+    editTextEnd,
   );
 
   const [
@@ -176,13 +180,19 @@ export const SystemMapCanvas = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cmdUndoReset]);
 
-  function handleEdit(item: string) {
+  function editTextStart(item: string) {
     if (isVariable(item)) {
       setEditingText(item);
     }
   }
 
-  function handleNameKeyEnterDown(value: string) {
+  function editTextEnd() {
+    setEditingText("");
+    setSelected("");
+    setInputVisible(false);
+  }
+
+  function changeText(value: string) {
     const item = structuredClone(
       state.items.variables.find((variable) => variable.name === editingText),
     );
@@ -216,6 +226,9 @@ export const SystemMapCanvas = ({
           onMouseUp={handleMouseUp}
           onDoubleClick={handleDoubleClick}
           onClick={handleClick}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchUp}
         ></Stage>
       </div>
       <InputTextArea
@@ -224,7 +237,7 @@ export const SystemMapCanvas = ({
         width={inputWidth}
         height={inputHeight}
         value0={inputValue}
-        onKeyEnterDown={handleNameKeyEnterDown}
+        onKeyEnterDown={changeText}
       />
     </div>
   );
