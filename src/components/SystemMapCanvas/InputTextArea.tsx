@@ -23,16 +23,20 @@ export const InputTextArea = ({
     setValue(value0.replaceAll("\\n", "\\\n").replaceAll("\n", "\\n"));
   }, [value0, visible]);
 
-  function handleKeyDown(event: SyntheticEvent) {
-    const e = event as unknown as KeyboardEvent;
-    if (e.code === "Enter") {
-      if (value.replaceAll(" ", "").replaceAll("\n", "") === "") {
-        onKeyEnterDown(value0);
-        return;
-      }
-      onKeyEnterDown(value.replaceAll("\\n", "\n").replaceAll("\\\n", "\\n"));
+  useEffect(() => {
+    if (value.replaceAll(" ", "").replaceAll("\n", "") === "") {
+      onKeyEnterDown(value0);
+      return;
     }
-  }
+    if (value.indexOf("\n") >= 0) {
+      onKeyEnterDown(
+        value
+          .replaceAll("\n", "")
+          .replaceAll("\\n", "\n")
+          .replaceAll("\\\n", "\\n"),
+      );
+    }
+  }, [value]);
 
   return (
     <div
@@ -43,7 +47,6 @@ export const InputTextArea = ({
       <textarea
         placeholder=""
         value={value}
-        onKeyDown={handleKeyDown}
         onChange={(e) => setValue(e.target.value)}
         style={{ width: width, height: height, resize: "none" }}
       ></textarea>

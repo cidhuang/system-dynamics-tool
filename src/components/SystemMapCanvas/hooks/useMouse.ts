@@ -19,7 +19,8 @@ export function useMouse(
   editingText: string,
   dispatch: Dispatch<Actions>,
   itemName: (xyCanvas: Point, xyMap: Point) => string,
-  handleEdit: (item: string) => void,
+  editTextStart: (item: string) => void,
+  editTextEnd: () => void,
 ): [
   () => void,
   () => void,
@@ -29,14 +30,16 @@ export function useMouse(
   (event: SyntheticEvent) => void,
   (event: SyntheticEvent) => void,
   (event: SyntheticEvent) => void,
+  (event: SyntheticEvent) => void,
+  (event: SyntheticEvent) => void,
+  (event: SyntheticEvent) => void,
 ] {
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
-  const [editable, setEditable] = useState<boolean>(false);
+  const [isEditable, setIsEditable] = useState<boolean>(false);
 
-  const [moving, setMoving] = useState<boolean>(false);
+  const [isMouseMoved, setIsMouseMoved] = useState<boolean>(false);
   const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
-
-  const [movingViewportXY0, setMovingViewportXY0] = useState<Point>({
+  const [isMovingViewportXY0, setIsMovingViewportXY0] = useState<Point>({
     x: 0,
     y: 0,
   });
@@ -44,6 +47,7 @@ export function useMouse(
     x: 0,
     y: 0,
   });
+  const [isTouched, setIsTouched] = useState<boolean>(false);
 
   const handleZoomOut = (): void => {
     setScale({ x: scale.x * 0.8, y: scale.y * 0.8 });
@@ -110,33 +114,25 @@ export function useMouse(
   };
 
   function startMovingViewport(xyCanvas: Point) {
-    setMovingViewportXY0(xyCanvas);
+    setIsMovingViewportXY0(xyCanvas);
   }
 
   function moveViewport(xyCanvas: Point) {
     const position1 = {
-      x: viewportPosition.x + xyCanvas.x - movingViewportXY0.x,
-      y: viewportPosition.y + xyCanvas.y - movingViewportXY0.y,
+      x: viewportPosition.x + xyCanvas.x - isMovingViewportXY0.x,
+      y: viewportPosition.y + xyCanvas.y - isMovingViewportXY0.y,
     };
     app?.stage.position.set(position1.x, position1.y);
     setViewportPosition(position1);
-    setMovingViewportXY0(xyCanvas);
+    setIsMovingViewportXY0(xyCanvas);
   }
 
-  function handleMouseDown(event: SyntheticEvent) {
-    setMoving(false);
+  function handleDown(x: number, y: number) {
     if (editingText !== "") {
       return;
     }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
 
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const [xyCanvas, xyMap] = XY(x, y);
     const item = itemName(xyCanvas, xyMap);
 
     if (item === "") {
@@ -145,27 +141,17 @@ export function useMouse(
       return;
     }
 
-    if (e.button === 0) {
-      dispatch({ type: "MouseLeftDown", xy: xyMap, item: item });
-    }
+    dispatch({ type: "MouseLeftDown", xy: xyMap, item: item });
   }
 
-  function handleMouseMove(event: SyntheticEvent) {
+  function handleMove(x: number, y: number) {
     setSelected("");
 
-    setMoving(true);
     if (editingText !== "") {
       return;
     }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
 
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const [xyCanvas, xyMap] = XY(x, y);
     const item = itemName(xyCanvas, xyMap);
 
     if (isMovingViewport) {
@@ -176,19 +162,12 @@ export function useMouse(
     dispatch({ type: "MouseMove", xy: xyMap, item: item });
   }
 
-  function handleMouseUp(event: SyntheticEvent) {
+  function handleUp(x: number, y: number) {
     if (editingText !== "") {
       return;
     }
-    const e = event as unknown as MouseEvent;
-    e.stopPropagation();
-    //console.log(e);
 
-    if (e.button !== 0) {
-      return;
-    }
-
-    const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
+    const [xyCanvas, xyMap] = XY(x, y);
     const item = itemName(xyCanvas, xyMap);
 
     if (isMovingViewport) {
@@ -199,17 +178,68 @@ export function useMouse(
     dispatch({ type: "MouseLeftUp", xy: xyMap, item: item });
   }
 
-  function handleDoubleClick(event: SyntheticEvent) {
-    setSelected("");
-
-    if (editingText !== "") {
-      return;
-    }
+  function handleMouseDown(event: SyntheticEvent) {
     const e = event as unknown as MouseEvent;
     e.stopPropagation();
     //console.log(e);
 
     if (e.button !== 0) {
+      return;
+    }
+
+    if (isTouched) {
+      return;
+    }
+
+    setIsMouseMoved(false);
+    handleDown(e.clientX, e.clientY);
+  }
+
+  function handleMouseMove(event: SyntheticEvent) {
+    const e = event as unknown as MouseEvent;
+    e.stopPropagation();
+    //console.log(e);
+
+    if (e.button !== 0) {
+      return;
+    }
+
+    if (isTouched) {
+      return;
+    }
+
+    setIsMouseMoved(true);
+    handleMove(e.clientX, e.clientY);
+  }
+
+  function handleMouseUp(event: SyntheticEvent) {
+    const e = event as unknown as MouseEvent;
+    e.stopPropagation();
+    //console.log(e);
+
+    if (e.button !== 0) {
+      return;
+    }
+
+    if (isTouched) {
+      return;
+    }
+
+    handleUp(e.clientX, e.clientY);
+  }
+
+  function handleDoubleClick(event: SyntheticEvent) {
+    const e = event as unknown as MouseEvent;
+    e.stopPropagation();
+    //console.log(e);
+
+    if (e.button !== 0) {
+      return;
+    }
+
+    setSelected("");
+
+    if (editingText !== "") {
       return;
     }
 
@@ -224,17 +254,22 @@ export function useMouse(
   }
 
   function handleClick(event: SyntheticEvent) {
-    if (moving) {
-      return;
-    }
-    if (editingText !== "") {
-      return;
-    }
     const e = event as unknown as MouseEvent;
     e.stopPropagation();
     //console.log(e);
 
+    setIsTouched(false);
+
     if (e.button !== 0) {
+      return;
+    }
+
+    if (editingText !== "") {
+      editTextEnd();
+      return;
+    }
+
+    if (isMouseMoved) {
       return;
     }
 
@@ -243,18 +278,18 @@ export function useMouse(
 
     if (selected !== item) {
       setSelected(item);
-      setEditable(false);
+      setIsEditable(false);
       setTimeout(() => {
-        setEditable(true);
+        setIsEditable(true);
       }, 1000);
       return;
     }
 
     if (selected === item) {
-      if (!editable) {
+      if (!isEditable) {
         return;
       }
-      handleEdit(item);
+      editTextStart(item);
       setSelected(item);
     }
 
@@ -267,6 +302,45 @@ export function useMouse(
     e.preventDefault();
   }
 
+  function handleTouchStart(event: SyntheticEvent) {
+    const e = event as unknown as TouchEvent;
+    e.stopPropagation();
+    //console.log(e);
+
+    if (e.changedTouches.length < 1) {
+      return;
+    }
+
+    handleDown(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }
+
+  function handleTouchMove(event: SyntheticEvent) {
+    const e = event as unknown as TouchEvent;
+    e.stopPropagation();
+    //console.log(e);
+
+    if (e.changedTouches.length < 1) {
+      return;
+    }
+
+    handleMove(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }
+
+  function handleTouchUp(event: SyntheticEvent) {
+    const e = event as unknown as TouchEvent;
+    e.stopPropagation();
+    //console.log(e);
+
+    setIsTouched(true);
+    setIsMouseMoved(false);
+
+    if (e.changedTouches.length < 1) {
+      return;
+    }
+
+    handleUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }
+
   return [
     handleZoomIn,
     handleZoomOut,
@@ -276,5 +350,8 @@ export function useMouse(
     handleDoubleClick,
     handleClick,
     handleContextMenu,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchUp,
   ];
 }
