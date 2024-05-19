@@ -17,8 +17,12 @@
   "Find Loops": "搜尋環路",
   "Find Archetypes": "搜尋基模",
   "Auto Position": "自動定位",
-  "Move Variable / Stock": "移動變數",
-  "Add Link / Flow": "新增因果關係",
-  "Toogle Link Direction": "翻轉因果關係方向",
-  "Delete Item": "刪除元件"
+  "Drag from Variable": "從變數拖曳",
+  "Move Variable": "移動變數",
+  "Add Link": "新增因果線",
+  "Double click on Link": "雙擊因果線",
+  "Toggle Relation": "交換變化方向",
+  "Toggle Direction": "交換因果方向",
+  "Double click to delete Item": "雙擊以刪除元件"
+
 }

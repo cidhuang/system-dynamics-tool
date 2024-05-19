@@ -6,8 +6,9 @@ import { useMenu } from "./lib/useMenu";
 import { useMode } from "./lib/useMode";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
-import { SystemMapCanvasMode } from "@/components/SystemMapCanvas/SystemMapCanvasMode";
 import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
+import { Checkbox } from "@/components/Checkbox/Checkbox";
+import { Radio } from "@/components/Radio/Radio";
 
 import {
   Variable,
@@ -32,8 +33,6 @@ function HomeImp() {
     flows: new Array<Flow>(),
   });
 
-  const [toggleLinkDirection, setToggleLinkDirection] =
-    useState<boolean>(false);
   const [deleteItem, setDeleteItem] = useState<boolean>(false);
 
   const [
@@ -47,19 +46,19 @@ function HomeImp() {
   ] = useMenu(setItems0, items);
 
   const [
-    mode,
-    modes,
-    handleModeClick,
-    labelToggleLinkDirection,
     lableDeleteItem,
+    labelDragFromVariable,
+    modeDragFromVariable,
+    modesDragFromVariable,
+    handleModeDragFromVariableClick,
+    labelDoubleClickOnLink,
+    modeDoubleClickOnLink,
+    modesDoubleClickOnLink,
+    handleModeDoubleClickOnLink,
   ] = useMode();
 
   function handleItemsChange(items: IItems): void {
     setItems(items);
-  }
-
-  function handleToggleLinkDirection(): void {
-    setToggleLinkDirection(!toggleLinkDirection);
   }
 
   function handleDeleteItem(): void {
@@ -71,34 +70,44 @@ function HomeImp() {
       <Suspense>
         <MenuBar menus={menus} />
         <div className="flex">
-          {modes.map((item, i) => {
-            return (
-              <SystemMapCanvasMode
-                key={"mode-" + i}
-                label={item.label}
-                mode={item.mode}
-                selected={mode === item.mode}
-                onClick={handleModeClick}
-              />
-            );
-          })}
-          <button
-            onClick={handleToggleLinkDirection}
-            className={toggleLinkDirection ? "btn-mode-selected" : "btn-mode"}
-          >
-            {labelToggleLinkDirection}
-          </button>
-          <button
-            onClick={handleDeleteItem}
-            className={deleteItem ? "btn-mode-selected" : "btn-mode"}
-          >
-            {lableDeleteItem}
-          </button>
+          <Checkbox
+            label={lableDeleteItem}
+            checked={deleteItem}
+            onChange={handleDeleteItem}
+          />
+          <div className="flex border">
+            <label className="m-4">{labelDragFromVariable + ": "}</label>
+            {modesDragFromVariable.map((item, i) => {
+              return (
+                <Radio
+                  key={"mode-" + i}
+                  label={item.label}
+                  value={item.mode}
+                  checked={modeDragFromVariable === item.mode}
+                  onClick={handleModeDragFromVariableClick}
+                />
+              );
+            })}
+          </div>
+          <div className="flex border">
+            <label className="m-4">{labelDoubleClickOnLink + ": "}</label>
+            {modesDoubleClickOnLink.map((item, i) => {
+              return (
+                <Radio
+                  key={"mode-" + i}
+                  label={item.label}
+                  value={item.mode}
+                  checked={modeDoubleClickOnLink === item.mode}
+                  onClick={handleModeDoubleClickOnLink}
+                />
+              );
+            })}
+          </div>
         </div>
       </Suspense>
       <SystemMapCanvas
-        mode={mode}
-        toggleLinkDirection={toggleLinkDirection}
+        mode={modeDragFromVariable}
+        toggleLinkDirection={modeDoubleClickOnLink}
         deleteItem={deleteItem}
         cmdZoomIn={cmdZoomIn}
         cmdZoomOut={cmdZoomOut}

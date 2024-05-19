@@ -17,8 +17,11 @@
   "Find Loops": "Find Loops",
   "Find Archetypes": "Find Archetypes",
   "Auto Position": "Auto Position",
-  "Move Variable / Stock": "Move Variable",
-  "Add Link / Flow": "Add Link",
-  "Toogle Link Direction": "Toogle Link Direction",
-  "Delete Item": "Delete Item"
+  "Drag from Variable": "Drag from Variable",
+  "Move Variable": "Move Variable",
+  "Add Link": "Add Link",
+  "Double click on Link": "Double click on Link",
+  "Toggle Relation": "Toggle Relation",
+  "Toggle Direction": "Toggle Direction",
+  "Double click to delete Item": "Double click to delete Item"
 }
