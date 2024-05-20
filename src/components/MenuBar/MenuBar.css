@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .menubar-nav {
+    /*
+    @apply relative inline-block text-left select-none;
+    //*/
+    @apply flex items-center justify-between flex-wrap px-2;
+  }
+
+  .menubar {
+    /*
+    @apply inline-flex justify-center w-full px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-100 bg-white rounded-md shadow-sm select-none;
+    //*/
+    @apply w-full flex flex-grow lg:flex lg:items-center lg:w-auto;
+  }
+
+  .menubar-menu {
+    /*
+    @apply origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 px-2 py-2;
+    //*/
+    @apply text-sm flex-grow;
+  }
+}

@@ -77,14 +77,14 @@ function HomeImp() {
     <>
       <Suspense>
         <MenuBar menus={menus} />
-        <div className="flex">
+        <div className="flex border">
           <Checkbox
             label={lableDeleteItem}
             checked={canvasModes.doubleClickToDeleteItem === true}
             onChange={handleDeleteItem}
           />
           <div className="flex border">
-            <label className="m-4">{labelDragFromVariableStock + ": "}</label>
+            <label className="m-1">{labelDragFromVariableStock + ": "}</label>
             {modesDragFromVariableStock.map((item, i) => {
               return (
                 <Radio
@@ -98,7 +98,7 @@ function HomeImp() {
             })}
           </div>
           <div className="flex border">
-            <label className="m-4">{labelDoubleClickOnLink + ": "}</label>
+            <label className="m-1">{labelDoubleClickOnLink + ": "}</label>
             {modesDoubleClickOnLink.map((item, i) => {
               return (
                 <Radio

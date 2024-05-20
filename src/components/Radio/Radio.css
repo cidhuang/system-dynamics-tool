@@ -4,7 +4,7 @@
 
 @layer components {
   .radio {
-    @apply flex items-center m-2;
+    @apply flex items-center mx-2;
   }
 
   .radio-input {

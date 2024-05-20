@@ -1,5 +1,6 @@
 "use client";
 
+import "./MenuBar.css";
 import { useState } from "react";
 
 import { Menu } from "./Menu";
@@ -24,9 +25,9 @@ export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
   }
 
   return (
-    <nav className="flex items-center justify-between flex-wrap bg-teal-500 p-6">
-      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-        <div className="text-sm lg:flex-grow">
+    <nav className="menubar-nav">
+      <div className="menubar">
+        <div className="menubar-menu">
           {menus.map((menu, i) => {
             return (
               <Menu
@@ -46,6 +47,7 @@ export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
           onClick={handleMenuClick}
           onItemClick={handleItemClick}
           menu={languages}
+          alignRight={true}
         />
       </div>
     </nav>

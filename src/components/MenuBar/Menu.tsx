@@ -9,12 +9,14 @@ export const Menu = ({
   onClick,
   onItemClick,
   menu,
+  alignRight,
 }: {
   itemsHidden: boolean;
   index: number;
   onClick: (index: number) => void;
   onItemClick: (index: number, itemIndex: number, item: IMenuItem) => void;
   menu: IMenu;
+  alignRight?: boolean;
 }) => {
   function handleMenuItemClick(
     index: number,
@@ -35,7 +37,10 @@ export const Menu = ({
       >
         {menu.label}
       </button>
-      <div hidden={itemsHidden} className="menu-options">
+      <div
+        hidden={itemsHidden}
+        className={alignRight ? "menu-options-right" : "menu-options"}
+      >
         {menu.items.map((item, i) => {
           return (
             <button
