@@ -13,7 +13,7 @@ import useUndo from "use-undo";
 
 import { IItems, isVariable } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
-import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
+import { EStateCanvas, IStateCanvasModes } from "./reducer/types";
 import { useInteraction } from "./hooks/useInteraction";
 
 import { InputTextArea } from "./InputTextArea";
@@ -25,12 +25,12 @@ export type SystemMapCanvasRef = {
   zoomOut: () => void;
   undo: () => void;
   redo: () => void;
+  setModes: (modes: IStateCanvasModes) => void;
 } | null;
 
 interface SystemMapCanvasProps {
-  mode: ESystemMapCanvasMode;
-  toggleLinkDirection: boolean;
-  deleteItem: boolean;
+  modes: IStateCanvasModes;
+  onModesChange: (modes: IStateCanvasModes) => void;
   onCanUndoChanged: (canUndo: boolean) => void;
   onCanRedoChanged: (canRedo: boolean) => void;
   items: IItems;
@@ -42,9 +42,8 @@ export const SystemMapCanvas = forwardRef<
   SystemMapCanvasProps
 >(function SystemMapCanvas(
   {
-    mode,
-    toggleLinkDirection,
-    deleteItem,
+    modes,
+    onModesChange,
     onCanUndoChanged,
     onCanRedoChanged,
     items,
@@ -58,13 +57,11 @@ export const SystemMapCanvas = forwardRef<
   const [editingText, setEditingText] = useState<string>("");
 
   const [state, dispatch] = useReducer(reducer, {
-    mode: mode,
+    modes: modes,
     state: EStateCanvas.Idle,
     items: items,
     cmdUndoAdd: 0,
     cmdUndoReset: 0,
-    toggleLinkDirection: toggleLinkDirection,
-    deleteItem: deleteItem,
   });
 
   const [
@@ -115,10 +112,6 @@ export const SystemMapCanvas = forwardRef<
     setInputVisible,
   ] = useInput(app, editingText, setEditingText);
 
-  useEffect(() => {
-    dispatch({ type: "Mode", mode: mode });
-  }, [mode]);
-
   useImperativeHandle(
     ref,
     () => {
@@ -135,9 +128,12 @@ export const SystemMapCanvas = forwardRef<
         redo() {
           redoItems();
         },
+        setModes(modes: IStateCanvasModes) {
+          dispatch({ type: "Modes", modes: modes });
+        },
       };
     },
-    [handleZoomIn, handleZoomOut, undoItems, redoItems],
+    [handleZoomIn, handleZoomOut, undoItems, redoItems, state.modes],
   );
 
   useEffect(() => {
@@ -166,22 +162,16 @@ export const SystemMapCanvas = forwardRef<
   }, [state.cmdUndoAdd]);
 
   useEffect(() => {
-    dispatch({ type: "ToggleLinkDirection", enabled: toggleLinkDirection });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggleLinkDirection]);
-
-  useEffect(() => {
-    dispatch({ type: "DeleteItem", enabled: deleteItem });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteItem]);
-
-  useEffect(() => {
     dispatch({ type: "NewMap", items: items });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
+
+  useEffect(() => {
+    onModesChange(state.modes);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.modes]);
 
   useEffect(() => {
     resetItems(state.items);

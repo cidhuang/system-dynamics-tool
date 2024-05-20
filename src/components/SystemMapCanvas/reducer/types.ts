@@ -1,9 +1,14 @@
 import { IItems } from "@/components/SystemMapCanvas/lib/types";
 import { Point } from "../lib/geometry";
 
-export enum ESystemMapCanvasMode {
+export enum ESystemMapCanvasModeDragFromVariableStock {
   MoveVariableStock,
   AddLinkFlow,
+}
+
+export enum ESystemMapCanvasModeDoubleClickOnLink {
+  ToggleRelation,
+  ToggleDirection,
 }
 
 export enum EStateCanvas {
@@ -15,14 +20,18 @@ export enum EStateCanvas {
   DragginNewLinkFlow,
 }
 
+export interface IStateCanvasModes {
+  dragFromVariableStock: ESystemMapCanvasModeDragFromVariableStock;
+  doubleClickOnLink: ESystemMapCanvasModeDoubleClickOnLink;
+  doubleClickToDeleteItem: boolean;
+}
+
 export interface IStateCanvas {
-  mode: ESystemMapCanvasMode;
+  modes: IStateCanvasModes;
   state: EStateCanvas;
   items: IItems;
   cmdUndoAdd: number;
   cmdUndoReset: number;
-  toggleLinkDirection: boolean;
-  deleteItem: boolean;
   dragStart?: string;
   dragLinkEnd?: string | Point;
   dragLinkMid?: Point;

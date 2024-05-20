@@ -12,10 +12,11 @@ import { Point } from "../lib/geometry";
 
 import {
   EStateCanvas,
-  ESystemMapCanvasMode,
   IStateCanvas,
   MouseReducers,
   StateReducers,
+  ESystemMapCanvasModeDragFromVariableStock,
+  ESystemMapCanvasModeDoubleClickOnLink,
 } from "./types";
 
 const mouse = [
@@ -43,7 +44,10 @@ function reducerIdleDown(state: IStateCanvas, xy: Point, item: string) {
       dragStart: item,
     };
   }
-  if (state.mode === ESystemMapCanvasMode.MoveVariableStock) {
+  if (
+    state.modes.dragFromVariableStock ===
+    ESystemMapCanvasModeDragFromVariableStock.MoveVariableStock
+  ) {
     if (isVariable(item)) {
       return {
         ...state,
@@ -59,7 +63,10 @@ function reducerIdleDown(state: IStateCanvas, xy: Point, item: string) {
       };
     }
   }
-  if (state.mode === ESystemMapCanvasMode.AddLinkFlow) {
+  if (
+    state.modes.dragFromVariableStock ===
+    ESystemMapCanvasModeDragFromVariableStock.AddLinkFlow
+  ) {
     if (isVariable(item) || isStock(item)) {
       return {
         ...state,
@@ -181,7 +188,7 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   }
 
   if (isVariable(item)) {
-    if (state.deleteItem) {
+    if (state.modes.doubleClickToDeleteItem) {
       return removeVariable(state, item);
     }
     return variableToStock(state, item);
@@ -192,10 +199,13 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   }
 
   if (isLink(item)) {
-    if (state.deleteItem) {
+    if (state.modes.doubleClickToDeleteItem) {
       return removeLink(state, item);
     }
-    if (state.toggleLinkDirection) {
+    if (
+      state.modes.doubleClickOnLink ===
+      ESystemMapCanvasModeDoubleClickOnLink.ToggleDirection
+    ) {
       return toggleLinkDirection(state, item);
     }
     return toggleLinkRelation(state, item);

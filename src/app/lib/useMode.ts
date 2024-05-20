@@ -1,43 +1,72 @@
-import { useState } from "react";
+import { useState, MutableRefObject } from "react";
 import { useTranslation } from "next-export-i18n";
-import { ESystemMapCanvasMode } from "@/components/SystemMapCanvas/reducer/types";
 
-export function useMode(): [
+import { SystemMapCanvasRef } from "@/components/SystemMapCanvas/SystemMapCanvas";
+import {
+  IStateCanvasModes,
+  ESystemMapCanvasModeDragFromVariableStock,
+  ESystemMapCanvasModeDoubleClickOnLink,
+} from "@/components/SystemMapCanvas/reducer/types";
+
+export function useMode(
+  canvasRef: MutableRefObject<SystemMapCanvasRef>,
+  canvasModes: IStateCanvasModes,
+): [
   string,
+  () => void,
   string,
-  ESystemMapCanvasMode,
-  Array<{ label: string; mode: ESystemMapCanvasMode }>,
-  (mode: ESystemMapCanvasMode) => void,
+  Array<{
+    label: string;
+    mode: ESystemMapCanvasModeDragFromVariableStock;
+    handler: (mode: ESystemMapCanvasModeDragFromVariableStock) => void;
+  }>,
   string,
-  boolean,
-  Array<{ label: string; mode: boolean }>,
-  (mode: boolean) => void,
+  Array<{
+    label: string;
+    mode: ESystemMapCanvasModeDoubleClickOnLink;
+    handler: (mode: ESystemMapCanvasModeDoubleClickOnLink) => void;
+  }>,
 ] {
   const { t } = useTranslation();
 
-  const [modeDragFromVariable, setModeDragFromVariable] =
-    useState<ESystemMapCanvasMode>(ESystemMapCanvasMode.MoveVariableStock);
-  const [modeDoubleClickOnLink, setModeDoubleClickOnLink] =
-    useState<boolean>(false);
-
-  function handleModeDragFromVariableClick(mode1: ESystemMapCanvasMode) {
-    setModeDragFromVariable(mode1);
+  function handleDeleteItem(): void {
+    canvasRef.current?.setModes({
+      ...canvasModes,
+      doubleClickToDeleteItem: !canvasModes.doubleClickToDeleteItem,
+    });
   }
-  function handleModeDoubleClickOnLink(mode1: boolean) {
-    setModeDoubleClickOnLink(mode1);
+
+  function handleModeDragFromVariableStockClick(
+    mode: ESystemMapCanvasModeDragFromVariableStock,
+  ): void {
+    canvasRef.current?.setModes({
+      ...canvasModes,
+      dragFromVariableStock: mode,
+    });
+  }
+
+  function handleModeDoubleClickOnLink(
+    mode: ESystemMapCanvasModeDoubleClickOnLink,
+  ): void {
+    canvasRef.current?.setModes({
+      ...canvasModes,
+      doubleClickOnLink: mode,
+    });
   }
 
   const lableDeleteItem = t("Double click to delete Item");
 
-  const labelDragFromVariable = t("Drag from Variable");
-  const modesDragFromVariable = [
+  const labelDragFromVariableStock = t("Drag from Variable");
+  const modesDragFromVariableStock = [
     {
       label: t("Move Variable"),
-      mode: ESystemMapCanvasMode.MoveVariableStock,
+      mode: ESystemMapCanvasModeDragFromVariableStock.MoveVariableStock,
+      handler: handleModeDragFromVariableStockClick,
     },
     {
       label: t("Add Link"),
-      mode: ESystemMapCanvasMode.AddLinkFlow,
+      mode: ESystemMapCanvasModeDragFromVariableStock.AddLinkFlow,
+      handler: handleModeDragFromVariableStockClick,
     },
   ];
 
@@ -45,23 +74,22 @@ export function useMode(): [
   const modesDoubleClickOnLink = [
     {
       label: t("Toggle Relation"),
-      mode: false,
+      mode: ESystemMapCanvasModeDoubleClickOnLink.ToggleRelation,
+      handler: handleModeDoubleClickOnLink,
     },
     {
       label: t("Toggle Direction"),
-      mode: true,
+      mode: ESystemMapCanvasModeDoubleClickOnLink.ToggleDirection,
+      handler: handleModeDoubleClickOnLink,
     },
   ];
 
   return [
     lableDeleteItem,
-    labelDragFromVariable,
-    modeDragFromVariable,
-    modesDragFromVariable,
-    handleModeDragFromVariableClick,
+    handleDeleteItem,
+    labelDragFromVariableStock,
+    modesDragFromVariableStock,
     labelDoubleClickOnLink,
-    modeDoubleClickOnLink,
     modesDoubleClickOnLink,
-    handleModeDoubleClickOnLink,
   ];
 }

@@ -20,6 +20,11 @@ import {
   Flow,
   IItems,
 } from "@/components/SystemMapCanvas/lib/types";
+import { IStateCanvasModes } from "@/components/SystemMapCanvas/reducer/types";
+import {
+  ESystemMapCanvasModeDragFromVariableStock,
+  ESystemMapCanvasModeDoubleClickOnLink,
+} from "@/components/SystemMapCanvas/reducer/types";
 
 function HomeImp() {
   const canvasRef = useRef<SystemMapCanvasRef>(null);
@@ -38,7 +43,12 @@ function HomeImp() {
     flows: new Array<Flow>(),
   });
 
-  const [deleteItem, setDeleteItem] = useState<boolean>(false);
+  const [canvasModes, setCanvasModes] = useState<IStateCanvasModes>({
+    dragFromVariableStock:
+      ESystemMapCanvasModeDragFromVariableStock.MoveVariableStock,
+    doubleClickOnLink: ESystemMapCanvasModeDoubleClickOnLink.ToggleRelation,
+    doubleClickToDeleteItem: false,
+  });
 
   const [handlerCanUndoChanged, handlerCanRedoChanged, menus] = useMenu(
     canvasRef,
@@ -48,22 +58,19 @@ function HomeImp() {
 
   const [
     lableDeleteItem,
-    labelDragFromVariable,
-    modeDragFromVariable,
-    modesDragFromVariable,
-    handleModeDragFromVariableClick,
+    handleDeleteItem,
+    labelDragFromVariableStock,
+    modesDragFromVariableStock,
     labelDoubleClickOnLink,
-    modeDoubleClickOnLink,
     modesDoubleClickOnLink,
-    handleModeDoubleClickOnLink,
-  ] = useMode();
+  ] = useMode(canvasRef, canvasModes);
+
+  function handleModesChange(modes: IStateCanvasModes) {
+    setCanvasModes(modes);
+  }
 
   function handleItemsChange(items: IItems): void {
     setItems(items);
-  }
-
-  function handleDeleteItem(): void {
-    setDeleteItem(!deleteItem);
   }
 
   return (
@@ -73,19 +80,19 @@ function HomeImp() {
         <div className="flex">
           <Checkbox
             label={lableDeleteItem}
-            checked={deleteItem}
+            checked={canvasModes.doubleClickToDeleteItem === true}
             onChange={handleDeleteItem}
           />
           <div className="flex border">
-            <label className="m-4">{labelDragFromVariable + ": "}</label>
-            {modesDragFromVariable.map((item, i) => {
+            <label className="m-4">{labelDragFromVariableStock + ": "}</label>
+            {modesDragFromVariableStock.map((item, i) => {
               return (
                 <Radio
                   key={"mode-" + i}
                   label={item.label}
                   value={item.mode}
-                  checked={modeDragFromVariable === item.mode}
-                  onClick={handleModeDragFromVariableClick}
+                  checked={canvasModes.dragFromVariableStock === item.mode}
+                  onClick={() => item.handler(item.mode)}
                 />
               );
             })}
@@ -98,8 +105,8 @@ function HomeImp() {
                   key={"mode-" + i}
                   label={item.label}
                   value={item.mode}
-                  checked={modeDoubleClickOnLink === item.mode}
-                  onClick={handleModeDoubleClickOnLink}
+                  checked={canvasModes.doubleClickOnLink === item.mode}
+                  onClick={() => item.handler(item.mode)}
                 />
               );
             })}
@@ -108,9 +115,8 @@ function HomeImp() {
       </Suspense>
       <SystemMapCanvas
         ref={canvasRef}
-        mode={modeDragFromVariable}
-        toggleLinkDirection={modeDoubleClickOnLink}
-        deleteItem={deleteItem}
+        modes={canvasModes}
+        onModesChange={handleModesChange}
         onCanUndoChanged={handlerCanUndoChanged}
         onCanRedoChanged={handlerCanRedoChanged}
         items={items0}

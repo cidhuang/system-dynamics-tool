@@ -1,19 +1,19 @@
 import { Variable, Link, Stock, Flow, IItems } from "../lib/types";
 import { isMouse, ActionMouse, reducerMouse } from "./reducerMouse";
-import { IStateCanvas, ESystemMapCanvasMode, EStateCanvas } from "./types";
+import { IStateCanvas, IStateCanvasModes, EStateCanvas } from "./types";
 
-const mode = ["Mode"] as const;
-type Mode = (typeof mode)[number];
-const isMode = (x: any): x is Mode => mode.includes(x);
-type ActionMode = { type: Mode; mode: ESystemMapCanvasMode };
+const modes = ["Modes"] as const;
+type Modes = (typeof modes)[number];
+const isModes = (x: any): x is Modes => modes.includes(x);
+type ActionModes = { type: Modes; modes: IStateCanvasModes };
 
-export function reducerMode(
+export function reducerModes(
   state: IStateCanvas,
-  action: ActionMode,
+  action: ActionModes,
 ): IStateCanvas {
   return {
     ...state,
-    mode: action.mode,
+    modes: action.modes,
     state: EStateCanvas.Idle,
   };
 }
@@ -86,42 +86,6 @@ export function reducerChangeItems(
   };
 }
 
-const toggleLinkDirection = ["ToggleLinkDirection"] as const;
-type ToggleLinkDirection = (typeof toggleLinkDirection)[number];
-const isToggleLinkDirection = (x: any): x is ToggleLinkDirection =>
-  toggleLinkDirection.includes(x);
-type ActionToggleLinkDirection = {
-  type: ToggleLinkDirection;
-  enabled: boolean;
-};
-
-export function reducerToggleLinkDirection(
-  state: IStateCanvas,
-  action: ActionToggleLinkDirection,
-): IStateCanvas {
-  return {
-    ...state,
-    toggleLinkDirection: action.enabled,
-    state: EStateCanvas.Idle,
-  };
-}
-
-const deleteItem = ["DeleteItem"] as const;
-type DeleteItem = (typeof deleteItem)[number];
-const isDeleteItem = (x: any): x is DeleteItem => deleteItem.includes(x);
-type ActionDeleteItem = { type: DeleteItem; enabled: boolean };
-
-export function reducerDeleteItem(
-  state: IStateCanvas,
-  action: ActionDeleteItem,
-): IStateCanvas {
-  return {
-    ...state,
-    deleteItem: action.enabled,
-    state: EStateCanvas.Idle,
-  };
-}
-
 const newMap = ["NewMap"] as const;
 type NewMap = (typeof newMap)[number];
 const isNewMap = (x: any): x is NewMap => newMap.includes(x);
@@ -144,11 +108,9 @@ export function reducerNewMap(
 
 export type Actions =
   | ActionMouse
-  | ActionMode
+  | ActionModes
   | ActionUndoRedo
   | ActionChangeItems
-  | ActionToggleLinkDirection
-  | ActionDeleteItem
   | ActionNewMap;
 
 export function reducer(state: IStateCanvas, action: Actions): IStateCanvas {
@@ -157,8 +119,8 @@ export function reducer(state: IStateCanvas, action: Actions): IStateCanvas {
     r = reducerMouse(state, action as ActionMouse);
   }
 
-  if (isMode(action.type)) {
-    r = reducerMode(state, action as ActionMode);
+  if (isModes(action.type)) {
+    r = reducerModes(state, action as ActionModes);
   }
 
   if (isUndoRedo(action.type)) {
@@ -167,14 +129,6 @@ export function reducer(state: IStateCanvas, action: Actions): IStateCanvas {
 
   if (isChangeItems(action.type)) {
     r = reducerChangeItems(state, action as ActionChangeItems);
-  }
-
-  if (isToggleLinkDirection(action.type)) {
-    r = reducerToggleLinkDirection(state, action as ActionToggleLinkDirection);
-  }
-
-  if (isDeleteItem(action.type)) {
-    r = reducerDeleteItem(state, action as ActionDeleteItem);
   }
 
   if (isNewMap(action.type)) {
