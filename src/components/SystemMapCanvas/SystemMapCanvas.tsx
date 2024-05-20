@@ -60,8 +60,8 @@ export const SystemMapCanvas = forwardRef<
     modes: modes,
     state: EStateCanvas.Idle,
     items: items,
-    cmdUndoAdd: 0,
-    cmdUndoReset: 0,
+    cmdUndoSetItems: 0,
+    cmdUndoResetItems: 0,
   });
 
   const [
@@ -159,7 +159,7 @@ export const SystemMapCanvas = forwardRef<
     onItemsChange(state.items);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.cmdUndoAdd]);
+  }, [state.cmdUndoSetItems]);
 
   useEffect(() => {
     dispatch({ type: "NewMap", items: items });
@@ -177,7 +177,7 @@ export const SystemMapCanvas = forwardRef<
     resetItems(state.items);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.cmdUndoReset]);
+  }, [state.cmdUndoResetItems]);
 
   function editTextStart(item: string) {
     if (isVariable(item)) {

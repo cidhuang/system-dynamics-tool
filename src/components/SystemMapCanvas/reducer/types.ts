@@ -30,8 +30,8 @@ export interface IStateCanvas {
   modes: IStateCanvasModes;
   state: EStateCanvas;
   items: IItems;
-  cmdUndoAdd: number;
-  cmdUndoReset: number;
+  cmdUndoSetItems: number;
+  cmdUndoResetItems: number;
   dragStart?: string;
   dragLinkEnd?: string | Point;
   dragLinkMid?: Point;

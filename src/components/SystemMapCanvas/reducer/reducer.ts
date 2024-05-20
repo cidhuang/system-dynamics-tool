@@ -82,7 +82,7 @@ export function reducerChangeItems(
     ...state,
     state: EStateCanvas.Idle,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -102,7 +102,7 @@ export function reducerNewMap(
     ...state,
     state: EStateCanvas.Idle,
     items: action.items,
-    cmdUndoReset: state.cmdUndoReset + 1,
+    cmdUndoResetItems: state.cmdUndoResetItems + 1,
   };
 }
 

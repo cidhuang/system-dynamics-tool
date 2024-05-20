@@ -92,7 +92,7 @@ function removeVariable(state: IStateCanvas, item: string): IStateCanvas {
   return {
     ...state,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -102,7 +102,7 @@ function variableToStock(state: IStateCanvas, item: string): IStateCanvas {
   return {
     ...state,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -112,7 +112,7 @@ function stockToVariable(state: IStateCanvas, item: string): IStateCanvas {
   return {
     ...state,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -124,7 +124,7 @@ function removeLink(state: IStateCanvas, item: string): IStateCanvas {
   return {
     ...state,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -142,7 +142,7 @@ function toggleLinkRelation(state: IStateCanvas, item: string): IStateCanvas {
   return {
     ...state,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -162,7 +162,7 @@ function toggleLinkDirection(state: IStateCanvas, item: string): IStateCanvas {
   return {
     ...state,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -172,7 +172,7 @@ function reverseFlowDirection(state: IStateCanvas, item: string): IStateCanvas {
   return {
     ...state,
     items: items,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -183,7 +183,7 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
     return {
       ...state,
       items: items,
-      cmdUndoAdd: state.cmdUndoAdd + 1,
+      cmdUndoSetItems: state.cmdUndoSetItems + 1,
     };
   }
 
@@ -246,7 +246,7 @@ function reducerMovingVariableUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -263,7 +263,7 @@ function reducerMovingStockUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -289,7 +289,7 @@ function reducerShapingLinkUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -306,7 +306,7 @@ function reducerShapingFlowUp(state: IStateCanvas, xy: Point, item: string) {
   return {
     ...state,
     state: EStateCanvas.Idle,
-    cmdUndoAdd: state.cmdUndoAdd + 1,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
   };
 }
 
@@ -358,7 +358,7 @@ function reducerDragginNewLinkFlowUp(
           ...state,
           state: EStateCanvas.Idle,
           items: items,
-          cmdUndoAdd: state.cmdUndoAdd + 1,
+          cmdUndoSetItems: state.cmdUndoSetItems + 1,
           dragLinkEnd: undefined,
         };
       }
@@ -379,7 +379,7 @@ function reducerDragginNewLinkFlowUp(
         ...state,
         state: EStateCanvas.Idle,
         items: items,
-        cmdUndoAdd: state.cmdUndoAdd + 1,
+        cmdUndoSetItems: state.cmdUndoSetItems + 1,
       };
     }
   }
