@@ -15,6 +15,7 @@ import { IItems, isVariable } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, IStateCanvasModes } from "./reducer/types";
 import { useInteraction } from "./hooks/useInteraction";
+import { useWindowSize } from "./hooks/useWindowSize";
 
 import { InputTextArea } from "./InputTextArea";
 import { useInput } from "./hooks/useInput";
@@ -79,6 +80,8 @@ export const SystemMapCanvas = forwardRef<
 
   const [app, setApp, itemName] = useView(state);
 
+  const [windowSize, offset] = useWindowSize(divRef);
+
   const [
     handleZoomIn,
     handleZoomOut,
@@ -133,7 +136,7 @@ export const SystemMapCanvas = forwardRef<
         },
       };
     },
-    [handleZoomIn, handleZoomOut, undoItems, redoItems, state.modes],
+    [handleZoomIn, handleZoomOut, undoItems, redoItems],
   );
 
   useEffect(() => {
@@ -211,13 +214,13 @@ export const SystemMapCanvas = forwardRef<
     <div ref={divRef} className="relative -z-10">
       <div className="absolute left-0 top-0">
         <Stage
-          width={800}
-          height={600}
+          width={windowSize.width}
+          height={windowSize.height - offset.y}
           onMount={setApp as any}
           options={{
-            backgroundColor: 0xeef1f5,
+            backgroundColor: 0xffffff,
             antialias: true,
-            backgroundAlpha: 1,
+            backgroundAlpha: 0,
           }}
           onContextMenu={handleContextMenu}
           onMouseDown={handleMouseDown}
