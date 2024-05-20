@@ -11,7 +11,7 @@ import { Application, type ICanvas } from "pixi.js";
 import { Point, getDistance } from "../lib/geometry";
 import { Actions } from "../reducer/reducer";
 
-export function useMouse(
+export function useInteraction(
   app: Application<ICanvas> | undefined,
   ref: MutableRefObject<null>,
   selected: string,

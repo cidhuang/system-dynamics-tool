@@ -1,10 +1,17 @@
-import { useState, Dispatch, SetStateAction, useEffect } from "react";
+import {
+  useState,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  MutableRefObject,
+} from "react";
 import { useTranslation } from "next-export-i18n";
 
 import { useFilePicker } from "use-file-picker";
 import saveFile from "save-as-file";
 
 import { IMenu } from "@/components/MenuBar/lib/types";
+import { SystemMapCanvasRef } from "@/components/SystemMapCanvas/SystemMapCanvas";
 
 import {
   Variable,
@@ -15,24 +22,12 @@ import {
 } from "@/components/SystemMapCanvas/lib/types";
 
 export function useMenu(
+  canvasRef: MutableRefObject<SystemMapCanvasRef>,
   setItems0: Dispatch<SetStateAction<IItems>>,
   items: IItems,
-): [
-  number,
-  number,
-  number,
-  number,
-  (canUndo: boolean) => void,
-  (canRedo: boolean) => void,
-  Array<IMenu>,
-] {
+): [(canUndo: boolean) => void, (canRedo: boolean) => void, Array<IMenu>] {
   const { t } = useTranslation();
 
-  const [cmdZoomIn, setCmdZoomIn] = useState<number>(1);
-  const [cmdZoomOut, setCmdZoomOut] = useState<number>(1);
-
-  const [cmdUndo, setCmdUndo] = useState<number>(1);
-  const [cmdRedo, setCmdRedo] = useState<number>(1);
   const [canUndo, setCanUndo] = useState<boolean>(false);
   const [canRedo, setCanRedo] = useState<boolean>(false);
 
@@ -82,17 +77,17 @@ export function useMenu(
   }
 
   function handleZoomIn(arg: any) {
-    setCmdZoomIn(cmdZoomIn + 1);
+    canvasRef.current?.zoomIn();
   }
   function handleZoomOut(arg: any) {
-    setCmdZoomOut(cmdZoomOut + 1);
+    canvasRef.current?.zoomOut();
   }
 
   function handleUndo(arg: any) {
-    setCmdUndo(cmdUndo + 1);
+    canvasRef.current?.undo();
   }
   function handleRedo(arg: any) {
-    setCmdRedo(cmdRedo + 1);
+    canvasRef.current?.redo();
   }
 
   function handleCanUndoChanged(canUndo: boolean) {
@@ -197,13 +192,5 @@ export function useMenu(
     },
   ];
 
-  return [
-    cmdZoomIn,
-    cmdZoomOut,
-    cmdUndo,
-    cmdRedo,
-    handleCanUndoChanged,
-    handleCanRedoChanged,
-    menus,
-  ];
+  return [handleCanUndoChanged, handleCanRedoChanged, menus];
 }

@@ -1,46 +1,58 @@
 "use client";
 
-import { useState, useEffect, useReducer, useRef } from "react";
+import {
+  forwardRef,
+  useState,
+  useEffect,
+  useReducer,
+  useRef,
+  useImperativeHandle,
+} from "react";
 import { Stage } from "@pixi/react";
 import useUndo from "use-undo";
 
 import { IItems, isVariable } from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, ESystemMapCanvasMode } from "./reducer/types";
-import { useMouse } from "./hooks/useMouse";
+import { useInteraction } from "./hooks/useInteraction";
 
 import { InputTextArea } from "./InputTextArea";
 import { useInput } from "./hooks/useInput";
 import { useView } from "./hooks/useView";
 
+export type SystemMapCanvasRef = {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  undo: () => void;
+  redo: () => void;
+} | null;
+
 interface SystemMapCanvasProps {
   mode: ESystemMapCanvasMode;
   toggleLinkDirection: boolean;
   deleteItem: boolean;
-  cmdZoomIn: number;
-  cmdZoomOut: number;
-  cmdUndo: number;
-  cmdRedo: number;
   onCanUndoChanged: (canUndo: boolean) => void;
   onCanRedoChanged: (canRedo: boolean) => void;
   items: IItems;
   onItemsChange: (items: IItems) => void;
 }
 
-export const SystemMapCanvas = ({
-  mode,
-  toggleLinkDirection,
-  deleteItem,
-  cmdZoomIn,
-  cmdZoomOut,
-  cmdUndo,
-  cmdRedo,
-  onCanUndoChanged,
-  onCanRedoChanged,
-  items,
-  onItemsChange,
-}: SystemMapCanvasProps) => {
-  const ref = useRef(null);
+export const SystemMapCanvas = forwardRef<
+  SystemMapCanvasRef,
+  SystemMapCanvasProps
+>(function SystemMapCanvas(
+  {
+    mode,
+    toggleLinkDirection,
+    deleteItem,
+    onCanUndoChanged,
+    onCanRedoChanged,
+    items,
+    onItemsChange,
+  }: SystemMapCanvasProps,
+  ref,
+) {
+  const divRef = useRef(null);
 
   const [selected, setSelected] = useState<string>("");
   const [editingText, setEditingText] = useState<string>("");
@@ -82,9 +94,9 @@ export const SystemMapCanvas = ({
     handleTouchStart,
     handleTouchMove,
     handleTouchUp,
-  ] = useMouse(
+  ] = useInteraction(
     app,
-    ref,
+    divRef,
     selected,
     setSelected,
     editingText,
@@ -107,29 +119,26 @@ export const SystemMapCanvas = ({
     dispatch({ type: "Mode", mode: mode });
   }, [mode]);
 
-  useEffect(() => {
-    handleZoomIn();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cmdZoomIn]);
-
-  useEffect(() => {
-    handleZoomOut();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cmdZoomOut]);
-
-  useEffect(() => {
-    undoItems();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cmdUndo]);
-
-  useEffect(() => {
-    redoItems();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cmdRedo]);
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        zoomIn() {
+          handleZoomIn();
+        },
+        zoomOut() {
+          handleZoomOut();
+        },
+        undo() {
+          undoItems();
+        },
+        redo() {
+          redoItems();
+        },
+      };
+    },
+    [handleZoomIn, handleZoomOut, undoItems, redoItems],
+  );
 
   useEffect(() => {
     onCanUndoChanged(canUndo);
@@ -209,7 +218,7 @@ export const SystemMapCanvas = ({
   }
 
   return (
-    <div ref={ref} className="relative -z-10">
+    <div ref={divRef} className="relative -z-10">
       <div className="absolute left-0 top-0">
         <Stage
           width={800}
@@ -241,4 +250,4 @@ export const SystemMapCanvas = ({
       />
     </div>
   );
-};
+});

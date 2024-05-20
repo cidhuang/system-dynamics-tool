@@ -1,12 +1,15 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { useRef, Suspense, useState } from "react";
 
 import { useMenu } from "./lib/useMenu";
 import { useMode } from "./lib/useMode";
 
 import { MenuBar } from "@/components/MenuBar/MenuBar";
-import { SystemMapCanvas } from "@/components/SystemMapCanvas/SystemMapCanvas";
+import {
+  SystemMapCanvas,
+  SystemMapCanvasRef,
+} from "@/components/SystemMapCanvas/SystemMapCanvas";
 import { Checkbox } from "@/components/Checkbox/Checkbox";
 import { Radio } from "@/components/Radio/Radio";
 
@@ -19,6 +22,8 @@ import {
 } from "@/components/SystemMapCanvas/lib/types";
 
 function HomeImp() {
+  const canvasRef = useRef<SystemMapCanvasRef>(null);
+
   const [items0, setItems0] = useState<IItems>({
     variables: new Array<Variable>(),
     links: new Array<Link>(),
@@ -35,15 +40,11 @@ function HomeImp() {
 
   const [deleteItem, setDeleteItem] = useState<boolean>(false);
 
-  const [
-    cmdZoomIn,
-    cmdZoomOut,
-    cmdUndo,
-    cmdRedo,
-    handlerCanUndoChanged,
-    handlerCanRedoChanged,
-    menus,
-  ] = useMenu(setItems0, items);
+  const [handlerCanUndoChanged, handlerCanRedoChanged, menus] = useMenu(
+    canvasRef,
+    setItems0,
+    items,
+  );
 
   const [
     lableDeleteItem,
@@ -106,13 +107,10 @@ function HomeImp() {
         </div>
       </Suspense>
       <SystemMapCanvas
+        ref={canvasRef}
         mode={modeDragFromVariable}
         toggleLinkDirection={modeDoubleClickOnLink}
         deleteItem={deleteItem}
-        cmdZoomIn={cmdZoomIn}
-        cmdZoomOut={cmdZoomOut}
-        cmdUndo={cmdUndo}
-        cmdRedo={cmdRedo}
         onCanUndoChanged={handlerCanUndoChanged}
         onCanRedoChanged={handlerCanRedoChanged}
         items={items0}
