@@ -4,7 +4,7 @@
 
 @layer components {
   .checkbox {
-    @apply flex items-center mx-2;
+    @apply flex items-center ml-2 mr-4;
   }
 
   .checkbox-input {
@@ -12,6 +12,10 @@
   }
 
   .checkbox-label {
-    @apply ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 select-none;
+    @apply hidden md:block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 select-none;
+  }
+
+  .checkbox-img {
+    @apply p-1 mx-1 block md:hidden select-none;
   }
 }

@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "System Dynamics Tool",
   description: "Tool for drawing System Map",
+  icons: "favicon.ico",
 };
 
 export default function RootLayout({

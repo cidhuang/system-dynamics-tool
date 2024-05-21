@@ -18,12 +18,14 @@ export function useMode(
   Array<{
     label: string;
     mode: ESystemMapCanvasModeDragFromVariableStock;
+    icon: string;
     handler: (mode: ESystemMapCanvasModeDragFromVariableStock) => void;
   }>,
   string,
   Array<{
     label: string;
     mode: ESystemMapCanvasModeDoubleClickOnLink;
+    icon: string;
     handler: (mode: ESystemMapCanvasModeDoubleClickOnLink) => void;
   }>,
 ] {
@@ -61,11 +63,13 @@ export function useMode(
     {
       label: t("Move Variable"),
       mode: ESystemMapCanvasModeDragFromVariableStock.MoveVariableStock,
+      icon: "move.png",
       handler: handleModeDragFromVariableStockClick,
     },
     {
       label: t("Add Link"),
       mode: ESystemMapCanvasModeDragFromVariableStock.AddLinkFlow,
+      icon: "link.png",
       handler: handleModeDragFromVariableStockClick,
     },
   ];
@@ -75,11 +79,13 @@ export function useMode(
     {
       label: t("Toggle Relation"),
       mode: ESystemMapCanvasModeDoubleClickOnLink.ToggleRelation,
+      icon: "relation.png",
       handler: handleModeDoubleClickOnLink,
     },
     {
       label: t("Toggle Direction"),
       mode: ESystemMapCanvasModeDoubleClickOnLink.ToggleDirection,
+      icon: "direction.png",
       handler: handleModeDoubleClickOnLink,
     },
   ];

@@ -82,15 +82,19 @@ function HomeImp() {
             label={lableDeleteItem}
             checked={canvasModes.doubleClickToDeleteItem === true}
             onChange={handleDeleteItem}
+            icon="delete.png"
           />
           <div className="flex border">
-            <label className="m-1">{labelDragFromVariableStock + ": "}</label>
+            <label className="m-1 hidden md:block">
+              {labelDragFromVariableStock + ": "}
+            </label>
             {modesDragFromVariableStock.map((item, i) => {
               return (
                 <Radio
                   key={"mode-" + i}
                   label={item.label}
                   value={item.mode}
+                  icon={item.icon}
                   checked={canvasModes.dragFromVariableStock === item.mode}
                   onClick={() => item.handler(item.mode)}
                 />
@@ -98,13 +102,16 @@ function HomeImp() {
             })}
           </div>
           <div className="flex border">
-            <label className="m-1">{labelDoubleClickOnLink + ": "}</label>
+            <label className="m-1 hidden md:block">
+              {labelDoubleClickOnLink + ": "}
+            </label>
             {modesDoubleClickOnLink.map((item, i) => {
               return (
                 <Radio
                   key={"mode-" + i}
                   label={item.label}
                   value={item.mode}
+                  icon={item.icon}
                   checked={canvasModes.doubleClickOnLink === item.mode}
                   onClick={() => item.handler(item.mode)}
                 />
