@@ -8,12 +8,14 @@ export const Menu = ({
   index,
   onClick,
   onItemClick,
+  onMouseEnter,
   menu,
   alignRight,
 }: {
   itemsHidden: boolean;
   index: number;
   onClick: (index: number) => void;
+  onMouseEnter?: (index: number) => void;
   onItemClick: (index: number, itemIndex: number, item: IMenuItem) => void;
   menu: IMenu;
   alignRight?: boolean;
@@ -30,10 +32,16 @@ export const Menu = ({
   return (
     <div className="menu">
       <button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           onClick(index);
         }}
         className="menu-btn"
+        onMouseEnter={() => {
+          if (onMouseEnter) {
+            onMouseEnter(index);
+          }
+        }}
       >
         {menu.label}
       </button>
@@ -50,7 +58,14 @@ export const Menu = ({
               }}
               disabled={!item.enabled ?? false}
               className={
-                item.enabled ?? false ? "menu-item" : "menu-item-disabled"
+                alignRight
+                  ? item.enabled ?? false
+                    ? "menu-item-right"
+                    : "menu-item-disabled-right"
+                  : item.enabled ?? false
+                    ? "menu-item"
+                    : "menu-item-disabled"
+                //(alignRight ? "-right" : "")
               }
             >
               {item.label}

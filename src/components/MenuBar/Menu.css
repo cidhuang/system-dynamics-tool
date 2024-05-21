@@ -12,18 +12,26 @@
   }
 
   .menu-options {
-    @apply origin-top-left absolute left-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 px-2 py-2;
+    @apply origin-top-left absolute left-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 px-1 py-1;
   }
 
   .menu-options-right {
-    @apply origin-top-left absolute right-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 px-2 py-2;
+    @apply origin-top-left absolute right-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 px-1 py-1;
   }
 
   .menu-item {
-    @apply block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md select-none;
+    @apply block w-full pl-2 py-1 text-left text-sm text-gray-700 hover:bg-gray-100 rounded-md select-none;
   }
 
   .menu-item-disabled {
-    @apply block px-4 py-2 text-sm text-gray-400 rounded-md select-none;
+    @apply block w-full pl-2 py-1 text-left text-sm text-gray-400 rounded-md select-none;
+  }
+
+  .menu-item-right {
+    @apply block w-full pl-2 py-1 text-right text-sm text-gray-700 hover:bg-gray-100 rounded-md select-none;
+  }
+
+  .menu-item-disabled-right {
+    @apply block w-full pl-2 py-1 text-right text-sm text-gray-400 rounded-md select-none;
   }
 }

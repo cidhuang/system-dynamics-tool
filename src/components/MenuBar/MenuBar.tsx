@@ -20,13 +20,24 @@ export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
     setDropMenu(index);
   }
 
+  function handleMenuMouseEnter(index: number) {
+    if (dropMenu === -1) {
+      return;
+    }
+    setDropMenu(index);
+  }
+
   function handleItemClick(index: number, indexItem: number, item: IMenuItem) {
+    setDropMenu(-1);
+  }
+
+  function handleMenubarClick() {
     setDropMenu(-1);
   }
 
   return (
     <nav className="menubar-nav">
-      <div className="menubar">
+      <div className="menubar" onClick={handleMenubarClick}>
         <div className="menubar-menu">
           {menus.map((menu, i) => {
             return (
@@ -36,6 +47,7 @@ export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
                 index={i}
                 onClick={handleMenuClick}
                 onItemClick={handleItemClick}
+                onMouseEnter={handleMenuMouseEnter}
                 menu={menu}
               />
             );
@@ -46,6 +58,7 @@ export const MenuBar = ({ menus }: { menus: IMenu[] }) => {
           index={menus.length}
           onClick={handleMenuClick}
           onItemClick={handleItemClick}
+          onMouseEnter={handleMenuMouseEnter}
           menu={languages}
           alignRight={true}
         />
