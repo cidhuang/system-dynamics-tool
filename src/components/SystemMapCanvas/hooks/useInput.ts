@@ -2,9 +2,9 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 
 import { isVariable } from "../lib/types";
-import { getVariableBounds, getVariableText } from "../lib/view/variable";
 
 import { Point } from "../lib/geometry";
+import { ViewNode } from "../lib/view/ViewNode";
 
 export function useInput(
   app: Application<ICanvas> | undefined,
@@ -27,15 +27,17 @@ export function useInput(
       return;
     }
 
-    const item = app.stage.children.find((child) => child.name === editingText);
+    const item = app.stage.children.find(
+      (child) => child.name === editingText,
+    ) as ViewNode;
     if (item === undefined) {
       return;
     }
-    const bounds = getVariableBounds(item);
+    const bounds = item.getBounds();
 
     setInputWidth(Math.max(300, bounds.width));
     setInputHeight(bounds.height);
-    setInputValue(getVariableText(item));
+    setInputValue(item.text);
     setInputPosition({ x: bounds.x, y: bounds.y });
     setInputVisible(true);
 
