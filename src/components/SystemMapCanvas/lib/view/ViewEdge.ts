@@ -165,8 +165,9 @@ export class ViewEdge extends Graphics {
           const y2 = points[index + 3];
 
           const angle = Math.atan2(y2 - y1, x2 - x1) + Math.PI / 2;
-          const dx = this._width * Math.cos(angle);
-          const dy = this._width * Math.sin(angle);
+          const width = 20;
+          const dx = Math.cos(angle) * width;
+          const dy = Math.sin(angle) * width;
 
           od.push({
             x: x1 - dx,
