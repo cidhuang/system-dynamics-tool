@@ -25,48 +25,33 @@ state "Common" as common {
   state "Moving Viewport" as moveViewport : mouse move
   state "Shaping Link" as shapeLink : mouse move
   state "Shaping Flow" as shapeFlow : mouse move
-  state ": create Variable" as addVariable #white ##white
-  state ": toggle Variable \n and Stock" as toggleVariableStock #white ##white
-  state ": toggle Relation" as togglePositiveNegative #white ##white
-  state ": toggle direction" as toggleDirection #white ##white
 
   [*] -> idle
-  idle -up[#blue]-> shapeLink : down \n on Link
-  shapeLink --> idle : up
+  idle -[#blue]-> shapeLink : down \n on Link
+  shapeLink -up-> idle : up
 
-  idle -up[#blue]-> shapeFlow : down \n on Flow \n / Valve \n / Source \n / Sink
-  shapeFlow --> idle : up
+  idle -[#blue]-> shapeFlow : down \n on Flow \n / Valve \n / Source \n / Sink
+  shapeFlow -up-> idle : up
 
-  idle -up[#green]-> moveViewport : down \n on background
-  moveViewport --> idle : up
-
-  idle -[#green]-> addVariable : double click \n on background
-  addVariable -up-> idle
-
-  idle -[#purple]-> toggleVariableStock : double click \n on Varialble \n / Stock
-  toggleVariableStock -up-> idle
-
-  idle -[#purple]-> togglePositiveNegative : double click \n on Link
-  togglePositiveNegative -up-> idle
-
-  idle -[#purple]-> toggleDirection : double click \n on Flow
-  toggleDirection -up-> idle
+  idle -[#green]-> moveViewport : down \n on background
+  moveViewport -up-> idle : up
 
 }
 
 state "Edit (Item) Window" as editWindow {
   state "Idle" as idleEdit #yellow
-  state "(Item) Selected" as selected
-  state "(Item) Editing" as editing : show window
+  'state "(Item) Selected" as selected
+  state "(Item) Editing" as editing : show edit window
 
   [*] -> idleEdit
-  idleEdit -[#brown]-> selected : click \n on (Item)
-  selected -up[#brown]-> idleEdit : click \n on background
-  selected -[#brown]> editing : click \n on (Item) \n (after 1 sec)
+  idleEdit -[#brown]-> editing : click \n on (Item)
+  'idleEdit -[#brown]-> selected : click \n on (Item)
+  'selected -up[#brown]-> idleEdit : click \n on background
+  'selected -[#brown]> editing : click \n on (Item) \n (after 1 sec)
   editing -up[#brown]-> idleEdit : click \n on background \n : hide window
 }
 
-state "Delete (Item) Mode" as delete {
+state "Delete (Item) Mode" as deleteItemMode {
   state "Idle" as idleDelete #yellow
   state ": delete (Item)" as deleteItem #white ##white
 
@@ -76,13 +61,59 @@ state "Delete (Item) Mode" as delete {
 
 }
 
-state "Toggle Link Direction Mode" as toggleLinkDirectionMode {
-  state "Idle" as idleLinkDirection #yellow
-  state ": toggle direction" as toggleLinkDirection #white ##white
+state "Create Variable" as createVariableMode {
+  state "Idle" as idleCreateVariable #yellow
+  state ": create Variable" as createVariable #white ##white
 
-  [*] -> idleLinkDirection
-  idleLinkDirection -[#purple]-> toggleLinkDirection : double click \n on Link
-  toggleLinkDirection -up-> idleLinkDirection
+  [*] -> idleCreateVariable
+  idleCreateVariable -[#purple]-> createVariable : double click \n on background
+  createVariable -up-> idleCreateVariable
+
+}
+
+state "Create Stock" as createStockMode {
+  state "Idle" as idleCreateStock #yellow
+  state ": create Stock" as createStock #white ##white
+
+  [*] -> idleCreateStock
+  idleCreateStock -[#purple]-> createStock : double click \n on background
+  createStock -up-> idleCreateStock
+
+}
+
+state "Not Delete (Item) Mode" as notDeleteItemMode {
+  state "Idle" as idleNotDeleteItemMode #yellow
+  state "Editing Text" as editText : show edit box
+  state ": toggle direction" as toggleDirection #white ##white
+
+  [*] --> idleNotDeleteItemMode
+  idleNotDeleteItemMode -[#purple]-> editText : double click \n on Varialble \n / Stock
+  editText -up-> idleNotDeleteItemMode : press enter \n in edit box
+
+  idleNotDeleteItemMode -[#purple]-> toggleDirection : double click \n on Flow
+  toggleDirection -up-> idleNotDeleteItemMode
+
+  state "Toggle Link Direction Mode" as toggleLinkDirectionMode {
+    state "Idle" as idleLinkDirection #yellow
+    state ": toggle direction" as toggleLinkDirection #white ##white
+
+    [*] -> idleLinkDirection
+    idleLinkDirection -[#purple]-> toggleLinkDirection : double click \n on Link
+    toggleLinkDirection -up-> idleLinkDirection
+
+  }
+
+  state "Toggle Link Relation Mode" as toggleLinkRelationMode {
+    state "Idle" as idleLinkRelation #yellow
+    state ": toggle relation" as toggleLinkRelation #white ##white
+
+    [*] -> idleLinkRelation
+    idleLinkRelation -[#purple]-> toggleLinkRelation : double click \n on Link
+    toggleLinkRelation -up-> idleLinkRelation
+
+  }
+
+  [*] -> toggleLinkRelationMode
 
 }
 
@@ -112,6 +143,7 @@ state "Add Link / Flow Mode" as modeAddLinkFlow {
   idleAddLink -[#blue]-> dragNewLinkFlow : down \n on Variable \n / Stock
 
   dragNewLinkFlow -left> addLink : up \n on Variable \n / Valve \n from Variable
+  dragNewLinkFlow -left> addLink : up \n on Variable \n from Stock
   addLink -up-> idleAddLink
 
   dragNewLinkFlow -> addFlow : up \n on Stock \n / background \n from Stock
@@ -119,14 +151,20 @@ state "Add Link / Flow Mode" as modeAddLinkFlow {
 
 }
 
-[*] -> modeMoveVariableStock
+[*] -up-> createVariableMode
+createVariableMode -> createStockMode
+createStockMode -left> createVariableMode
+
+[*] -> notDeleteItemMode
+toggleLinkRelationMode -> toggleLinkDirectionMode
+toggleLinkDirectionMode -left> toggleLinkRelationMode
+
+[*] --> modeMoveVariableStock
 modeMoveVariableStock -> modeAddLinkFlow
 modeAddLinkFlow -left> modeMoveVariableStock
 
-delete -up[hidden]-> common
-toggleLinkDirectionMode -[hidden]> delete
-delete -[hidden]> editWindow
-modeMoveVariableStock -up[hidden]-> toggleLinkDirectionMode
+notDeleteItemMode -> deleteItemMode
+deleteItemMode -left> notDeleteItemMode
 
 @enduml
 ```
