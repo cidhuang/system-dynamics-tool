@@ -55,11 +55,15 @@ function HomeImp() {
       ESystemMapCanvasModeDoubleClickOnBackground.CreateVariable,
   });
 
-  const [handlerCanUndoChanged, handlerCanRedoChanged, menus] = useMenu(
-    canvasRef,
-    setItems0,
-    items,
-  );
+  const [
+    handlerCanUndoChanged,
+    handlerCanRedoChanged,
+    menus,
+    handleUndo,
+    handleRedo,
+    labelUndo,
+    labelRedo,
+  ] = useMenu(canvasRef, setItems0, items);
 
   const [
     lableDeleteItem,
@@ -84,17 +88,37 @@ function HomeImp() {
     <>
       <Suspense>
         <MenuBar menus={menus} />
-        <div className="flex border">
-          <Checkbox
-            label={lableDeleteItem}
-            checked={canvasModes.doubleClickToDeleteItem === true}
-            onChange={handleDeleteItem}
-            icon="delete.png"
-          />
+        <div className="flex flex-wrap border">
+          <div className="flex border">
+            <div onClick={handleUndo}>
+              <label className="m-1 hidden md:block">{labelUndo}</label>
+              <img
+                className="checkbox-img"
+                src="undo.png"
+                width={32}
+                height={32}
+              />
+            </div>
+            <div onClick={handleRedo}>
+              <label className="m-1 hidden md:block">{labelRedo}</label>
+              <img
+                className="checkbox-img"
+                src="redo.png"
+                width={32}
+                height={32}
+              />
+            </div>
+          </div>
           <div className="flex border">
             <label className="m-1 hidden md:block">
               {labelDoubleClickOnBackground + ": "}
             </label>
+            <img
+              className="checkbox-img"
+              src="double-tap.png"
+              width={32}
+              height={32}
+            />
             {modesDoubleClickOnBackground.map((item, i) => {
               return (
                 <Radio
@@ -130,6 +154,12 @@ function HomeImp() {
               <label className="m-1 hidden md:block">
                 {labelDoubleClickOnLink + ": "}
               </label>
+              <img
+                className="checkbox-img"
+                src="curved-arrow.png"
+                width={32}
+                height={32}
+              />{" "}
               {modesDoubleClickOnLink.map((item, i) => {
                 return (
                   <Radio
@@ -144,6 +174,14 @@ function HomeImp() {
               })}
             </div>
           )}
+          <div className="flex border">
+            <Checkbox
+              label={lableDeleteItem}
+              checked={canvasModes.doubleClickToDeleteItem === true}
+              onChange={handleDeleteItem}
+              icon="delete.png"
+            />
+          </div>
         </div>
       </Suspense>
       <SystemMapCanvas

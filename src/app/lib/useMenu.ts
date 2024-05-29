@@ -25,7 +25,15 @@ export function useMenu(
   canvasRef: MutableRefObject<SystemMapCanvasRef>,
   setItems0: Dispatch<SetStateAction<IItems>>,
   items: IItems,
-): [(canUndo: boolean) => void, (canRedo: boolean) => void, Array<IMenu>] {
+): [
+  (canUndo: boolean) => void,
+  (canRedo: boolean) => void,
+  Array<IMenu>,
+  (arg: any) => void,
+  (arg: any) => void,
+  string,
+  string,
+] {
   const { t } = useTranslation();
 
   const [canUndo, setCanUndo] = useState<boolean>(false);
@@ -35,6 +43,9 @@ export function useMenu(
     accept: ".json",
     multiple: false,
   });
+
+  const labelUndo = t("Undo");
+  const labelRedo = t("Redo");
 
   useEffect(() => {
     if (loading) {
@@ -192,5 +203,13 @@ export function useMenu(
     },
   ];
 
-  return [handleCanUndoChanged, handleCanRedoChanged, menus];
+  return [
+    handleCanUndoChanged,
+    handleCanRedoChanged,
+    menus,
+    handleUndo,
+    handleRedo,
+    labelUndo,
+    labelRedo,
+  ];
 }
