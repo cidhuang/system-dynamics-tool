@@ -17,6 +17,8 @@ export class ViewNode extends Container {
   protected _isHover: boolean = false;
   protected _isSelected: boolean = false;
 
+  protected _padding = 10;
+
   get text() {
     return this._text.text;
   }
@@ -63,7 +65,7 @@ export class ViewNode extends Container {
   }
 
   public contains(x: number, y: number): boolean {
-    const bounds = this._text.getBounds();
+    const bounds = this.getBounds();
 
     if (
       x >= bounds.left &&
@@ -78,7 +80,16 @@ export class ViewNode extends Container {
   }
 
   public getBounds(): Rectangle {
-    return this._text.getBounds();
+    let bounds = this._text.getBounds();
+
+    if (this._backgroundShape === EBackgroundShape.Rectangle) {
+      bounds.x -= this._padding;
+      bounds.y -= this._padding;
+      bounds.width += this._padding * 2;
+      bounds.height += this._padding * 2;
+    }
+
+    return bounds;
   }
 
   constructor(xy: Point, text?: string) {
@@ -107,21 +118,20 @@ export class ViewNode extends Container {
     this._text.style.fill = "black";
     this._text.style.fontWeight = "normal";
 
-    if (this._backgroundShape === EBackgroundShape.None) {
-      this._background.clear();
-    } else if (this._backgroundShape === EBackgroundShape.Rectangle) {
+    this._background.clear();
+    if (this._backgroundShape === EBackgroundShape.Rectangle) {
       this._background.lineStyle({ width: 2, color: "black" });
-      const padding = 10;
+
       this._background.moveTo(0, 0);
-      this._background.lineTo(this._text.width + padding * 2, 0);
+      this._background.lineTo(this._text.width + this._padding * 2, 0);
       this._background.lineTo(
-        this._text.width + padding * 2,
-        this._text.height + padding * 2,
+        this._text.width + this._padding * 2,
+        this._text.height + this._padding * 2,
       );
-      this._background.lineTo(0, this._text.height + padding * 2);
+      this._background.lineTo(0, this._text.height + this._padding * 2);
       this._background.lineTo(0, 0);
-      this._background.x = this._text.x - padding;
-      this._background.y = this._text.y - padding;
+      this._background.x = this._text.x - this._padding;
+      this._background.y = this._text.y - this._padding;
     }
   }
 }

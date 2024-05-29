@@ -1,7 +1,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 
-import { isVariable } from "../lib/types";
+import { isStock, isVariable } from "../lib/types";
 
 import { Point } from "../lib/geometry";
 import { ViewNode } from "../lib/view/ViewNode";
@@ -22,7 +22,7 @@ export function useInput(
       return;
     }
 
-    if (!isVariable(editingText)) {
+    if (!isVariable(editingText) && !isStock(editingText)) {
       setEditingText("");
       return;
     }

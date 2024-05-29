@@ -11,7 +11,12 @@ import {
 import { Stage } from "@pixi/react";
 import useUndo from "use-undo";
 
-import { IItems, isVariable } from "@/components/SystemMapCanvas/lib/types";
+import { Point } from "./lib/geometry";
+import {
+  IItems,
+  isStock,
+  isVariable,
+} from "@/components/SystemMapCanvas/lib/types";
 import { reducer } from "./reducer/reducer";
 import { EStateCanvas, IStateCanvasModes } from "./reducer/types";
 import { useInteraction } from "./hooks/useInteraction";
@@ -56,6 +61,7 @@ export const SystemMapCanvas = forwardRef<
 
   const [selected, setSelected] = useState<string>("");
   const [editingText, setEditingText] = useState<string>("");
+  const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
 
   const [state, dispatch] = useReducer(reducer, {
     modes: modes,
@@ -78,7 +84,7 @@ export const SystemMapCanvas = forwardRef<
   ] = useUndo(items);
   const { present: presentItems } = itemsState;
 
-  const [app, setApp, itemName] = useView(state);
+  const [app, setApp, itemName] = useView(state, scale, selected);
 
   const [windowSize, offset] = useWindowSize(divRef);
 
@@ -97,13 +103,14 @@ export const SystemMapCanvas = forwardRef<
   ] = useInteraction(
     app,
     divRef,
-    selected,
+    state,
+    scale,
+    setScale,
     setSelected,
     editingText,
     dispatch,
     itemName,
     editTextStart,
-    editTextEnd,
   );
 
   const [
@@ -183,30 +190,39 @@ export const SystemMapCanvas = forwardRef<
   }, [state.cmdUndoResetItems]);
 
   function editTextStart(item: string) {
-    if (isVariable(item)) {
+    if (isVariable(item) || isStock(item)) {
       setEditingText(item);
     }
   }
 
-  function editTextEnd() {
-    setEditingText("");
-    setSelected("");
-    setInputVisible(false);
-  }
-
   function changeText(value: string) {
-    const item = structuredClone(
-      state.items.variables.find((variable) => variable.name === editingText),
-    );
-    if (item === undefined) {
-      return;
+    if (isVariable(editingText)) {
+      const item = structuredClone(
+        state.items.variables.find((variable) => variable.name === editingText),
+      );
+      if (item === undefined) {
+        return;
+      }
+      if (item.text !== value) {
+        item.text = value;
+        dispatch({ type: "ChangeItems", variables: [item] });
+      }
     }
-    if (item.text !== value) {
-      item.text = value;
-      dispatch({ type: "ChangeItems", variables: [item] });
+
+    if (isStock(editingText)) {
+      const item = structuredClone(
+        state.items.stocks.find((stock) => stock.name === editingText),
+      );
+      if (item === undefined) {
+        return;
+      }
+      if (item.text !== value) {
+        item.text = value;
+        dispatch({ type: "ChangeItems", stocks: [item] });
+      }
     }
+
     setEditingText("");
-    setSelected("");
     setInputVisible(false);
   }
 

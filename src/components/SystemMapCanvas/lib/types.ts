@@ -121,80 +121,72 @@ export interface IItems {
 }
 
 export function getIntersection(
-  node0: Variable | Stock,
+  xy0: Point,
+  width0: number,
+  height0: number,
   p1: Point,
   mid?: Point,
 ): Point {
-  const charWidth = 7;
-  const charHeight = 20;
-
-  const p0 = node0.xy;
+  const p0 = xy0;
   const dx = p1.x - p0.x;
   const dy = p1.y - p0.y;
   const slope = dy / dx;
 
-  const padding = isStock(node0.name) ? 10 : 0;
-  const strings0 = node0.text.split("\n");
-  const width0 =
-    padding * 2 +
-    charWidth *
-      strings0.reduce((str0, str1) => {
-        return str0.length > str1.length ? str0 : str1;
-      }).length;
-  const height0 = padding * 2 + charHeight * strings0.length;
+  const width = width0 / 2 + 8;
+  const height = height0 / 2 + 8;
 
   let point = structuredClone(p0);
 
   const arc = getArc(p0, p1, mid);
 
   if (mid === undefined || arc === undefined) {
-    const slope0 = height0 / width0;
+    const slope0 = height / width;
 
-    const dx0 = height0 / slope;
-    const dy0 = width0 * slope;
+    const dx0 = height / slope;
+    const dy0 = width * slope;
 
     if (dx === 0) {
       if (dy > 0) {
-        point.y += height0;
+        point.y += height;
       }
 
       if (dy < 0) {
-        point.y -= height0;
+        point.y -= height;
       }
     } else if (dx > 0) {
       if (slope > 0) {
         if (slope0 > slope) {
-          point.x += width0;
+          point.x += width;
           point.y += dy0;
         } else {
           point.x += dx0;
-          point.y += height0;
+          point.y += height;
         }
       } else {
         if (slope0 > -slope) {
-          point.x += width0;
+          point.x += width;
           point.y += dy0;
         } else {
           point.x -= dx0;
-          point.y -= height0;
+          point.y -= height;
         }
       }
     } else {
       if (slope > 0) {
         if (slope0 > slope) {
-          point.x -= width0;
+          point.x -= width;
           point.y -= dy0;
         } else {
           point.x -= dx0;
-          point.y -= height0;
+          point.y -= height;
         }
       } else {
         if (slope0 > -slope) {
-          point.x -= width0;
+          point.x -= width;
           point.y -= dy0;
         } else {
           point.x += dx0;
-          point.y += height0;
+          point.y += height;
         }
       }
     }
@@ -202,10 +194,10 @@ export function getIntersection(
     return point;
   }
 
-  const x0 = p0.x - width0;
-  const x1 = p0.x + width0;
-  const y0 = p0.y - height0;
-  const y1 = p0.y + height0;
+  const x0 = p0.x - width;
+  const x1 = p0.x + width;
+  const y0 = p0.y - height;
+  const y1 = p0.y + height;
 
   if (mid.x >= x0 && mid.x <= x1 && mid.y >= y0 && mid.y <= y1) {
     return point;

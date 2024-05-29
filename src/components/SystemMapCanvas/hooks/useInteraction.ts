@@ -10,17 +10,20 @@ import { Application, type ICanvas } from "pixi.js";
 
 import { Point, getDistance } from "../lib/geometry";
 import { Actions } from "../reducer/reducer";
+import { IStateCanvas } from "../reducer/types";
+import { isStock, isVariable } from "../lib/types";
 
 export function useInteraction(
   app: Application<ICanvas> | undefined,
   ref: MutableRefObject<null>,
-  selected: string,
+  state: IStateCanvas,
+  scale: Point,
+  setScale: Dispatch<SetStateAction<Point>>,
   setSelected: Dispatch<SetStateAction<string>>,
   editingText: string,
   dispatch: Dispatch<Actions>,
   itemName: (xyCanvas: Point, xyMap: Point) => string,
   editTextStart: (item: string) => void,
-  editTextEnd: () => void,
 ): [
   () => void,
   () => void,
@@ -34,9 +37,6 @@ export function useInteraction(
   (event: SyntheticEvent) => void,
   (event: SyntheticEvent) => void,
 ] {
-  const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
-  const [isEditable, setIsEditable] = useState<boolean>(false);
-
   const [isMouseMoved, setIsMouseMoved] = useState<boolean>(false);
   const [isMovingViewport, setIsMovingViewport] = useState<boolean>(false);
   const [isMovingViewportXY0, setIsMovingViewportXY0] = useState<Point>({
@@ -241,14 +241,19 @@ export function useInteraction(
       return;
     }
 
-    setSelected("");
-
     if (editingText !== "") {
       return;
     }
 
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
     const item = itemName(xyCanvas, xyMap);
+
+    if (!state.modes.doubleClickToDeleteItem) {
+      if (isVariable(item) || isStock(item)) {
+        editTextStart(item);
+        return;
+      }
+    }
 
     dispatch({
       type: "MouseLeftDoubleClick",
@@ -269,7 +274,6 @@ export function useInteraction(
     }
 
     if (editingText !== "") {
-      editTextEnd();
       return;
     }
 
@@ -280,22 +284,7 @@ export function useInteraction(
     const [xyCanvas, xyMap] = XY(e.clientX, e.clientY);
     const item = itemName(xyCanvas, xyMap);
 
-    if (selected !== item) {
-      setSelected(item);
-      setIsEditable(false);
-      setTimeout(() => {
-        setIsEditable(true);
-      }, 1000);
-      return;
-    }
-
-    if (selected === item) {
-      if (!isEditable) {
-        return;
-      }
-      editTextStart(item);
-      setSelected(item);
-    }
+    setSelected(item);
 
     //dispatch({ type: "MouseLeftClick", xy: xyMap, item: "" });
   }

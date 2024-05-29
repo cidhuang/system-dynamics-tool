@@ -1,4 +1,4 @@
-import { useState, useEffect, SyntheticEvent } from "react";
+import { useState, useEffect } from "react";
 
 import { Point } from "./lib/geometry";
 
@@ -24,7 +24,10 @@ export const InputTextArea = ({
   }, [value0, visible]);
 
   useEffect(() => {
-    if (value.replaceAll(" ", "").replaceAll("\n", "") === "") {
+    if (
+      value.length !== 0 &&
+      value.replaceAll(" ", "").replaceAll("\n", "") === ""
+    ) {
       onKeyEnterDown(value0);
       return;
     }
