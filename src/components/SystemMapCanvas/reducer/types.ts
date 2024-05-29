@@ -11,6 +11,11 @@ export enum ESystemMapCanvasModeDoubleClickOnLink {
   ToggleDirection,
 }
 
+export enum ESystemMapCanvasModeDoubleClickOnBackground {
+  CreateVariable,
+  CreateStock,
+}
+
 export enum EStateCanvas {
   Idle,
   MovingVariable,
@@ -24,6 +29,7 @@ export interface IStateCanvasModes {
   dragFromVariableStock: ESystemMapCanvasModeDragFromVariableStock;
   doubleClickOnLink: ESystemMapCanvasModeDoubleClickOnLink;
   doubleClickToDeleteItem: boolean;
+  doubleClickOnBackground: ESystemMapCanvasModeDoubleClickOnBackground;
 }
 
 export interface IStateCanvas {

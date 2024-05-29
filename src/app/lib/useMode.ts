@@ -6,6 +6,7 @@ import {
   IStateCanvasModes,
   ESystemMapCanvasModeDragFromVariableStock,
   ESystemMapCanvasModeDoubleClickOnLink,
+  ESystemMapCanvasModeDoubleClickOnBackground,
 } from "@/components/SystemMapCanvas/reducer/types";
 
 export function useMode(
@@ -27,6 +28,13 @@ export function useMode(
     mode: ESystemMapCanvasModeDoubleClickOnLink;
     icon: string;
     handler: (mode: ESystemMapCanvasModeDoubleClickOnLink) => void;
+  }>,
+  string,
+  Array<{
+    label: string;
+    mode: ESystemMapCanvasModeDoubleClickOnBackground;
+    icon: string;
+    handler: (mode: ESystemMapCanvasModeDoubleClickOnBackground) => void;
   }>,
 ] {
   const { t } = useTranslation();
@@ -53,6 +61,15 @@ export function useMode(
     canvasRef.current?.setModes({
       ...canvasModes,
       doubleClickOnLink: mode,
+    });
+  }
+
+  function handleModeDoubleClickOnBackground(
+    mode: ESystemMapCanvasModeDoubleClickOnBackground,
+  ): void {
+    canvasRef.current?.setModes({
+      ...canvasModes,
+      doubleClickOnBackground: mode,
     });
   }
 
@@ -90,6 +107,22 @@ export function useMode(
     },
   ];
 
+  const labelDoubleClickOnBackground = t("Double click on Canvas");
+  const modesDoubleClickOnBackground = [
+    {
+      label: t("Create Variable"),
+      mode: ESystemMapCanvasModeDoubleClickOnBackground.CreateVariable,
+      icon: "variable.png",
+      handler: handleModeDoubleClickOnBackground,
+    },
+    {
+      label: t("Create Stock"),
+      mode: ESystemMapCanvasModeDoubleClickOnBackground.CreateStock,
+      icon: "stock.png",
+      handler: handleModeDoubleClickOnBackground,
+    },
+  ];
+
   return [
     lableDeleteItem,
     handleDeleteItem,
@@ -97,5 +130,7 @@ export function useMode(
     modesDragFromVariableStock,
     labelDoubleClickOnLink,
     modesDoubleClickOnLink,
+    labelDoubleClickOnBackground,
+    modesDoubleClickOnBackground,
   ];
 }

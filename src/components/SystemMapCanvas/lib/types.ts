@@ -121,25 +121,27 @@ export interface IItems {
 }
 
 export function getIntersection(
-  variable0: Variable,
+  node0: Variable | Stock,
   p1: Point,
   mid?: Point,
 ): Point {
   const charWidth = 7;
   const charHeight = 20;
 
-  const p0 = variable0.xy;
+  const p0 = node0.xy;
   const dx = p1.x - p0.x;
   const dy = p1.y - p0.y;
   const slope = dy / dx;
 
-  const strings0 = variable0.text.split("\n");
+  const padding = isStock(node0.name) ? 10 : 0;
+  const strings0 = node0.text.split("\n");
   const width0 =
+    padding * 2 +
     charWidth *
-    strings0.reduce((str0, str1) => {
-      return str0.length > str1.length ? str0 : str1;
-    }).length;
-  const height0 = charHeight * strings0.length;
+      strings0.reduce((str0, str1) => {
+        return str0.length > str1.length ? str0 : str1;
+      }).length;
+  const height0 = padding * 2 + charHeight * strings0.length;
 
   let point = structuredClone(p0);
 

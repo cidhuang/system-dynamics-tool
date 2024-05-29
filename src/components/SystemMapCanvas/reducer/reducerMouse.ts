@@ -17,6 +17,7 @@ import {
   StateReducers,
   ESystemMapCanvasModeDragFromVariableStock,
   ESystemMapCanvasModeDoubleClickOnLink,
+  ESystemMapCanvasModeDoubleClickOnBackground,
 } from "./types";
 
 const mouse = [
@@ -96,6 +97,19 @@ function removeVariable(state: IStateCanvas, item: string): IStateCanvas {
   };
 }
 
+function removeStock(state: IStateCanvas, item: string): IStateCanvas {
+  let items = structuredClone(state.items);
+
+  items.stocks = items.stocks.filter((stock) => stock.name !== item);
+  items.links = items.links.filter((link) => link.start !== item);
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
+  };
+}
+
 function variableToStock(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
 
@@ -155,6 +169,10 @@ function toggleLinkDirection(state: IStateCanvas, item: string): IStateCanvas {
     return state;
   }
   const link = items.links[index];
+  if (!isVariable(link.start) || !isVariable(link.end)) {
+    return state;
+  }
+
   const tmp = link.start;
   link.start = link.end;
   link.end = tmp;
@@ -179,7 +197,18 @@ function reverseFlowDirection(state: IStateCanvas, item: string): IStateCanvas {
 function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   if (item === "") {
     let items = structuredClone(state.items);
-    const name = createVariable(items.variables, xy);
+    if (
+      state.modes.doubleClickOnBackground ==
+      ESystemMapCanvasModeDoubleClickOnBackground.CreateVariable
+    ) {
+      const name = createVariable(items.variables, xy);
+    } else if (
+      state.modes.doubleClickOnBackground ==
+      ESystemMapCanvasModeDoubleClickOnBackground.CreateStock
+    ) {
+      const name = createStock(items.stocks, xy);
+    }
+
     return {
       ...state,
       items: items,
@@ -195,6 +224,9 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
   }
 
   if (isStock(item)) {
+    if (state.modes.doubleClickToDeleteItem) {
+      return removeStock(state, item);
+    }
     return stockToVariable(state, item);
   }
 
@@ -256,7 +288,16 @@ const reducersMovingVariable: MouseReducers = {
 };
 
 function reducerMovingStockMove(state: IStateCanvas, xy: Point, item: string) {
-  return state;
+  if (state.dragStart === undefined) {
+    return state;
+  }
+  let items = structuredClone(state.items);
+  const i = items.stocks.findIndex((stock) => stock.name === state.dragStart);
+  items.stocks[i].xy = xy;
+  return {
+    ...state,
+    items: items,
+  };
 }
 
 function reducerMovingStockUp(state: IStateCanvas, xy: Point, item: string) {
@@ -336,6 +377,18 @@ function reducerDragginNewLinkFlowMove(
       dragLinkEnd: xy,
     };
   }
+  if (isStock(state.dragStart)) {
+    if (isVariable(item)) {
+      return {
+        ...state,
+        dragLinkEnd: item,
+      };
+    }
+    return {
+      ...state,
+      dragLinkEnd: xy,
+    };
+  }
 
   return state;
 }
@@ -369,6 +422,9 @@ function reducerDragginNewLinkFlowUp(
     if (state.dragStart !== item) {
       let items = structuredClone(state.items);
       let name;
+      if (isVariable(item)) {
+        name = createLink(items.links, state.dragStart, item);
+      }
       if (isStock(item)) {
         name = createFlow(items.flows, state.dragStart, item);
       }
@@ -380,6 +436,7 @@ function reducerDragginNewLinkFlowUp(
         state: EStateCanvas.Idle,
         items: items,
         cmdUndoSetItems: state.cmdUndoSetItems + 1,
+        dragLinkEnd: undefined,
       };
     }
   }

@@ -20,7 +20,10 @@ import {
   Flow,
   IItems,
 } from "@/components/SystemMapCanvas/lib/types";
-import { IStateCanvasModes } from "@/components/SystemMapCanvas/reducer/types";
+import {
+  ESystemMapCanvasModeDoubleClickOnBackground,
+  IStateCanvasModes,
+} from "@/components/SystemMapCanvas/reducer/types";
 import {
   ESystemMapCanvasModeDragFromVariableStock,
   ESystemMapCanvasModeDoubleClickOnLink,
@@ -48,6 +51,8 @@ function HomeImp() {
       ESystemMapCanvasModeDragFromVariableStock.MoveVariableStock,
     doubleClickOnLink: ESystemMapCanvasModeDoubleClickOnLink.ToggleRelation,
     doubleClickToDeleteItem: false,
+    doubleClickOnBackground:
+      ESystemMapCanvasModeDoubleClickOnBackground.CreateVariable,
   });
 
   const [handlerCanUndoChanged, handlerCanRedoChanged, menus] = useMenu(
@@ -63,6 +68,8 @@ function HomeImp() {
     modesDragFromVariableStock,
     labelDoubleClickOnLink,
     modesDoubleClickOnLink,
+    labelDoubleClickOnBackground,
+    modesDoubleClickOnBackground,
   ] = useMode(canvasRef, canvasModes);
 
   function handleModesChange(modes: IStateCanvasModes) {
@@ -86,6 +93,23 @@ function HomeImp() {
           />
           <div className="flex border">
             <label className="m-1 hidden md:block">
+              {labelDoubleClickOnBackground + ": "}
+            </label>
+            {modesDoubleClickOnBackground.map((item, i) => {
+              return (
+                <Radio
+                  key={"mode-" + i}
+                  label={item.label}
+                  value={item.mode}
+                  icon={item.icon}
+                  checked={canvasModes.doubleClickOnBackground === item.mode}
+                  onClick={() => item.handler(item.mode)}
+                />
+              );
+            })}
+          </div>
+          <div className="flex border">
+            <label className="m-1 hidden md:block">
               {labelDragFromVariableStock + ": "}
             </label>
             {modesDragFromVariableStock.map((item, i) => {
@@ -101,23 +125,25 @@ function HomeImp() {
               );
             })}
           </div>
-          <div className="flex border">
-            <label className="m-1 hidden md:block">
-              {labelDoubleClickOnLink + ": "}
-            </label>
-            {modesDoubleClickOnLink.map((item, i) => {
-              return (
-                <Radio
-                  key={"mode-" + i}
-                  label={item.label}
-                  value={item.mode}
-                  icon={item.icon}
-                  checked={canvasModes.doubleClickOnLink === item.mode}
-                  onClick={() => item.handler(item.mode)}
-                />
-              );
-            })}
-          </div>
+          {!canvasModes.doubleClickToDeleteItem && (
+            <div className="flex border">
+              <label className="m-1 hidden md:block">
+                {labelDoubleClickOnLink + ": "}
+              </label>
+              {modesDoubleClickOnLink.map((item, i) => {
+                return (
+                  <Radio
+                    key={"mode-" + i}
+                    label={item.label}
+                    value={item.mode}
+                    icon={item.icon}
+                    checked={canvasModes.doubleClickOnLink === item.mode}
+                    onClick={() => item.handler(item.mode)}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       </Suspense>
       <SystemMapCanvas

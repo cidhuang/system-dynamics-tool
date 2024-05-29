@@ -23,5 +23,8 @@
   "Double click on Link": "Double click on Link",
   "Toggle Relation": "Toggle Relation",
   "Toggle Direction": "Toggle Direction",
-  "Double click to delete Item": "Double click to delete Item"
+  "Double click to delete Item": "Double click to delete Item",
+  "Double click on Canvas": "Double click on Canvas",
+  "Create Variable": "Create Variable",
+  "Create Stock": "Create Stock"
 }

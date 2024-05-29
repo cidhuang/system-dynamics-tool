@@ -1,8 +1,9 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 import { IStateCanvas } from "../reducer/types";
-import { isVariable, isLink, getIntersection } from "../lib/types";
+import { isVariable, isLink, getIntersection, isStock } from "../lib/types";
 import { isOnLink, updateViewLink, addViewLink } from "../lib/view/link";
+import { isOnStock, updateViewStock, addViewStock } from "../lib/view/stock";
 import {
   isOnVariable,
   updateViewVariable,
@@ -29,20 +30,34 @@ export function useView(
       }
     }
 
+    for (const stock of state.items.stocks) {
+      if (!updateViewStock(app.stage, stock)) {
+        addViewStock(app.stage, stock);
+      }
+    }
+
     for (const link of state.items.links) {
-      const startV = state.items.variables.find(
-        (varialbe) => varialbe.name === link.start,
-      );
+      let startNode = undefined;
+      if (isVariable(link.start)) {
+        startNode = state.items.variables.find(
+          (varialbe) => varialbe.name === link.start,
+        );
+      }
+      if (isStock(link.start)) {
+        startNode = state.items.stocks.find(
+          (stock) => stock.name === link.start,
+        );
+      }
       const endV = state.items.variables.find(
         (variable) => variable.name === link.end,
       );
 
-      if (startV === undefined || endV === undefined) {
+      if (startNode === undefined || endV === undefined) {
         continue;
       }
 
-      const start = getIntersection(startV, endV.xy, link.mid);
-      const end = getIntersection(endV, startV.xy, link.mid);
+      const start = getIntersection(startNode, endV.xy, link.mid);
+      const end = getIntersection(endV, startNode.xy, link.mid);
 
       if (!updateViewLink(app.stage, link, start, end)) {
         addViewLink(app.stage, link, start, end);
@@ -66,6 +81,13 @@ export function useView(
       ) {
         app?.stage.removeChildAt(i);
       }
+
+      if (
+        isStock(name) &&
+        state.items.stocks.findIndex((stock) => stock.name === name) < 0
+      ) {
+        app?.stage.removeChildAt(i);
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,11 +99,18 @@ export function useView(
       return;
     }
 
-    let startV = undefined;
+    let startNode = undefined;
     if (state.dragStart !== undefined) {
-      startV = state.items.variables.find(
-        (variable) => variable.name === state.dragStart,
-      );
+      if (isVariable(state.dragStart)) {
+        startNode = state.items.variables.find(
+          (variable) => variable.name === state.dragStart,
+        );
+      }
+      if (isStock(state.dragStart)) {
+        startNode = state.items.stocks.find(
+          (stock) => stock.name === state.dragStart,
+        );
+      }
     }
 
     let endPoint = undefined;
@@ -103,17 +132,17 @@ export function useView(
       (child) => child.name === "dragLink",
     );
 
-    if (startV === undefined || endPoint === undefined) {
+    if (startNode === undefined || endPoint === undefined) {
       if (indexDragLink >= 0) {
         app?.stage.removeChildAt(indexDragLink);
       }
       return;
     }
 
-    const startPoint = getIntersection(startV, endPoint);
+    const startPoint = getIntersection(startNode, endPoint);
     let end = endPoint;
     if (endV !== undefined) {
-      end = getIntersection(endV, startV.xy);
+      end = getIntersection(endV, startNode.xy);
     }
 
     const dragLink = {
@@ -162,6 +191,12 @@ export function useView(
 
       if (isLink(item.name)) {
         if (isOnLink(item, xyMap)) {
+          return item.name;
+        }
+      }
+
+      if (isStock(item.name)) {
+        if (isOnStock(item, xyMap)) {
           return item.name;
         }
       }
