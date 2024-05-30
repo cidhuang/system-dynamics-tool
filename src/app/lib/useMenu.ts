@@ -33,6 +33,8 @@ export function useMenu(
   (arg: any) => void,
   string,
   string,
+  boolean,
+  boolean,
 ] {
   const { t } = useTranslation();
 
@@ -211,5 +213,7 @@ export function useMenu(
     handleRedo,
     labelUndo,
     labelRedo,
+    canUndo,
+    canRedo,
   ];
 }

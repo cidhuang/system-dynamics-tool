@@ -63,6 +63,8 @@ function HomeImp() {
     handleRedo,
     labelUndo,
     labelRedo,
+    canUndo,
+    canRedo,
   ] = useMenu(canvasRef, setItems0, items);
 
   const [
@@ -90,27 +92,47 @@ function HomeImp() {
         <MenuBar menus={menus} />
         <div className="flex flex-wrap border">
           <div className="flex border">
-            <div onClick={handleUndo}>
-              <label className="m-1 hidden md:block">{labelUndo}</label>
+            <div
+              className={!canUndo ? "bg-gray-300" : ""}
+              onClick={() => {
+                if (canUndo) {
+                  handleUndo("");
+                }
+              }}
+            >
+              <label className="m-1 hidden md:block select-none">
+                {labelUndo}
+              </label>
               <img
                 className="checkbox-img"
                 src="undo.png"
                 width={32}
                 height={32}
+                alt="undo"
               />
             </div>
-            <div onClick={handleRedo}>
-              <label className="m-1 hidden md:block">{labelRedo}</label>
+            <div
+              className={!canRedo ? "bg-gray-300" : ""}
+              onClick={() => {
+                if (canRedo) {
+                  handleRedo("");
+                }
+              }}
+            >
+              <label className="m-1 hidden md:block select-none">
+                {labelRedo}
+              </label>
               <img
                 className="checkbox-img"
                 src="redo.png"
                 width={32}
                 height={32}
+                alt="redo"
               />
             </div>
           </div>
           <div className="flex border">
-            <label className="m-1 hidden md:block">
+            <label className="m-1 hidden md:block select-none">
               {labelDoubleClickOnBackground + ": "}
             </label>
             <img
@@ -118,6 +140,7 @@ function HomeImp() {
               src="double-tap.png"
               width={32}
               height={32}
+              alt="double click"
             />
             {modesDoubleClickOnBackground.map((item, i) => {
               return (
@@ -133,7 +156,7 @@ function HomeImp() {
             })}
           </div>
           <div className="flex border">
-            <label className="m-1 hidden md:block">
+            <label className="m-1 hidden md:block select-none">
               {labelDragFromVariableStock + ": "}
             </label>
             {modesDragFromVariableStock.map((item, i) => {
@@ -151,7 +174,7 @@ function HomeImp() {
           </div>
           {!canvasModes.doubleClickToDeleteItem && (
             <div className="flex border">
-              <label className="m-1 hidden md:block">
+              <label className="m-1 hidden md:block select-none">
                 {labelDoubleClickOnLink + ": "}
               </label>
               <img
@@ -159,6 +182,7 @@ function HomeImp() {
                 src="curved-arrow.png"
                 width={32}
                 height={32}
+                alt="link"
               />{" "}
               {modesDoubleClickOnLink.map((item, i) => {
                 return (

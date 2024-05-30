@@ -1,7 +1,14 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Application, ICanvas } from "pixi.js";
 import { IStateCanvas } from "../reducer/types";
-import { isVariable, isLink, getIntersection, isStock } from "../lib/types";
+import {
+  isVariable,
+  isLink,
+  getIntersection,
+  isStock,
+  Variable,
+  Stock,
+} from "../lib/types";
 import { isOnLink, updateViewLink, addViewLink } from "../lib/view/link";
 import { isOnStock, updateViewStock, addViewStock } from "../lib/view/stock";
 import {
@@ -40,7 +47,7 @@ export function useView(
     }
 
     for (const link of state.items.links) {
-      let startNode = undefined;
+      let startNode: Variable | Stock | undefined = undefined;
       if (isVariable(link.start)) {
         startNode = state.items.variables.find(
           (varialbe) => varialbe.name === link.start,
@@ -51,17 +58,35 @@ export function useView(
           (stock) => stock.name === link.start,
         );
       }
+
+      if (startNode === undefined) {
+        continue;
+      }
+
       const endNode = state.items.variables.find(
         (variable) => variable.name === link.end,
       );
 
-      if (startNode === undefined || endNode === undefined) {
+      if (endNode === undefined) {
         continue;
       }
 
       const startView = app.stage.children.find(
-        (child) => child.name === startNode.name,
+        (child) => child.name === startNode?.name,
       ) as ViewNode;
+
+      if (startView === undefined) {
+        continue;
+      }
+
+      const endView = app.stage.children.find(
+        (child) => child.name === endNode?.name,
+      ) as ViewNode;
+
+      if (endView === undefined) {
+        continue;
+      }
+
       const startBounds = startView.getBounds();
       const start = getIntersection(
         startNode.xy,
@@ -71,9 +96,6 @@ export function useView(
         link.mid,
       );
 
-      const endView = app.stage.children.find(
-        (child) => child.name === endNode.name,
-      ) as ViewNode;
       const endBounds = endView.getBounds();
       const end = getIntersection(
         endNode.xy,
@@ -123,7 +145,7 @@ export function useView(
       return;
     }
 
-    let startNode = undefined;
+    let startNode: Variable | Stock | undefined = undefined;
     if (state.dragStart !== undefined) {
       if (isVariable(state.dragStart)) {
         startNode = state.items.variables.find(
@@ -138,7 +160,7 @@ export function useView(
     }
 
     let endPoint = undefined;
-    let endNode = undefined;
+    let endNode: Variable | Stock | undefined = undefined;
     if (state.dragLinkEnd !== undefined) {
       if (typeof state.dragLinkEnd === "string") {
         endNode = state.items.variables.find(
@@ -164,8 +186,11 @@ export function useView(
     }
 
     const startView = app.stage.children.find(
-      (child) => child.name === startNode.name,
+      (child) => child.name === startNode?.name ?? "",
     ) as ViewNode;
+    if (startView === undefined) {
+      return;
+    }
     const startBounds = startView.getBounds();
     const startPoint = getIntersection(
       startNode.xy,
@@ -176,15 +201,17 @@ export function useView(
     let end = endPoint;
     if (endNode !== undefined) {
       const endView = app.stage.children.find(
-        (child) => child.name === endNode.name,
+        (child) => child.name === endNode?.name ?? "",
       ) as ViewNode;
-      const endBounds = endView.getBounds();
-      end = getIntersection(
-        endNode.xy,
-        endBounds.width / scale.x,
-        endBounds.height / scale.y,
-        startNode.xy,
-      );
+      if (endView !== undefined) {
+        const endBounds = endView.getBounds();
+        end = getIntersection(
+          endNode.xy,
+          endBounds.width / scale.x,
+          endBounds.height / scale.y,
+          startNode.xy,
+        );
+      }
     }
 
     const dragLink = {
