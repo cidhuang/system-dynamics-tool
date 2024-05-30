@@ -100,9 +100,7 @@ function HomeImp() {
                 }
               }}
             >
-              <label className="m-1 hidden md:block select-none">
-                {labelUndo}
-              </label>
+              <label className="toolbar-label">{labelUndo}</label>
               <img
                 className="checkbox-img"
                 src="undo.png"
@@ -119,9 +117,7 @@ function HomeImp() {
                 }
               }}
             >
-              <label className="m-1 hidden md:block select-none">
-                {labelRedo}
-              </label>
+              <label className="toolbar-label">{labelRedo}</label>
               <img
                 className="checkbox-img"
                 src="redo.png"
@@ -132,7 +128,7 @@ function HomeImp() {
             </div>
           </div>
           <div className="flex border">
-            <label className="m-1 hidden md:block select-none">
+            <label className="toolbar-label">
               {labelDoubleClickOnBackground + ": "}
             </label>
             <img
@@ -156,7 +152,7 @@ function HomeImp() {
             })}
           </div>
           <div className="flex border">
-            <label className="m-1 hidden md:block select-none">
+            <label className="toolbar-label">
               {labelDragFromVariableStock + ": "}
             </label>
             {modesDragFromVariableStock.map((item, i) => {
@@ -174,7 +170,7 @@ function HomeImp() {
           </div>
           {!canvasModes.doubleClickToDeleteItem && (
             <div className="flex border">
-              <label className="m-1 hidden md:block select-none">
+              <label className="toolbar-label">
                 {labelDoubleClickOnLink + ": "}
               </label>
               <img

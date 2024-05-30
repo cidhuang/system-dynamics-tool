@@ -32,3 +32,9 @@ body {
     text-wrap: balance;
   }
 }
+
+@layer components {
+  .toolbar-label {
+    @apply m-1 hidden md:block text-sm font-medium select-none;
+  }
+}
