@@ -165,6 +165,18 @@ export const SystemMapCanvas = forwardRef<
   }, [presentItems]);
 
   useEffect(() => {
+    for (const variable of state.items.variables) {
+      if (variable.text === "") {
+        return;
+      }
+    }
+
+    for (const stock of state.items.stocks) {
+      if (stock.text === "") {
+        return;
+      }
+    }
+
     setItems(state.items);
     onItemsChange(state.items);
 
