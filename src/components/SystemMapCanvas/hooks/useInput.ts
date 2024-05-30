@@ -8,8 +8,8 @@ import { ViewNode } from "../lib/view/ViewNode";
 
 export function useInput(
   app: Application<ICanvas> | undefined,
-  editingText: string,
-  setEditingText: Dispatch<SetStateAction<string>>,
+  editingTextNode: string,
+  setEditingTextNode: Dispatch<SetStateAction<string>>,
 ): [Point, boolean, string, number, number, Dispatch<SetStateAction<boolean>>] {
   const [inputPosition, setInputPosition] = useState<Point>({ x: 0, y: 0 });
   const [inputVisible, setInputVisible] = useState<boolean>(false);
@@ -22,13 +22,13 @@ export function useInput(
       return;
     }
 
-    if (!isVariable(editingText) && !isStock(editingText)) {
-      setEditingText("");
+    if (!isVariable(editingTextNode) && !isStock(editingTextNode)) {
+      setEditingTextNode("");
       return;
     }
 
     const item = app.stage.children.find(
-      (child) => child.name === editingText,
+      (child) => child.name === editingTextNode,
     ) as ViewNode;
     if (item === undefined) {
       return;
@@ -42,7 +42,7 @@ export function useInput(
     setInputVisible(true);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editingText]);
+  }, [editingTextNode]);
 
   return [
     inputPosition,

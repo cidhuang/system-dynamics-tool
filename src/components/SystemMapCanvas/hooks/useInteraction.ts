@@ -20,7 +20,7 @@ export function useInteraction(
   scale: Point,
   setScale: Dispatch<SetStateAction<Point>>,
   setSelected: Dispatch<SetStateAction<string>>,
-  editingText: string,
+  editingTextNode: string,
   dispatch: Dispatch<Actions>,
   itemName: (xyCanvas: Point, xyMap: Point) => string,
   editTextStart: (item: string) => void,
@@ -62,7 +62,7 @@ export function useInteraction(
   };
 
   function handleWheel(event: WheelEvent) {
-    if (editingText !== "") {
+    if (editingTextNode !== "") {
       return;
     }
     const e = event as unknown as WheelEvent;
@@ -132,7 +132,7 @@ export function useInteraction(
   }
 
   function handleDown(x: number, y: number) {
-    if (editingText !== "") {
+    if (editingTextNode !== "") {
       return;
     }
 
@@ -151,7 +151,7 @@ export function useInteraction(
   function handleMove(x: number, y: number) {
     setSelected("");
 
-    if (editingText !== "") {
+    if (editingTextNode !== "") {
       return;
     }
 
@@ -167,7 +167,7 @@ export function useInteraction(
   }
 
   function handleUp(x: number, y: number) {
-    if (editingText !== "") {
+    if (editingTextNode !== "") {
       return;
     }
 
@@ -241,7 +241,7 @@ export function useInteraction(
       return;
     }
 
-    if (editingText !== "") {
+    if (editingTextNode !== "") {
       return;
     }
 
@@ -273,7 +273,7 @@ export function useInteraction(
       return;
     }
 
-    if (editingText !== "") {
+    if (editingTextNode !== "") {
       return;
     }
 

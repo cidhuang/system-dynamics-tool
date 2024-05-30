@@ -44,17 +44,19 @@ export const InputTextArea = ({
   }, [value]);
 
   return (
-    <div
-      className="absolute"
+    <textarea
+      className="absolute rounded border border-black"
       hidden={!visible}
-      style={{ left: xy.x + "px", top: xy.y + "px" }}
-    >
-      <textarea
-        placeholder=""
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        style={{ width: width, height: height, resize: "none" }}
-      ></textarea>
-    </div>
+      placeholder=""
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      style={{
+        left: xy.x + "px",
+        top: xy.y + "px",
+        width: width,
+        height: height,
+        resize: "none",
+      }}
+    ></textarea>
   );
 };

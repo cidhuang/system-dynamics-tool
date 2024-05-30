@@ -60,7 +60,7 @@ export const SystemMapCanvas = forwardRef<
   const divRef = useRef(null);
 
   const [selected, setSelected] = useState<string>("");
-  const [editingText, setEditingText] = useState<string>("");
+  const [editingTextNode, setEditingTextNode] = useState<string>("");
   const [scale, setScale] = useState<Point>({ x: 1, y: 1 });
 
   const [state, dispatch] = useReducer(reducer, {
@@ -107,7 +107,7 @@ export const SystemMapCanvas = forwardRef<
     scale,
     setScale,
     setSelected,
-    editingText,
+    editingTextNode,
     dispatch,
     itemName,
     editTextStart,
@@ -120,7 +120,7 @@ export const SystemMapCanvas = forwardRef<
     inputWidth,
     inputHeight,
     setInputVisible,
-  ] = useInput(app, editingText, setEditingText);
+  ] = useInput(app, editingTextNode, setEditingTextNode);
 
   useImperativeHandle(
     ref,
@@ -189,40 +189,60 @@ export const SystemMapCanvas = forwardRef<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cmdUndoResetItems]);
 
+  useEffect(() => {
+    for (const variable of state.items.variables) {
+      if (variable.text === "") {
+        setEditingTextNode(variable.name);
+        return;
+      }
+    }
+
+    for (const stock of state.items.stocks) {
+      if (stock.text === "") {
+        setEditingTextNode(stock.name);
+        return;
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.items.variables, state.items.stocks]);
+
   function editTextStart(item: string) {
     if (isVariable(item) || isStock(item)) {
-      setEditingText(item);
+      setEditingTextNode(item);
     }
   }
 
   function changeText(value: string) {
-    if (isVariable(editingText)) {
+    if (isVariable(editingTextNode)) {
       const item = structuredClone(
-        state.items.variables.find((variable) => variable.name === editingText),
+        state.items.variables.find(
+          (variable) => variable.name === editingTextNode,
+        ),
       );
       if (item === undefined) {
         return;
       }
-      if (item.text !== value) {
-        item.text = value;
+      if (value === "" || item.text !== value) {
+        item.text = value === "" ? item.name : value;
         dispatch({ type: "ChangeItems", variables: [item] });
       }
     }
 
-    if (isStock(editingText)) {
+    if (isStock(editingTextNode)) {
       const item = structuredClone(
-        state.items.stocks.find((stock) => stock.name === editingText),
+        state.items.stocks.find((stock) => stock.name === editingTextNode),
       );
       if (item === undefined) {
         return;
       }
-      if (item.text !== value) {
-        item.text = value;
+      if (value === "" || item.text !== value) {
+        item.text = value === "" ? item.name : value;
         dispatch({ type: "ChangeItems", stocks: [item] });
       }
     }
 
-    setEditingText("");
+    setEditingTextNode("");
     setInputVisible(false);
   }
 

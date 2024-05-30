@@ -23,7 +23,7 @@ export function createVariable(variables: Variable[], xy: Point): string {
   const name = genName(variables, "variable-");
   variables.push({
     name,
-    text: name,
+    text: "",
     xy,
   });
 
@@ -44,7 +44,7 @@ export function createStock(stocks: Stock[], xy: Point): string {
   const name = genName(stocks, "stock-");
   stocks.push({
     name,
-    text: name,
+    text: "",
     xy,
   });
 
