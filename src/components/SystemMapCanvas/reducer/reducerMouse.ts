@@ -110,26 +110,6 @@ function removeStock(state: IStateCanvas, item: string): IStateCanvas {
   };
 }
 
-function variableToStock(state: IStateCanvas, item: string): IStateCanvas {
-  let items = structuredClone(state.items);
-
-  return {
-    ...state,
-    items: items,
-    cmdUndoSetItems: state.cmdUndoSetItems + 1,
-  };
-}
-
-function stockToVariable(state: IStateCanvas, item: string): IStateCanvas {
-  let items = structuredClone(state.items);
-
-  return {
-    ...state,
-    items: items,
-    cmdUndoSetItems: state.cmdUndoSetItems + 1,
-  };
-}
-
 function removeLink(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
 
@@ -220,14 +200,14 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
     if (state.modes.doubleClickToDeleteItem) {
       return removeVariable(state, item);
     }
-    return variableToStock(state, item);
+    //return variableToStock(state, item);
   }
 
   if (isStock(item)) {
     if (state.modes.doubleClickToDeleteItem) {
       return removeStock(state, item);
     }
-    return stockToVariable(state, item);
+    //return stockToVariable(state, item);
   }
 
   if (isLink(item)) {
@@ -369,24 +349,24 @@ function reducerDragginNewLinkFlowMove(
     if (isVariable(item) || isFlow(item)) {
       return {
         ...state,
-        dragLinkEnd: item,
+        dragEdgeEnd: item,
       };
     }
     return {
       ...state,
-      dragLinkEnd: xy,
+      dragEdgeEnd: xy,
     };
   }
   if (isStock(state.dragStart)) {
     if (isVariable(item)) {
       return {
         ...state,
-        dragLinkEnd: item,
+        dragEdgeEnd: item,
       };
     }
     return {
       ...state,
-      dragLinkEnd: xy,
+      dragEdgeEnd: xy,
     };
   }
 
@@ -412,7 +392,7 @@ function reducerDragginNewLinkFlowUp(
           state: EStateCanvas.Idle,
           items: items,
           cmdUndoSetItems: state.cmdUndoSetItems + 1,
-          dragLinkEnd: undefined,
+          dragEdgeEnd: undefined,
         };
       }
     }
@@ -436,7 +416,7 @@ function reducerDragginNewLinkFlowUp(
         state: EStateCanvas.Idle,
         items: items,
         cmdUndoSetItems: state.cmdUndoSetItems + 1,
-        dragLinkEnd: undefined,
+        dragEdgeEnd: undefined,
       };
     }
   }
@@ -445,7 +425,7 @@ function reducerDragginNewLinkFlowUp(
     ...state,
     state: EStateCanvas.Idle,
     dragStart: undefined,
-    dragLinkEnd: undefined,
+    dragEdgeEnd: undefined,
   };
 }
 

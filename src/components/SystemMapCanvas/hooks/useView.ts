@@ -139,7 +139,7 @@ export function useView(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.items]);
 
-  // drag link
+  // drag edge
   useEffect(() => {
     if (app === undefined) {
       return;
@@ -161,16 +161,16 @@ export function useView(
 
     let endPoint = undefined;
     let endNode: Variable | Stock | undefined = undefined;
-    if (state.dragLinkEnd !== undefined) {
-      if (typeof state.dragLinkEnd === "string") {
+    if (state.dragEdgeEnd !== undefined) {
+      if (typeof state.dragEdgeEnd === "string") {
         endNode = state.items.variables.find(
-          (variable) => variable.name === state.dragLinkEnd,
+          (variable) => variable.name === state.dragEdgeEnd,
         );
         if (endNode !== undefined) {
           endPoint = endNode.xy;
         }
       } else {
-        endPoint = state.dragLinkEnd;
+        endPoint = state.dragEdgeEnd;
       }
     }
 
@@ -229,14 +229,14 @@ export function useView(
       return;
     }
 
-    if (state.dragStart === state.dragLinkEnd) {
+    if (state.dragStart === state.dragEdgeEnd) {
       return;
     }
 
     addViewLink(app?.stage, dragLink, startPoint, end);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.dragLinkEnd, state.dragLinkMid]);
+  }, [state.dragEdgeEnd]);
 
   function itemName(xyCanvas: Point, xyMap: Point): string {
     if (app === undefined) {

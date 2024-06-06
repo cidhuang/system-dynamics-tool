@@ -39,8 +39,7 @@ export interface IStateCanvas {
   cmdUndoSetItems: number;
   cmdUndoResetItems: number;
   dragStart?: string;
-  dragLinkEnd?: string | Point;
-  dragLinkMid?: Point;
+  dragEdgeEnd?: string | Point;
 }
 
 export type MouseReducers = Record<
