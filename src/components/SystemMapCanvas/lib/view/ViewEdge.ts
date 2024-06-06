@@ -13,6 +13,7 @@ export class ViewEdge extends Graphics {
 
   protected _color: ColorSource = 0;
   protected _width: number = 2;
+  protected _innerWidth: number = 0;
   protected _arrowHeadLength: number = 0;
   protected _isDashed: boolean = false;
   protected _isPolyline: boolean = false;
@@ -83,6 +84,18 @@ export class ViewEdge extends Graphics {
     }
 
     this._width = width;
+    this.update();
+  }
+
+  get innerWidth() {
+    return this._innerWidth;
+  }
+  set innerWidth(innerWidth: number) {
+    if (this._innerWidth === innerWidth) {
+      return;
+    }
+
+    this._innerWidth = innerWidth;
     this.update();
   }
 
@@ -291,6 +304,39 @@ export class ViewEdge extends Graphics {
 
     if (!isHover) {
       this._polygon = undefined;
+    }
+
+    if (this._innerWidth <= 0) {
+      return;
+    }
+
+    const innerWidth1 = this.isSelected
+      ? this._innerWidth + 2
+      : this._innerWidth;
+    this.lineStyle({ width: innerWidth1, color: 0xffffff });
+
+    if (this._isPolyline) {
+      this.moveTo(this._start.x, this._start.y);
+      if (this._mid !== undefined) {
+        this.lineTo(this._mid.x, this._mid.y);
+      }
+      this.lineTo(this._end.x, this._end.y);
+    } else {
+      const arc = getArc(this._start, this._end, this._mid);
+
+      if (arc !== undefined) {
+        this.arc(
+          arc.center.x,
+          arc.center.y,
+          arc.radius,
+          arc.startAngle,
+          arc.endAngle,
+          arc.anticlockwise,
+        );
+      } else {
+        this.moveTo(this._start.x, this._start.y);
+        this.lineTo(this._end.x, this._end.y);
+      }
     }
   }
 }
