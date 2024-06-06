@@ -217,6 +217,7 @@ export function useView(
     const dragLink = {
       name: "dragLink",
       isPlus: true,
+      isWithTimeDelay: false,
       start: "",
       end: "",
     };

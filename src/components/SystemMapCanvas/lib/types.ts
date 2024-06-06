@@ -54,6 +54,7 @@ export function createStock(stocks: Stock[], xy: Point): string {
 export interface Link {
   name: string;
   isPlus: boolean;
+  isWithTimeDelay: boolean;
   start: string;
   end: string;
   mid?: Point;
@@ -68,12 +69,14 @@ export function createLink(
   start: string,
   end: string,
   isPlus: boolean = true,
+  isWithTimeDelay: boolean = false,
   mid?: Point,
 ): string {
   const name = genName(links, "link-");
   links.push({
     name,
     isPlus,
+    isWithTimeDelay,
     start,
     end,
     mid,
