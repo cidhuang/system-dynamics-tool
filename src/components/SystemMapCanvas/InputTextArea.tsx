@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "next-export-i18n";
 
 import { Point } from "./lib/geometry";
 
@@ -17,10 +18,18 @@ export const InputTextArea = ({
   value0: string;
   onKeyEnterDown: (value: string) => void;
 }) => {
+  const ref = useRef(null);
+  const { t } = useTranslation();
+  const inputName = t("input name");
+
   const [value, setValue] = useState<string>(value0);
 
   useEffect(() => {
     setValue(value0.replaceAll("\\n", "\\\n").replaceAll("\n", "\\n"));
+
+    if (visible) {
+      (ref.current as unknown as HTMLTextAreaElement).focus();
+    }
   }, [value0, visible]);
 
   useEffect(() => {
@@ -45,9 +54,10 @@ export const InputTextArea = ({
 
   return (
     <textarea
-      className="absolute rounded border border-black"
+      ref={ref}
+      className="absolute rounded border border-black px-2"
       hidden={!visible}
-      placeholder=""
+      placeholder={inputName}
       value={value}
       onChange={(e) => setValue(e.target.value)}
       style={{

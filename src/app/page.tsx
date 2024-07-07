@@ -127,7 +127,7 @@ function HomeImp() {
               />
             </div>
           </div>
-          <div className="flex border">
+          <div className="flex border hidden">
             <label className="toolbar-label">
               {labelDoubleClickOnBackground + ": "}
             </label>

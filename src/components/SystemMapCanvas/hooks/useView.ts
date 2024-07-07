@@ -217,8 +217,10 @@ export function useView(
     const dragLink = {
       name: "dragLink",
       isPlus: true,
+      isWithTimeDelay: false,
       start: "",
       end: "",
+      mid: undefined,
     };
     if (indexDragLink >= 0) {
       updateViewLink(app?.stage, dragLink, startPoint, end);

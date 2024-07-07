@@ -105,6 +105,12 @@ export function useMode(
       icon: "direction.png",
       handler: handleModeDoubleClickOnLink,
     },
+    {
+      label: t("Toggle Time Delay"),
+      mode: ESystemMapCanvasModeDoubleClickOnLink.ToggleTimeDelay,
+      icon: "time-delay.png",
+      handler: handleModeDoubleClickOnLink,
+    },
   ];
 
   const labelDoubleClickOnBackground = t("Double click on Canvas");

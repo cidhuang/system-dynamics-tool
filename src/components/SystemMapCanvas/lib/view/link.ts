@@ -1,5 +1,5 @@
 import { Container, DisplayObject, Text } from "pixi.js";
-import { ViewEdge } from "./ViewEdge";
+import { ViewLink } from "./ViewLink";
 import { Point } from "../geometry";
 import { Link } from "../types";
 
@@ -10,14 +10,14 @@ export function addViewLink(
   end: Point,
 ) {
   const edge = link.mid
-    ? new ViewEdge(start, end, link.mid)
-    : new ViewEdge(start, end);
+    ? new ViewLink(start, end, link.mid)
+    : new ViewLink(start, end);
   edge.name = link.name;
   edge.color = "grey";
   edge.width = 8;
   edge.arrowHeadLength = 15;
   edge.isDashed = !link.isPlus;
-  edge.isPolyline = false;
+  edge.isWithTimeDelay = false;
   stage.addChild(edge);
 }
 
@@ -32,8 +32,9 @@ export function updateViewLink(
     return false;
   }
 
-  const view = item as ViewEdge;
+  const view = item as ViewLink;
   view.isDashed = !link.isPlus;
+  view.isWithTimeDelay = link.isWithTimeDelay;
   view.start = start;
   view.end = end;
   view.mid = link.mid;
@@ -42,6 +43,6 @@ export function updateViewLink(
 }
 
 export function isOnLink(item: DisplayObject, xy: Point): boolean {
-  const edge = item as ViewEdge;
+  const edge = item as ViewLink;
   return edge.contains(xy.x, xy.y);
 }

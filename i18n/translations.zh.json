@@ -23,8 +23,10 @@
   "Double click on Link": "雙擊因果線",
   "Toggle Relation": "交換變化方向",
   "Toggle Direction": "交換因果方向",
+  "Toggle Time Delay": "切換時間延遲",
   "Double click to delete Item": "雙擊以刪除元件",
   "Double click on Canvas": "雙擊於空白處",
   "Create Variable": "新增變數",
-  "Create Stock": "新增存量"
+  "Create Stock": "新增存量",
+  "input name": "輸入名字"
 }

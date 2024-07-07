@@ -9,6 +9,7 @@ export enum ESystemMapCanvasModeDragFromVariableStock {
 export enum ESystemMapCanvasModeDoubleClickOnLink {
   ToggleRelation,
   ToggleDirection,
+  ToggleTimeDelay,
 }
 
 export enum ESystemMapCanvasModeDoubleClickOnBackground {

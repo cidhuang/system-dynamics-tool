@@ -184,6 +184,28 @@ function toggleLinkDirection(state: IStateCanvas, item: string): IStateCanvas {
   };
 }
 
+function toggleLinkTimeDelay(state: IStateCanvas, item: string): IStateCanvas {
+  let items = structuredClone(state.items);
+  const index = items.links.findIndex((link) => link.name === item);
+
+  if (index < 0) {
+    alert();
+    return state;
+  }
+  const link = items.links[index];
+  if (!isVariable(link.start) || !isVariable(link.end)) {
+    return state;
+  }
+
+  link.isWithTimeDelay = !link.isWithTimeDelay;
+
+  return {
+    ...state,
+    items: items,
+    cmdUndoSetItems: state.cmdUndoSetItems + 1,
+  };
+}
+
 function reverseFlowDirection(state: IStateCanvas, item: string): IStateCanvas {
   let items = structuredClone(state.items);
 
@@ -239,6 +261,11 @@ function reducerIdleDoubleClick(state: IStateCanvas, xy: Point, item: string) {
       ESystemMapCanvasModeDoubleClickOnLink.ToggleDirection
     ) {
       return toggleLinkDirection(state, item);
+    } else if (
+      state.modes.doubleClickOnLink ===
+      ESystemMapCanvasModeDoubleClickOnLink.ToggleTimeDelay
+    ) {
+      return toggleLinkTimeDelay(state, item);
     }
     return toggleLinkRelation(state, item);
   }
