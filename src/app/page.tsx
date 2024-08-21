@@ -29,6 +29,12 @@ import {
   ESystemMapCanvasModeDoubleClickOnLink,
 } from "@/components/SystemMapCanvas/reducer/types";
 
+declare global {
+  interface Window {
+    __TAURI__: Record<string, unknown>;
+  }
+}
+
 function HomeImp() {
   const canvasRef = useRef<SystemMapCanvasRef>(null);
 

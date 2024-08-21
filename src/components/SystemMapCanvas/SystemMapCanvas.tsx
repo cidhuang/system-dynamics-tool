@@ -122,29 +122,25 @@ export const SystemMapCanvas = forwardRef<
     setInputVisible,
   ] = useInput(app, editingTextNode, setEditingTextNode);
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        zoomIn() {
-          handleZoomIn();
-        },
-        zoomOut() {
-          handleZoomOut();
-        },
-        undo() {
-          undoItems();
-        },
-        redo() {
-          redoItems();
-        },
-        setModes(modes: IStateCanvasModes) {
-          dispatch({ type: "Modes", modes: modes });
-        },
-      };
-    },
-    [handleZoomIn, handleZoomOut, undoItems, redoItems],
-  );
+  useImperativeHandle(ref, () => {
+    return {
+      zoomIn() {
+        handleZoomIn();
+      },
+      zoomOut() {
+        handleZoomOut();
+      },
+      undo() {
+        undoItems();
+      },
+      redo() {
+        redoItems();
+      },
+      setModes(modes: IStateCanvasModes) {
+        dispatch({ type: "Modes", modes: modes });
+      },
+    };
+  }, [handleZoomIn, handleZoomOut, undoItems, redoItems]);
 
   useEffect(() => {
     onCanUndoChanged(canUndo);
@@ -197,6 +193,7 @@ export const SystemMapCanvas = forwardRef<
 
   useEffect(() => {
     resetItems(state.items);
+    onItemsChange(state.items);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cmdUndoResetItems]);

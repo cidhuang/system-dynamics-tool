@@ -21,6 +21,9 @@ import {
   IItems,
 } from "@/components/SystemMapCanvas/lib/types";
 
+import { save } from "@tauri-apps/api/dialog";
+import { writeTextFile, BaseDirectory } from "@tauri-apps/api/fs";
+
 export function useMenu(
   canvasRef: MutableRefObject<SystemMapCanvasRef>,
   setItems0: Dispatch<SetStateAction<IItems>>,
@@ -83,10 +86,30 @@ export function useMenu(
     openFilePicker();
   }
 
-  function handleSaveAs(arg: any) {
+  async function handleSaveAs(arg: any) {
     const json = JSON.stringify(items);
-    const file = new File([json], "", { type: "application/json" });
-    saveFile(file, "system-map.json");
+    if (!window.__TAURI__) {
+      const file = new File([json], "", { type: "application/json" });
+      saveFile(file, "system-map.json");
+      return;
+    }
+
+    const filePath = await save({
+      filters: [
+        {
+          name: "System Map",
+          extensions: ["json"],
+        },
+      ],
+    });
+
+    if (!filePath) {
+      return;
+    }
+
+    await writeTextFile(filePath, json, {
+      dir: BaseDirectory.AppConfig,
+    });
   }
 
   function handleZoomIn(arg: any) {
